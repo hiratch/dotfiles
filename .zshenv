@@ -71,10 +71,7 @@ export PERLDOC_PAGER=${PAGER}
 export LESS='-g -i -M -R'
 
 ### path setting
-PATH="/opt/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:$HOME/Tool/mor_tool:$PATH"
-
-### HiSilicon
-PATH="/opt/hisi-linux/x86-arm/arm-hisiv500-linux/target/bin:/opt/hisi-linux/x86-arm/arm-hisiv500-linux/bin:/opt/hisi-linux/x86-arm/arm-hisiv600-linux/target/bin:/opt/hisi-linux/x86-arm/arm-hisiv600-linux/bin:$PATH"
+PATH="/opt/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:$PATH"
 
 # #path=($HOME/bin)
 # path=(/usr/local/bin /usr/bin    \

@@ -105,6 +105,11 @@ if [ -f $ZUSRDIR/lscolors ]; then
 fi
 
 
+# mor_tool
+if [ -d $HOME/Tool/mor_tool ]; then
+    export PATH=$HOME/Tool/mor_tool:$PATH
+fi
+
 ### User environment
 if [ -d $HOME/.rbenv ]; then
     export PATH=$HOME/.rbenv/bin:$PATH
