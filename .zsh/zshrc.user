@@ -1,0 +1,139 @@
+# $ZUSRDIR/zshrc.user
+#
+echo "Loading $ZUSRDIR/zshrc.user"
+
+
+# print help for me.
+function help(){
+	echo "
+< zsh command help for me :-) >
+ ^A	move cursor to the head of the sentense
+ ^E	move cursor to the tail of the sentense
+
+ ^K	delete right to cursor
+ ^U/^W	delete left to cursor
+
+ ^L	clear screen
+ ^T	replace to the before charactor
+ ^I	complation (=tab)
+
+ ^G	cancel command
+
+ ^F	history search (forward)
+ ^R	history search (backward)
+
+ ^Y	paste??
+
+ ^Q	commandline stacking
+
+ ^J	return??
+ ^M	return??
+
+ ^N	??
+ ^O	??
+
+- std
+
+ ^B	move left
+
+ ^H	delete one char
+ ^Z	sunpend process (or change screen)
+ ^D	logout
+	"
+}
+
+# see bash-prompt howto.
+
+# set prompt
+function prompt(){
+    case $1 in
+        0) PROMPT='' ;;    # nothing! cool it!?
+        1) PROMPT="%n@%l'%m:%~%# " ;;  # default
+        2) PROMPT='%n@%m:%# ' ;;    # pwd simple mode
+        3) PROMPT='$ ' ;;
+        4) PROMPT='%n@%m %# ' ;;
+#        5) PROMPT="%n@%l'%U%m%u[`jobcount`]:%~%# " ;;
+        5) PROMPT="%n@%l'%U%m%u[\$#jobstates]:%5~%# " ;;
+        *) PROMPT="$PROMPT_DEFAULT" ;;
+    esac
+}
+
+function rprompt(){
+    case $1 in
+        0) RPROMPT='' ;;   # nothing
+        1) RPROMPT='%B[%(?.%!.ERROR:%?)] (%U%D%u %D{%a %H:%M:%S %p})%b' ;;
+        2) RPROMPT='%B(%D %D{%a %H:%M:%S})%b' ;;
+        3) RPROMPT='%D{%H:%M:%S %p}' ;;
+        4) RPROMPT='[%(?.%!.ERR:%?)] %D{%H:%M:%S %p}' ;;
+        5) RPROMPT='[%~] %D{%H:%M:%S %p}' ;;
+        *) RPROMPT="$RPROMPT_DEFAULT" ;;
+    esac
+}
+
+_setterm() {
+    # text property
+    local D=$'%{\e[00m%}' # default
+    local H=$'%{\e[01m%}' # bold
+    local U=$'%{\e[04m%}' # underline
+    local L=$'%{\e[05m%}' # blink
+    local V=$'%{\e[07m%}' # reverse
+    # foreground color
+    local K=$'%{\e[30m%}' # black
+    local R=$'%{\e[31m%}' # red
+    local G=$'%{\e[32m%}' # green
+    local Y=$'%{\e[33m%}' # yellow
+    local B=$'%{\e[34m%}' # blue
+    local P=$'%{\e[35m%}' # purple
+    local C=$'%{\e[36m%}' # cyan
+    local W=$'%{\e[37m%}' # white
+    # background color
+    local k=$'%{\e[40m%}' # black
+    local r=$'%{\e[41m%}' # red
+    local g=$'%{\e[42m%}' # green
+    local y=$'%{\e[43m%}' # yellow
+    local b=$'%{\e[44m%}' # blue
+    local p=$'%{\e[45m%}' # purple
+    local c=$'%{\e[46m%}' # cyan
+    local w=$'%{\e[47m%}' # white
+
+    # %n -- username
+    # %m -- hostname
+    # %~ -- current directory
+    # %d -- current directory (full path)
+
+    #PROMPT=$P"%n"$C"@"$R$U"%m"$D$H$G"<"$C'$#jobstates'$G">"$Y"+ "$D    
+    PROMPT=$P"%n"$C"<"$C'$#jobstates'$G">"$Y"+ "$D
+    RPROMPT=$G"["$R"%~"$G"] "\
+$P"%D{%m}"$C"/"$P"%D{%d}"\
+$B" ("$D"%D{%a}"$B")"\
+$P" %D{%H}"$C":"$P"%D{%M}"$C":"$P"%D{%S}"$D
+    PROMPT2=$R"%_"$Y"> "
+}
+_setterm
+
+# screen ¤ò LANG=C ¤Çµ¯Æ°¤¹¤ë¤Î¤Ç
+if [ "$LANG" = "C" ]; then
+    if [ `ps -p$PPID --no-headers -o"%c"` = "screen" ]; then
+        LANG=ja_JP.ujis
+    fi
+fi
+
+# Êä´°¸õÊä¤ò¢«¢­¢¬¢ª¤ÇÁªÂò¡£
+zstyle ':completion:*:default' menu select=1
+
+# Êä´°¸õÊä¤Ë¿§¤ò¤Ä¤±¤ë
+export ZLS_COLORS=$LS_COLORS
+zstyle ':completion:*' list-colors ${(s.:.)ZLS_COLORS}
+
+# Êä´°¸õÊä¤ò¥­¥ã¥Ã¥·¥å
+zstyle ':completion:*' use-cache true
+
+# ÂçÊ¸»ú¾®Ê¸»ú¤òÌµ»ë¤·¤ÆÊä´°¸õÊä¤Ë
+zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
+
+# Ã±¸ì¤Î
+WORDCHARS='*?_-[]~=&;!#$%^(){}<>'
+
+# grep ¤Î¿§ÉÕ¤±
+export GREP_COLOR="04:32"
+

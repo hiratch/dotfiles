@@ -1,0 +1,253 @@
+# $ZUSRDIR/aliases
+#
+echo "Loading $ZUSRDIR/aliases"
+
+###############################
+alias cgrep='grep --color=always'
+alias cegrep='egrep --color=always'
+alias cfgrep='fgrep --color=always'
+# 下で効かす
+alias grep='grep --color'
+alias egrep='egrep --color'
+alias fgrep='fgrep --color'
+
+###############################
+# 省略形で使いやすく
+
+alias ls='ls -F --color=tty --show-control-chars'
+alias l.='ls -d .[^.]*'
+alias ll.='ls -ld .[^.]*'
+alias ll='ls -l'
+alias la='ls -a'
+
+alias l='ls -lFAo'
+#alias l='colorls -lFAoG'
+#alias ll='ls -lFAo|more'
+alias lr='ls -RF'
+alias lf='ls -AF'
+alias lt='ls -lFAot'
+alias ltr='ls -lFAotr'
+alias l1='ls -1'
+#alias less='jless'
+#alias g='grep -n'
+alias g='grep -a'
+alias cl='clear'
+alias xx='startx'
+alias psg='psgrep'
+alias lg='lsgrep'
+alias d='ls -lFo'
+#alias cctl=compctl
+alias ns='netstat'
+alias em='emacs'
+alias ng=netgrep
+alias bc='bc -l'
+
+###############################
+# 必殺！　単文字省略
+
+alias c=cat
+#alias d='diff -bi'
+#alias e='emacs'
+alias h=head
+alias j='jobs -l'
+#alias m='more -c'
+#alias m=nmore
+alias p='pico -wz'
+alias s=sort
+alias t='tail'
+alias m=$PAGER
+
+###############################
+# 新しいコマンド定義しちゃおう
+
+alias dir='/bin/ls'
+alias root='su -l'
+alias null='cat /dev/null >'
+alias cpan='perl -MCPAN -eshell'
+alias bench='ab -c10 -n100'
+alias tm=tmore
+
+alias moon="perl -MAstro::MoonPhase -e 'printf qq/phase is %.1f\nillu  is %.1f %%\n/, (phase)[0] * 30, (phase)[1] * 100'"
+alias gd='dirs -v; echo -n "select number: " ; read newdir; cd -"$newdir"'
+
+###############################
+# オプションを付けておこう
+
+alias gg='grep -an -B 5 -A 5' 
+alias tt='tail -36'
+alias pa='ps -aux'
+#alias ftp='ncftp -L'
+#alias cdcontrol='cdcontrol -f /dev/acd0a'
+alias df='df -h'
+alias ee='ee -i'
+#alias du='du -ack'
+alias du='du -ck'
+alias diff='diff -Naur'
+alias scp='scp -p'
+
+case $SYSTEM {
+#  gnu)  alias top='top -d 1 -i'  ;;
+  gnu)  alias top='top -d 1'  ;;
+  bsd)  alias top='top -IS -s 1 -o cpu'  ;;
+}
+
+#alias lynx='lynx -cfg ~/.lynxrc'
+alias swapinfo='swapinfo -k'
+alias systat='systat 1'
+alias ntop='ntop -r1 -n'
+alias trafshow='trafshow -r1 -n'
+#alias trafshow='trafshow -r1'
+
+alias ps_jail='ps aux | grep "J "'
+
+###############################
+# cover mistype
+
+alias ,,='cd ../'
+alias //_='cd ../'
+alias ...='cd ../../'
+
+# for FreeBSD 5.x
+alias /entropy='cd /etc'
+
+###############################
+# ネットワーク関連
+
+alias ping_max='ping -c 5 -s 1452'
+
+# ftp implimentation using ssh session (!= sftp included SSH2 protocol)
+# alias secftp_midori='secftp -C -l ryo -P /usr/local/bin/sftpserv midori'
+
+alias tcpdump_local_host='tcpdump -q not tcp port 22'
+alias tcpdump_local_ip='tcpdump -qn not tcp port 22'
+
+###############################
+# 個別に
+
+case $SYSTEM {
+  gnu)  alias tf='tail -n 0 -f'  ;;
+  bsd)  alias tf='tail -0 -F'  ;;
+}
+
+alias tf_messages='tf /var/log/messages'
+alias tf_maillog='tf /var/log/maillog'
+
+alias perl_at_inc="perl -e 'for(@@INC){print \"$_ \n\";}'"
+#alias perl_at_inc=" perl -e 'for(@@INC){print $_ . qq/\n/}' | sort "
+
+
+###############################
+# その他
+
+#alias myadmin='mysqladmin -u root -p'
+#alias get='fetch -aq'
+
+###############################
+# ダイアルアップ
+
+# alias ip_hostname="netstat -nr|grep tun0|grep -v default|awk '{print \$2}'|nslookup|grep Name|awk '{print \$2}'"
+# alias ip_now="netstat -nr|grep tun0|grep -v default|awk '{print \$2}'"
+
+###############################
+# おせっかいにも -i が付けられていたりするので alias を外す（ちょい危険）
+
+#unalias rm >& /dev/null
+#unalias cp >& /dev/null
+#unalias mv >& /dev/null
+#alias rm="rm -f"
+alias mv="mv -i"
+alias cp="cp -i"
+
+###############################
+# ディレクトリスタックも良く使うので短く
+
+#alias pu=pushd
+#alias po=popd
+#alias push='pushd +1'
+
+###############################
+# for charlie root
+
+#alias fdmount_msdos='mount_msdos /dev/fd0c.1440 /fd'
+#alias fdmount_ufs='mount /dev/fd0c.1440 /fd'
+alias cdmount='mount_cd9660 /dev/wcd0c /cdrom'
+#alias route_tun0='route add default -interface tun0'
+alias ipfw_ls='ipfw -at list'
+
+
+###############################
+# X 周り
+
+# 色数と .xinitrc を切り替えて X を起動する例（詳しくは man Xserver）
+# 8bpp(256色) の時は fvwm、16bpp の時は afterstep のように使い分けたりする
+
+#alias x8="XINITRC=$HOME/.xinitrc.8bpp xinit -- -bpp 8 -deferglyphs all"
+#alias x16="XINITRC=$HOME/.xinitrc.16bpp xinit -- -bpp 16 -deferglyphs all"
+
+# for X server
+#alias kterm_silver='kterm -sb -km euc -fg "#ddd" -bg "#333" &'
+#alias kterm_blue='kterm -sb -km euc -cr white -ms white -fg "#cce" -bg "#113" &'
+#alias kterm_green='kterm -sb -km euc -cr white -ms white -fg "#cec" -bg "#131" &'
+#alias kterm_red='kterm -sb -km euc -cr white -ms white -fg "#ecc" -bg "#633" &'
+#alias mule_blue='mule -cr white -ms white -fg "#ddf" -bg "#113" -geometry 100x32'
+#alias emacs_blue='emacs -cr white -ms white -fg "#ddf" -bg "#113" -geometry 100x32'
+
+#alias eterm='Eterm -O -x --scrollbar=false --menubar=false -geometry 100x32'
+
+# xv が Window Manager の設定に逆らって勝手にあちこちに窓を広げるのを防ぐ
+#alias xv='xv -nopos'
+
+
+
+############################################################
+############################################################
+
+alias eterm=MyEterm
+alias mew="emacs -nw -f mew"
+alias screen="screen -U"
+alias sl="sl -e -a -F"
+alias sl2="sl2 -e"
+
+function mysudo() {
+    su - root --command="`echo $@`"
+}
+
+
+###############################################
+##### for each OS
+
+case $OSTYPE {
+    sunos*)	export SYSTEM=sun ;;
+    solaris*)	export SYSTEM=sol ;;
+    irix*)	export SYSTEM=sgi ;;
+    osf*)	export SYSTEM=dec ;;
+    linux*)	export SYSTEM=gnu ;;
+    freebsd*)	export SYSTEM=bsd ;;
+    darwin*)	export SYSTEM=mac ;;
+}
+
+case $SYSTEM {
+#  sun)	export LANG=japanese    ;;
+#  sol)	export LANG=japanese    ;;
+#  sgi)	export LANG=ja_JP.EUC   ;;
+#  dec)	export LANG=japanese    ;;
+#  gnu)	export LANG=ja_JP.ujis  ;;
+#  bsd)	export LANG=ja_JP.EUC    ;;
+   mac)
+    alias emacs="open -n /Applications/MacPorts/Emacs.app"
+    ;;
+}
+
+####################################################
+alias coffee='ssh -Y coffee'
+alias tarako='ssh -Y tarako'
+alias beer='ssh -Y beer'
+alias gomasaba='ssh -Y gomasaba'
+alias civet='ssh -Y civet'
+
+alias panda1='ssh -Y 192.168.100.121'
+alias panda2='ssh -Y 192.168.100.131'
+
+alias imx6q='ssh -Y 192.168.100.138'
+alias imx6q_root='ssh -Y root@192.168.100.138'
+

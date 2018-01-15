@@ -1,0 +1,32 @@
+# $ZUSRDIR/lscolors
+#
+echo "Loading $ZUSRDIR/lscolors"
+
+# color-ls の色を設定する
+
+# Attribute codes:
+# 00=none 01=bold 04=underscore 05=blink 07=reverse 08=concealed
+# Text color codes:
+# 30=black 31=red 32=green 33=yellow 34=blue 35=magenta 36=cyan 37=white
+# Background color codes:
+# 40=black 41=red 42=green 43=yellow 44=blue 45=magenta 46=cyan 47=white
+
+#LS_COLORS="fi=37:di=36:ex=32:ln=34:bd=33:cd=33:pi=35:so=35"
+LS_COLORS="fi=00:di=01;36:ln=01;35:so=01;32:pi=01;33:ex=01;31:bd=01;34;46:cd=01;34;43:or=01;33;41"
+LS_COLORS="$LS_COLORS:*.gz=01;32:*.Z=01;32:*.lzh=01;32:*.zip=01;32:*.bz2=01;32"
+LS_COLORS="$LS_COLORS:*.tar=01;32:*.tgz=01;32"
+LS_COLORS="$LS_COLORS:*.gif=01;33:*.jpg=01;33:*.jpeg=01;33:*.JPG=01;33:*.JPEG=01;33:*.tif=01;33"
+LS_COLORS="$LS_COLORS:*.xpm=01;33:*.xbm=01;33:*.xwd=01;33:*.xcf=01;33"
+LS_COLORS="$LS_COLORS:*.avi=01;33:*.mov=01;33:*.mpeg=01;33:*.mpg=01;33"
+LS_COLORS="$LS_COLORS:*.mid=01;33:*.MID=01;33:*.rcp=01;33:*.RCP=01;33"
+LS_COLORS="$LS_COLORS:*.mp3=01;33:*.mp4=01;33:*.m4a=01;33:*.m4v=01;33"
+LS_COLORS="$LS_COLORS:*.mod=01;33:*.MOD=01;33:*.au=01;33:*.aiff=01;33:*.wav=01;33"
+LS_COLORS="$LS_COLORS:*.htm=01;35:*.html=01;35:*.java=01;35:*.class=01;32"
+LS_COLORS="$LS_COLORS:*.c=01;35:*.h=01;35:*.C=01;35:*.c++=01;35:*.cpp=01;35:*.cxx=01;35"
+LS_COLORS="$LS_COLORS:*.ps=01;33:*.pdf=01;33"
+LS_COLORS="$LS_COLORS:*.dvi=01;33:*.tex=01;35:*~=0"
+
+# 最後に export して有効にする
+
+export LS_COLORS
+
