@@ -2,6 +2,15 @@
 #
 echo "Loading $ZDOTDIR/.zshrc"
 
+#Setup ssh-agent
+if [ -f ~/.ssh-agent ]; then
+    . ~/.ssh-agent
+fi
+if [ -z "$SSH_AGENT_PID" ] || ! kill -0 $SSH_AGENT_PID; then
+    ssh-agent > ~/.ssh-agent
+    . ~/.ssh-agent
+fi
+ssh-add -l >& /dev/null || ssh-add
 
 ### shell variables
 
@@ -122,7 +131,7 @@ if [ -f $HOME/Qualcomm/Hexagon_SDK/3.3.1/setup_sdk_env.source ]; then
     export PATH="$HEXAGON_SDK_ROOT/tools/HEXAGON_Tools/8.1.04/Tools/bin:$PATH"
     export HALIDE_ROOT=$HOME/Qualcomm/HALIDE_Tools/2.0/Halide
 fi
-export LM_LICENSE_FILE=/opt/silexica/license/SLX-LicenseFile.lic:$LM_LICENSE_FILE
+export LM_LICENSE_FILE=/opt/silexica/license/silexica_nodelock.lic:$LM_LICENSE_FILE
 source /opt/silexica/exports
 
 net_tools_deprecated_message () {
