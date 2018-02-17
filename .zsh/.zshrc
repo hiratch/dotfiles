@@ -131,8 +131,11 @@ if [ -f $HOME/Qualcomm/Hexagon_SDK/3.3.1/setup_sdk_env.source ]; then
     export PATH="$HEXAGON_SDK_ROOT/tools/HEXAGON_Tools/8.1.04/Tools/bin:$PATH"
     export HALIDE_ROOT=$HOME/Qualcomm/HALIDE_Tools/2.0/Halide
 fi
-export LM_LICENSE_FILE=/opt/silexica/license/silexica_nodelock.lic:$LM_LICENSE_FILE
-source /opt/silexica/exports
+
+if [ -d /opt/silexica ]; then
+    export LM_LICENSE_FILE=/opt/silexica/license/silexica_nodelock.lic:$LM_LICENSE_FILE
+    source /opt/silexica/exports
+fi
 
 net_tools_deprecated_message () {
   echo -n 'net-tools コマンドはもう非推奨ですよ？おじさんなんじゃないですか？ '

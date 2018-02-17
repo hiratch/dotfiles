@@ -14,7 +14,20 @@ alias fgrep='fgrep --color'
 ###############################
 # 省略形で使いやすく
 
-alias ls='ls -F --color=tty --show-control-chars'
+case $OSTYPE {
+    sunos*)	export SYSTEM=sun ;;
+    solaris*)	export SYSTEM=sol ;;
+    irix*)	export SYSTEM=sgi ;;
+    osf*)	export SYSTEM=dec ;;
+    linux*)	export SYSTEM=gnu ;;
+    freebsd*)	export SYSTEM=bsd ;;
+    darwin*)	export SYSTEM=mac ;;
+}
+
+case $SYSTEM {
+  mac)  alias ls='gls -F --color=tty --show-control-chars' ;;
+  *)	alias ls='ls -F --color=tty --show-control-chars'  ;;
+}
 alias l.='ls -d .[^.]*'
 alias ll.='ls -ld .[^.]*'
 alias ll='ls -l'
@@ -234,7 +247,7 @@ case $SYSTEM {
 #  gnu)	export LANG=ja_JP.ujis  ;;
 #  bsd)	export LANG=ja_JP.EUC    ;;
    mac)
-    alias emacs="open -n /Applications/MacPorts/Emacs.app"
+    alias emacs="open -n /usr/local/Cellar/emacs/25.3/Emacs.app/"
     ;;
 }
 
