@@ -129,8 +129,14 @@ fi
 if [ -f $HOME/Qualcomm/Hexagon_SDK/3.3.1/setup_sdk_env.source ]; then
     source $HOME/Qualcomm/Hexagon_SDK/3.3.1/setup_sdk_env.source
     export PATH="$HEXAGON_SDK_ROOT/tools/HEXAGON_Tools/8.1.04/Tools/bin:$PATH"
-    export HALIDE_ROOT=$HOME/Qualcomm/HALIDE_Tools/2.0/Halide
+    export HEXAGON_HALIDE_ROOT=$HOME/Qualcomm/HALIDE_Tools/2.0/Halide
 fi
+
+if [ -d /opt/Halide ]; then
+    export HALIDE_SDK_ROOT=/opt/Halide
+elif [ -d /usr/local/Cellar/Halide/ ]; then
+    export HALIDE_SDK_ROOT=/usr/local/Cellar/Halide
+fi  
 
 if [ -d /opt/silexica ]; then
     export LM_LICENSE_FILE=/opt/silexica/license/silexica_nodelock.lic:$LM_LICENSE_FILE
