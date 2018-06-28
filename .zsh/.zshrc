@@ -130,6 +130,8 @@ if [ -f $HOME/Qualcomm/Hexagon_SDK/3.3.1/setup_sdk_env.source ]; then
     source $HOME/Qualcomm/Hexagon_SDK/3.3.1/setup_sdk_env.source
     export PATH="$HEXAGON_SDK_ROOT/tools/HEXAGON_Tools/8.1.04/Tools/bin:$PATH"
     export HALIDE_ROOT=$HOME/Qualcomm/HALIDE_Tools/2.0/Halide
+elif [ -d /usr/local/Cellar/halide/2017.10.30 ]; then
+    export HALIDE_ROOT=/usr/local/Cellar/halide/2017.10.30
 fi
 
 if [ -d /opt/silexica ]; then
