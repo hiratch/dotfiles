@@ -9,7 +9,7 @@
 #    return
 #fi
 
-#echo "Loading $HOME/.zshenv"
+echo "Loading $HOME/.zshenv"
 
 ### env
 
