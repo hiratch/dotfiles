@@ -126,6 +126,10 @@ if [ -d $HOME/.rbenv ]; then
     #export CC=/usr/bin/gcc
 fi
 
+if [ -d $HOME/bin ]; then
+    export PATH=$HOME/bin:$PATH
+fi
+
 if [ -f $HOME/Qualcomm/Hexagon_SDK/3.3.1/setup_sdk_env.source ]; then
     source $HOME/Qualcomm/Hexagon_SDK/3.3.1/setup_sdk_env.source
     export PATH="$HEXAGON_SDK_ROOT/tools/HEXAGON_Tools/8.1.04/Tools/bin:$PATH"
