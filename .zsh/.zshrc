@@ -119,6 +119,11 @@ if [ -d $HOME/Tool/mor_tool ]; then
     export PATH=$HOME/Tool/mor_tool:$PATH
 fi
 
+if [ -d $HOME/Tool/pyenv ]; then
+    export PYENV_ROOT="$HOME/Tool/pyenv"
+    export PATH="$PYENV_ROOT/bin:$PATH"
+fi
+
 ### User environment
 if [ -d $HOME/.rbenv ]; then
     export PATH=$HOME/.rbenv/bin:$PATH
@@ -131,6 +136,10 @@ if [ -d $HOME/bin ]; then
 fi
 
 if [ -f $HOME/Qualcomm/Hexagon_SDK/3.3.1/setup_sdk_env.source ]; then
+    source $HOME/Qualcomm/Hexagon_SDK/3.4.1/setup_sdk_env.source
+    export PATH="$HEXAGON_SDK_ROOT/tools/HEXAGON_Tools/8.2.07/Tools/bin:$PATH"
+    export HEXAGON_HALIDE_ROOT=$HOME/Qualcomm/HALIDE_Tools/2.0/Halide
+elif [ -f $HOME/Qualcomm/Hexagon_SDK/3.3.1/setup_sdk_env.source ]; then
     source $HOME/Qualcomm/Hexagon_SDK/3.3.1/setup_sdk_env.source
     export PATH="$HEXAGON_SDK_ROOT/tools/HEXAGON_Tools/8.1.04/Tools/bin:$PATH"
     export HEXAGON_HALIDE_ROOT=$HOME/Qualcomm/HALIDE_Tools/2.0/Halide
@@ -184,5 +193,10 @@ route () {
 
 if [ -f $ZUSRDIR/zshrc.user ]; then
     source $ZUSRDIR/zshrc.user
+fi
+
+if [ $PYENV_ROOT ]; then
+    eval "$(pyenv init -)"
+    eval "$(pipenv --completion)"
 fi
 

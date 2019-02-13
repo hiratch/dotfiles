@@ -97,6 +97,8 @@ alias ee='ee -i'
 alias du='du -ck'
 alias diff='diff -Naur'
 alias scp='scp -p'
+alias gitk='gitk --all'
+
 
 case $SYSTEM {
 #  gnu)  alias top='top -d 1 -i'  ;;
@@ -252,10 +254,6 @@ case $SYSTEM {
 }
 
 ####################################################
-alias coffee='ssh -Y coffee'
-alias tarako='ssh -Y tarako'
-alias beer='ssh -Y beer'
-alias gomasaba='ssh -Y gomasaba'
 alias civet='ssh -Y civet'
 
 alias panda1='ssh -Y 192.168.100.121'
