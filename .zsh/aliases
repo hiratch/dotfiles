@@ -25,8 +25,8 @@ case $OSTYPE {
 }
 
 case $SYSTEM {
-  mac)  alias ls='gls -F --color=tty --show-control-chars' ;;
-  *)	alias ls='ls -F --color=tty --show-control-chars'  ;;
+  mac)  alias ls='gls -F --color=tty --group-directories-first --show-control-chars' ;;
+  *)	alias ls='ls -F --color=tty --group-directories-first --show-control-chars'  ;;
 }
 alias l.='ls -d .[^.]*'
 alias ll.='ls -ld .[^.]*'
