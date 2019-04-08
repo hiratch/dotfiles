@@ -160,6 +160,11 @@ if [ -d /opt/silexica ]; then
     source /opt/silexica/exports
 fi
 
+if [ -n "$LINUX_ON_WINDOWS" ]; then
+    export PATH=/mnt/c/Android/android-sdk/platform-tools:/mnt/c/Android/android-sdk/ndk-bundle/build:$PATH
+    alias adb=adb.exe
+fi
+
 net_tools_deprecated_message () {
   echo -n 'net-tools コマンドはもう非推奨ですよ？おじさんなんじゃないですか？ '
 }

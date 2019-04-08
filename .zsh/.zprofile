@@ -47,6 +47,11 @@ case $SYSTEM {
   mac)	export LANG=ja_JP.UTF-8 ;;
 }
 
+KERNEL_RELEASE_INFO=`uname -r`
+case $KERNEL_RELEASE_INFO {
+        *-Microsoft) export LINUX_ON_WINDOWS=wsl ;;
+}
+
 export LANGUAGE=$LANG
 export LC_ALL=$LANG
 
