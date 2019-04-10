@@ -135,20 +135,6 @@ if [ -d $HOME/bin ]; then
     export PATH=$HOME/bin:$PATH
 fi
 
-if [ -f $HOME/Qualcomm/Hexagon_SDK/3.4.3/setup_sdk_env.source ]; then
-    source $HOME/Qualcomm/Hexagon_SDK/3.4.3/setup_sdk_env.source
-    export PATH="$HEXAGON_SDK_ROOT/tools/HEXAGON_Tools/8.2.07/Tools/bin:$PATH"
-    export HEXAGON_HALIDE_ROOT=$HOME/Qualcomm/HALIDE_Tools/2.0/Halide
-elif [ -f $HOME/Qualcomm/Hexagon_SDK/3.4.1/setup_sdk_env.source ]; then
-    source $HOME/Qualcomm/Hexagon_SDK/3.4.1/setup_sdk_env.source
-    export PATH="$HEXAGON_SDK_ROOT/tools/HEXAGON_Tools/8.2.07/Tools/bin:$PATH"
-    export HEXAGON_HALIDE_ROOT=$HOME/Qualcomm/HALIDE_Tools/2.0/Halide
-elif [ -f $HOME/Qualcomm/Hexagon_SDK/3.3.1/setup_sdk_env.source ]; then
-    source $HOME/Qualcomm/Hexagon_SDK/3.3.1/setup_sdk_env.source
-    export PATH="$HEXAGON_SDK_ROOT/tools/HEXAGON_Tools/8.1.04/Tools/bin:$PATH"
-    export HEXAGON_HALIDE_ROOT=$HOME/Qualcomm/HALIDE_Tools/2.0/Halide
-fi
-
 if [ -d /opt/Halide ]; then
     export HALIDE_SDK_ROOT=/opt/Halide
 elif [ -d /usr/local/Cellar/halide/2017.10.30 ]; then
