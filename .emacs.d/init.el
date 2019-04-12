@@ -3,7 +3,12 @@
       '(("gnu". "http://elpa.gnu.org/packages/")
         ("melpa" . "http://melpa.org/packages/")
         ("org" . "http://orgmode.org/elpa/")))
-
+(add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/") t)
+(if (require 'quelpa nil t)
+    (quelpa-self-upgrade)
+  (with-temp-buffer
+    (url-insert-file-contents "https://raw.github.com/quelpa/quelpa/master/bootstrap.el")
+    (eval-buffer)))
 ;;; font-lockの設定
 (global-font-lock-mode nil)
 
@@ -81,6 +86,30 @@
      (t
       (set-frame-parameter (selected-frame) 'fullscreen 'nil))))
   (redisplay))
+
+(setq-default indent-tabs-mode nil)
+
+;; region color
+(set-face-background 'region "forest green")
+
+(defun set-buffer-end-mark()
+  (let ((overlay (make-overlay (point-max) (point-max))))
+    (overlay-put overlay 'before-string #("[EOF]" 0 5 (face highlight)))
+    (overlay-put overlay 'insert-behind-hooks
+		 '((lambda (ovelay after beg end &optional len)
+		     (when after
+		       (move-overlay overlay (point-max) (point-max))))))))
+(add-hook 'find-file-hooks 'set-buffer-end-mark)
+
+;; shift + 矢印
+(windmove-default-keybindings)
+(setq windmove-wrap-around t)
+
+
+(setq minibuffer-max-depth nil)
+
+;; ;;; 初期ディレクトリの設定
+(cd "~/")
 
 ;; スクロールバー出す
 (set-scroll-bar-mode 'right)
@@ -166,4 +195,62 @@
 ;; shell
 (add-hook 'shell-mode-hook
 	  (local-set-key "\C-l" '(lambda () (interactive)(recenter 0))))
+
+
+;; which-func-mode
+(which-func-mode 1)
+(setq which-func-mode t)
+;; 画面上部に表示
+(delete (assoc 'which-func-mode mode-line-format) mode-line-format)
+(setq-default header-line-format '(which-func-mode ("" which-func-format)))
+
+
+;; GDB
+(require 'gud)
+(setq gdb-many-windows t)
+(add-hook 'gdb-mode-hook '(lambda () (gud-tooltip-mode t)))
+(setq gdb-use-serapate-io-buffer t)
+(setq gud-tooltip-echo-area nil)
+(define-key gud-mode-map "\C-c\C-SPC" 'gud-break)
+
+;; cua-mode (Common User Acess Mode) 矩形選択用
+(require 'cua-mode nil t)
+(cua-mode t)
+(setq cua-enable-cua-keys nil) ; そのままだと C-x が切り取りになってしまったりするので無効化
+
+(defadvice cua-sequence-rectangle (around my-cua-sequence-rectangle activate)
+  "連番を挿入するとき、紫のところの文字を上書きしないで左にずらす"
+  (interactive
+   (list (if current-prefix-arg
+             (prefix-numeric-value current-prefix-arg)
+           (string-to-number
+            (read-string "Start value: (0) " nil nil "0")))
+         (string-to-number
+          (read-string "Increment: (1) " nil nil "1"))
+         (read-string (concat "Format: (" cua--rectangle-seq-format ") "))))
+  (if (= (length format) 0)
+      (setq format cua--rectangle-seq-format)
+    (setq cua--rectangle-seq-format format))
+  (cua--rectangle-operation 'clear nil t 1 nil
+     '(lambda (s e l r)
+         (kill-region s e)
+         (insert (format format first))
+         (yank)
+         (setq first (+ first incr)))))
+
+;; rainbow-delimiters を使うための設定
+(require 'rainbow-delimiters)
+(add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
+
+;; 括弧の色を強調する設定
+(require 'cl-lib)
+(require 'color)
+(defun rainbow-delimiters-using-stronger-colors ()
+  (interactive)
+  (cl-loop
+   for index from 1 to rainbow-delimiters-max-face-count
+   do
+   (let ((face (intern (format "rainbow-delimiters-depth-%d-face" index))))
+    (cl-callf color-saturate-name (face-foreground face) 30))))
+(add-hook 'emacs-startup-hook 'rainbow-delimiters-using-stronger-colors)
 
