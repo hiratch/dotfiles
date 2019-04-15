@@ -195,3 +195,5 @@ if [ $PYENV_ROOT ]; then
     eval "$(pipenv --completion)"
 fi
 
+export SCREENDIR=$HOME/.screen
+
