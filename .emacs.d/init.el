@@ -3,12 +3,15 @@
       '(("gnu". "http://elpa.gnu.org/packages/")
         ("melpa" . "http://melpa.org/packages/")
         ("org" . "http://orgmode.org/elpa/")))
+
+;; Quelpa
 (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/") t)
 (if (require 'quelpa nil t)
     (quelpa-self-upgrade)
   (with-temp-buffer
     (url-insert-file-contents "https://raw.github.com/quelpa/quelpa/master/bootstrap.el")
     (eval-buffer)))
+
 ;;; font-lockの設定
 (global-font-lock-mode nil)
 
@@ -32,6 +35,7 @@
 		    '(alpha . (90 70 50 30))
 		    )
 	      default-frame-alist))
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -195,6 +199,21 @@
 ;; shell
 (add-hook 'shell-mode-hook
 	  (local-set-key "\C-l" '(lambda () (interactive)(recenter 0))))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; cc-mode
+;;(load "c:/Meadow/2.00/.emacs.d/my-cc-mode.el")
+
+;; c#
+(autoload 'csharp-mode "csharp-mode"
+  "Major mode for editing C# code." t)
+(setq auto-mode-alist (cons '( "\\.cs\\'" . csharp-mode ) auto-mode-alist ))
+
+;; cperl
+(setq auto-mode-alist (cons '( "\\.pl\\'" . cperl-mode ) auto-mode-alist ))
+(setq auto-mode-alist (cons '( "\\.cgi\\'" . cperl-mode ) auto-mode-alist ))
 
 
 ;; which-func-mode
