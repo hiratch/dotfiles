@@ -18,8 +18,11 @@
    :url "https://framagit.org/steckerhalter/quelpa-use-package.git"))
 (require 'quelpa-use-package)
 
-(load "~/.emacs.d/my-packages.el")
-
+;; quelpa install package list start
+(quelpa 'rainbow-delimiters)
+(quelpa 'popwin)
+(quelpa 'magit)
+;; quelpa install package list end
 
 ;;; font-lockの設定
 (global-font-lock-mode nil)
