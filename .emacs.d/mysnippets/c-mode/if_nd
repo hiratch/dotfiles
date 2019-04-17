@@ -1,0 +1,11 @@
+# -*- mode: snippet -*-
+# name: if_nd
+# key: if_nd
+# --
+#if !defined($1)
+
+$0
+
+#else /* #if !defined($1) */
+
+#endif /* #if !defined($1) */
