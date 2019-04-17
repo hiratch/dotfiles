@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: mor_try
+# key: mor_try
+# --
+TRY( $1, $2 )

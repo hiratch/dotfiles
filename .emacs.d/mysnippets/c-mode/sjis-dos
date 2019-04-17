@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: sjis-dos
+# key: sjis-dos
+# --
+/* -*- coding:sjis-dos -*- */
