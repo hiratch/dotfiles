@@ -12,6 +12,15 @@
     (url-insert-file-contents "https://raw.github.com/quelpa/quelpa/master/bootstrap.el")
     (eval-buffer)))
 
+(quelpa
+ '(quelpa-use-package
+   :fetcher git
+   :url "https://framagit.org/steckerhalter/quelpa-use-package.git"))
+(require 'quelpa-use-package)
+
+(load "~/.emacs.d/my-packages.el")
+
+
 ;;; font-lockの設定
 (global-font-lock-mode nil)
 
@@ -36,18 +45,6 @@
 		    )
 	      default-frame-alist))
 
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(package-selected-packages (quote (package-utils quelpa))))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
 
 ;;; 行番号・桁番号をモードラインに表示する・しない設定 
 (line-number-mode t)			; 行番号 
@@ -201,10 +198,15 @@
 	  (local-set-key "\C-l" '(lambda () (interactive)(recenter 0))))
 
 
+;; popwin.el
+(use-package popwin
+  :config
+  ;; おまじない（よく分かってない、、）
+  (setq display-buffer-function 'popwin:display-buffer)
+  ;; ポップアップを画面下に表示
+  (setq popwin:popup-window-position 'bottom))
+             
 ;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; cc-mode
-;;(load "c:/Meadow/2.00/.emacs.d/my-cc-mode.el")
 
 ;; c#
 (autoload 'csharp-mode "csharp-mode"
@@ -215,6 +217,8 @@
 (setq auto-mode-alist (cons '( "\\.pl\\'" . cperl-mode ) auto-mode-alist ))
 (setq auto-mode-alist (cons '( "\\.cgi\\'" . cperl-mode ) auto-mode-alist ))
 
+(load "~/.emacs.d/cc-mode-set.el")
+(setq-default indent-tabs-mode nil)
 
 ;; which-func-mode
 (which-func-mode 1)
@@ -225,17 +229,23 @@
 
 
 ;; GDB
-(require 'gud)
-(setq gdb-many-windows t)
-(add-hook 'gdb-mode-hook '(lambda () (gud-tooltip-mode t)))
-(setq gdb-use-serapate-io-buffer t)
-(setq gud-tooltip-echo-area nil)
-(define-key gud-mode-map "\C-c\C-SPC" 'gud-break)
+(use-package gud
+  :init
+  (bind-keys :map mode-specific-map
+             ("\C-c\C-SPC" . gud-break))
+  (add-hook 'gdb-mode-hook '(lambda () (gud-tooltip-mode t)))
+  :config
+  (setq gdb-many-windows t)
+  (setq gdb-use-serapate-io-buffer t)
+  (setq gud-tooltip-echo-area nil))
 
 ;; cua-mode (Common User Acess Mode) 矩形選択用
-(require 'cua-mode nil t)
-(cua-mode t)
-(setq cua-enable-cua-keys nil) ; そのままだと C-x が切り取りになってしまったりするので無効化
+(use-package cua-base
+  :init (cua-mode 1)
+  :config
+  (progn
+    (setq cua-enable-cua-keys nil)))
+
 
 (defadvice cua-sequence-rectangle (around my-cua-sequence-rectangle activate)
   "連番を挿入するとき、紫のところの文字を上書きしないで左にずらす"
@@ -258,12 +268,14 @@
          (setq first (+ first incr)))))
 
 ;; rainbow-delimiters を使うための設定
-(require 'rainbow-delimiters)
-(add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
+(use-package rainbow-delimiters
+  :init
+  (add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
+  (add-hook 'emacs-startup-hook 'rainbow-delimiters-using-stronger-colors))
 
 ;; 括弧の色を強調する設定
-(require 'cl-lib)
-(require 'color)
+(use-package cl-lib)
+(use-package color)
 (defun rainbow-delimiters-using-stronger-colors ()
   (interactive)
   (cl-loop
@@ -271,5 +283,23 @@
    do
    (let ((face (intern (format "rainbow-delimiters-depth-%d-face" index))))
     (cl-callf color-saturate-name (face-foreground face) 30))))
-(add-hook 'emacs-startup-hook 'rainbow-delimiters-using-stronger-colors)
+
+
+;; c-mode
+(add-hook 'c-mode-common-hook
+          (lambda()
+            (setq show-trailing-whitespace t)))
+
+(use-package magit)
+
+;; coding
+;(use-package yasnippet
+;             :commands
+;             (yas-insert-snippet yas-new-snippet yas-visit-snippet-file yas-expand)
+;             :config
+;             (setq yas-snippet-dirs
+;                   '("~/.emacs.d/mysnippets"
+;                     )))
+;; [todo] add
+;; yasnippet, rtags, irony, flycheck
 
