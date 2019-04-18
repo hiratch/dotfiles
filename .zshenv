@@ -61,7 +61,7 @@ export PERLDOC_PAGER=${PAGER}
 export LESS='-g -i -M -R'
 
 ### path setting
-PATH="/opt/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:$PATH"
+PATH="/opt/local/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:$PATH"
 
 # #path=($HOME/bin)
 # path=(/usr/local/bin /usr/bin    \
