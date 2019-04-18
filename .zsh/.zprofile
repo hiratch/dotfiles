@@ -93,7 +93,12 @@ export XMODIFIERS="@im=skkinput"
 
 #export GDK_CONV=''
 
-# Applixware を購入して日本語環境で利用している場合
-
 #export AXLANG=17
+
+if [ -n "$LINUX_ON_WINDOWS" ]; then
+    export GTK_IM_MODULE=fcitx
+    export QT_IM_MODULE=fcitx
+    export XMODIFIERS=@im=fcitx
+    export DefaultIMModule=fcitx
+fi
 
