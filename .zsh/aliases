@@ -241,17 +241,6 @@ case $OSTYPE {
     darwin*)	export SYSTEM=mac ;;
 }
 
-case $SYSTEM {
-#  sun)	export LANG=japanese    ;;
-#  sol)	export LANG=japanese    ;;
-#  sgi)	export LANG=ja_JP.EUC   ;;
-#  dec)	export LANG=japanese    ;;
-#  gnu)	export LANG=ja_JP.ujis  ;;
-#  bsd)	export LANG=ja_JP.EUC    ;;
-   mac)
-    alias emacs="open -n /usr/local/Cellar/emacs/25.3/Emacs.app/"
-    ;;
-}
 
 ####################################################
 alias civet='ssh -Y civet'
