@@ -22,6 +22,15 @@
 (quelpa 'rainbow-delimiters)
 (quelpa 'popwin)
 (quelpa 'magit)
+(quelpa 'yasnippet)
+(quelpa 'yasnippet-snippets)
+(quelpa 'company)
+(quelpa 'company-irony)
+(quelpa 'company-rtags)
+(quelpa 'irony)
+(quelpa 'flycheck)
+(quelpa 'flycheck-rtags)
+(quelpa 'rtags)
 ;; quelpa install package list end
 
 ;;; font-lockの設定
@@ -288,23 +297,97 @@
     (cl-callf color-saturate-name (face-foreground face) 30))))
 
 
+(use-package magit)
+
 ;; c-mode
 (add-hook 'c-mode-common-hook
           (lambda()
             (setq show-trailing-whitespace t)))
 
-(use-package magit)
 
-;; coding
-;(use-package yasnippet
-;             :commands
-;             (yas-insert-snippet yas-new-snippet yas-visit-snippet-file yas-expand)
-;             :config
-;             (setq yas-snippet-dirs
-;                   '("~/.emacs.d/mysnippets"
-;                     )))
-;; [todo] add
-;; yasnippet, rtags, irony, flycheck
+(use-package yasnippet
+  :config
+  (define-key yas-keymap (kbd "<tab>") nil)
+  (yas-global-mode 1)
+  )
+ 
+;rtags
+(use-package rtags
+  :config
+  (add-hook 'c-mode-common-hook
+            (lambda ()
+              (when (rtags-is-indexed)
+                (local-set-key (kbd "M-.") 'rtags-find-symbol-at-point)
+                (local-set-key (kbd "M-;") 'rtags-find-symbol)
+                (local-set-key (kbd "M-@") 'rtags-find-references)
+                (local-set-key (kbd "M-,") 'rtags-location-stack-back)))))
+ 
+(use-package flycheck
+  :config
+  ((locate-library "flycheck-irony")
+   (flycheck-irony-setup))
+  (flycheck-select-checker 'rtags)
+  (setq-local flycheck-highlighting-mode nil)
+  (setq-local flycheck-syntax-check-automatically nil)
+  (add-hook 'c-mode-hook #'my-flycheck-rtags-setup)
+  (add-hook 'c++-mode-hook #'my-flycheck-rtags-setup)
+  (custom-set-variables
+   ;; エラーをポップアップで表示
+   '(flycheck-display-errors-function
+     (lambda (errors)
+       (let ((messages (mapcar #'flycheck-error-message errors)))
+         (popup-tip (mapconcat 'identity messages "\n")))))
+   '(flycheck-display-errors-delay 0.5))
+  (define-key flycheck-mode-map (kbd "C-M-n") 'flycheck-next-error)
+  (define-key flycheck-mode-map (kbd "C-M-p") 'flycheck-previous-error)
+  (add-hook 'c-mode-common-hook 'flycheck-mode)
+  )
+ 
+(use-package company
+  :config
+  (global-company-mode 1)
+  (global-set-key (kbd "C-M-i") 'company-complete)
+  (define-key company-active-map (kbd "C-n") 'company-select-next)
+  (define-key company-active-map (kbd "C-p") 'company-select-previous)
+  (define-key company-search-map (kbd "C-n") 'company-select-next)
+  (define-key company-search-map (kbd "C-p") 'company-select-previous)
+  (define-key company-active-map (kbd "<tab>") 'company-complete-selection))
+ 
+(defun my-irony-mode-on ()
+  (when (member major-mode irony-supported-major-modes)
+    (irony-mode 1)))
+ 
+(use-package irony
+  :config
+  (unless (irony--find-server-executable) (call-interactively #'irony-install-server))
+  (custom-set-variables '(irony-additional-clang-options '("-std=c++11")))
+  (add-to-list 'company-backends 'company-irony)
+  (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options)
+  (add-hook 'c-mode-common-hook 'my-irony-mode-on)
+  (add-hook 'c-mode-hook 'my-irony-mode-on)
+  (add-hook 'c++-mode-hook 'my-irony-mode-on))
+ 
+ 
+;; yasnippetとの連携
+(defvar company-mode/enable-yas t
+  "Enable yasnippet for all backends.")
+(defun company-mode/backend-with-yas (backend)
+  (if (or (not company-mode/enable-yas) (and (listp backend) (member 'company-yasnippet backend)))
+      backend
+    (append (if (consp backend) backend (list backend))
+            '(:with company-yasnippet))))
+(setq company-backends (mapcar #'company-mode/backend-with-yas company-backends))
+
+
+; coding
+(use-package yasnippet
+             :commands
+             (yas-insert-snippet yas-new-snippet yas-visit-snippet-file yas-expand)
+             :config
+             (setq yas-snippet-dirs
+                   '("~/.emacs.d/mysnippets"
+                     "~/.emacs.d/elpa/yasnippet-snippets-20190316.1919/snippets"
+                     )))
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
