@@ -309,6 +309,13 @@
   :config
   (define-key yas-keymap (kbd "<tab>") nil)
   (yas-global-mode 1)
+  (define-key yas-minor-mode-map (kbd "C-c C-s") 'yas-insert-snippet)
+  (define-key yas-minor-mode-map (kbd "C-c C-n") 'yas-new-snippet)
+  (define-key yas-minor-mode-map (kbd "C-c C-v") 'yas-visit-snippet-file)
+  (define-key yas-minor-mode-map (kbd "C-c C-x") 'yas-expand)
+  ;; 何故かTABの無効化は両方とも必要・・・何故なのか
+  (define-key yas-minor-mode-map (kbd "TAB") nil)
+  (define-key yas-minor-mode-map [(tab)] nil)
   )
  
 ;rtags
@@ -323,9 +330,10 @@
                 (local-set-key (kbd "M-,") 'rtags-location-stack-back)))))
  
 (use-package flycheck
+  :commands
+  (flycheck-irony-setup)
+  
   :config
-  ((locate-library "flycheck-irony")
-   (flycheck-irony-setup))
   (flycheck-select-checker 'rtags)
   (setq-local flycheck-highlighting-mode nil)
   (setq-local flycheck-syntax-check-automatically nil)
