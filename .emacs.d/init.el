@@ -121,6 +121,9 @@
 
 (setq minibuffer-max-depth nil)
 
+(when (eq system-type 'darwin)
+  (setq ns-command-modifier (quote meta)))
+
 ;; ;;; 初期ディレクトリの設定
 (cd "~/")
 
