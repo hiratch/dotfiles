@@ -115,3 +115,9 @@ if ! shopt -oq posix; then
   fi
 fi
 [ -r /home/k-hiramoto/.byobu/prompt ] && . /home/k-hiramoto/.byobu/prompt   #byobu-prompt#
+
+bind 'set show-all-if-ambiguous on'
+bind 'set menu-complete-display-prefix on'
+bind '"\C-i": menu-complete'
+
+
