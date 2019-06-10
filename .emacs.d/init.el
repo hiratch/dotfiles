@@ -128,7 +128,7 @@
 (cd "~/")
 
 ;; スクロールバー出す
-(set-scroll-bar-mode 'right)
+;(set-scroll-bar-mode 'right)
 
 ;; 対応する括弧をハイライト
 (show-paren-mode t)
