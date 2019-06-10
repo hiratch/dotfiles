@@ -6,6 +6,8 @@
 
 ;; Quelpa
 (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/") t)
+(setq quelpa-update-melpa-p nil)
+(require 'quelpa)
 (if (require 'quelpa nil t)
     (quelpa-self-upgrade)
   (with-temp-buffer
