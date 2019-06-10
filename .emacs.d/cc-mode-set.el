@@ -1,1 +1,150 @@
-;; C/C++ ÍÑ¤Î¥«¥¹¥¿¥Ş¥¤¥º(defconst my-c-style  '(    ;; ´ğËÜ¥ª¥Õ¥»¥Ã¥ÈÎÌ¤ÎÀßÄê    (c-basic-offset		. 4)    ;; tab ¥­¡¼¤Ç¥¤¥ó¥Ç¥ó¥È¤ò¼Â¹Ô    (c-tab-always-indent	. t)    ;; ¥³¥á¥ó¥È¹Ô¤Î¥ª¥Õ¥»¥Ã¥ÈÎÌ¤ÎÀßÄê    (c-comment-only-line-offset . 0)    ;; ¥«¥Ã¥³Á°¸å¤Î¼«Æ°²ş¹Ô½èÍı¤ÎÀßÄê    ;; ´ğËÜÅª¤Ë'{'¤Ï¤Ö¤é²¼¤²¡¢'}'¤Ï°ì¹Ô¼è¤ë    (c-hanging-braces-alist     . (	(class-open after)		; ¥¯¥é¥¹Àë¸À¤Î'{'¤ÎÁ°¸å	(class-close after)		; ¥¯¥é¥¹Àë¸À¤Î'}'¤Î¸å	(defun-open after)		; ´Ø¿ôÀë¸À¤Î'{'¤ÎÁ°¸å	(defun-close before after)	; ´Ø¿ôÀë¸À¤Î'}'¤Î¸å	(inline-open after)		; ¥¯¥é¥¹Æâ¤Î¥¤¥ó¥é¥¤¥ó´Ø¿ôÀë¸À¤Î'{'¤Î¸å	(inline-close before after)	; ¥¯¥é¥¹Æâ¤Î¥¤¥ó¥é¥¤¥ó´Ø¿ôÀë¸À¤Î'}'¤Î¸å	(brace-list-open after)		; Îóµó·¿¡¢ÇÛÎóÀë¸À¤Î'{'¤Î¸å	(brace-list-close before after) ; Îóµó·¿¡¢ÇÛÎóÀë¸À¤Î'}'¤ÎÁ°¸å	(block-open after)		; ¥¹¥Æ¡¼¥È¥á¥ó¥È¤Î'{'¤Î¸å;;	  (block-close after)		  ; ¥¹¥Æ¡¼¥È¥á¥ó¥È¤Î'}'Á°¸å	(block-close . c-snug-do-while) ;	(substatement-open after)	; ¥µ¥Ö¥¹¥Æ¡¼¥È¥á¥ó¥È(if Ê¸Åù)¤Î'{'¤Î¸å	(statement-case-open after)	; case Ê¸¤Î'{'¤Î¸å	(extern-lang-open before after) ; Â¾¸À¸ì¤Ø¤Î¥ê¥ó¥±¡¼¥¸Àë¸À¤Î'{'¤ÎÁ°¸å	(extern-lang-close before)	; Â¾¸À¸ì¤Ø¤Î¥ê¥ó¥±¡¼¥¸Àë¸À¤Î'}'¤ÎÁ°	))    ;; ¥³¥í¥óÁ°¸å¤Î¼«Æ°²ş¹Ô½èÍı¤ÎÀßÄê    (c-hanging-colons-alist     . (	(case-label after)	  ; case ¥é¥Ù¥ë¤Î':'¤Î¸å	(label after)		  ; ¥é¥Ù¥ë¤Î':'¤Î¸å	(access-label after)	  ; ¥¢¥¯¥»¥¹¥é¥Ù¥ë(publicÅù)¤Î':'¤Î¸å	(member-init-intro)	  ; ¥³¥ó¥¹¥È¥é¥¯¥¿¤Ç¤Î¥á¥ó¥Ğ¡¼½é´ü²½¥ê¥¹¥È¤ÎÀèÆ¬¤Î':'¤Ç¤Ï²ş¹Ô¤·¤Ê¤¤	(inher-intro before)	  ; ¥¯¥é¥¹Àë¸À¤Ç¤Î·Ñ¾µ¥ê¥¹¥È¤ÎÀèÆ¬¤Î':'¤Ç¤Ï²ş¹Ô¤·¤Ê¤¤	))    ;; ÁŞÆş¤µ¤ì¤¿Í¾·×¤Ê¶õÇòÊ¸»ú¤Î¥­¥ã¥ó¥»¥ë¾ò·ï¤ÎÀßÄê    ;; ²¼µ­¤Î*¤òºï½ü¤¹¤ë    (c-cleanup-list     . (	brace-else-brace		; else ¤ÎÄ¾Á°					; "} * else {"	->  "} else {"	brace-elseif-brace		; else if ¤ÎÄ¾Á°					; "} * else if (.*) {"					; ->  } "else if (.*) {"	brace-catch-brace		; } * catch (...) * { ¤Î¤È¤³¤í	empty-defun-braces		; ¶õ¤Î¥¯¥é¥¹¡¦´Ø¿ôÄêµÁ¤Î'}' ¤ÎÄ¾Á°					;¡¨"{ * }"  ->	"{}"	defun-close-semi		; ¥¯¥é¥¹¡¦´Ø¿ôÄêµÁ¸å¤Î';' ¤ÎÄ¾Á°					; "} * ;"  ->  "};"	list-close-comma		; ÇÛÎó½é´ü²½»ş¤Î'},'¤ÎÄ¾Á°					; "} * ,"  ->  "},"	scope-operator			; ¥¹¥³¡¼¥×±é»»»Ò'::' ¤Î´Ö					; ": * :"  ->  "::"	))    ;; ¥ª¥Õ¥»¥Ã¥ÈÎÌ¤ÎÀßÄê    ;; É¬Í×ÉôÊ¬¤Î¤ßÈ´¿è(Â¾¤ÎÀßÄê¤ËÉÕ¤¤¤Æ¤Ï info »²¾È)    ;; ¥ª¥Õ¥»¥Ã¥ÈÎÌ¤Ï²¼µ­¤Ç»ØÄê    ;; +  c-basic-offset¤Î 1ÇÜ, ++ c-basic-offset¤Î 2ÇÜ    ;; -  c-basic-offset¤Î-1ÇÜ, -- c-basic-offset¤Î-2ÇÜ    (c-offsets-alist     . (;;;	(arglist-intro	      . ++)		  ; °ú¿ô¥ê¥¹¥È¤Î³«»Ï¹Ô	(arglist-intro	      . +)		  ; °ú¿ô¥ê¥¹¥È¤Î³«»Ï¹Ô;;;	(arglist-close	      . c-lineup-arglist) ; °ú¿ô¥ê¥¹¥È¤Î½ªÎ»¹Ô	(arglist-close	      . 0)		  ; °ú¿ô¥ê¥¹¥È¤Î½ªÎ»¹Ô	(substatement-open    . 0)		  ; ¥µ¥Ö¥¹¥Æ¡¼¥È¥á¥ó¥È¤Î³«»Ï¹Ô	(statement-cont	      . +)		  ; ¥¹¥Æ¡¼¥È¥á¥ó¥È¤Î·ÑÂ³¹Ô	(case-label	      . 0)		  ; case Ê¸¤Î¥é¥Ù¥ë¹Ô	(statement-case-intro . 4)		  ; case Ê¸¤Î¥¹¥Æ¡¼¥È¥á¥ó¥È¹Ô	(access-label	      . /)		  ; ¥¢¥¯¥»¥¹¥é¥Ù¥ë¹Ô	(label		      . 0)		  ; ¥é¥Ù¥ë¹Ô	(block-open	      . 0)		  ; ¥Ö¥í¥Ã¥¯¤Î³«»Ï¹Ô;;;	(member-init-intro    . ++)		  ; ¥á¥ó¥Ğ¥ª¥Ö¥¸¥§¥¯¥È¤Î½é´ü²½¥ê¥¹¥È	(member-init-intro    . +)		  ; ¥á¥ó¥Ğ¥ª¥Ö¥¸¥§¥¯¥È¤Î½é´ü²½¥ê¥¹¥È        (inextern-lang        . 0)	))    ;; ¥¤¥ó¥Ç¥ó¥È»ş¤Ë¹½Ê¸²òÀÏ¾ğÊó¤òÉ½¼¨¤¹¤ë    (c-echo-syntactic-information-p . t)    )  "My C Programming Style");; hook ÍÑ¤Î´Ø¿ô¤ÎÄêµÁ(defun my-c-mode-common-hook ()  ;; my-c-stye ¤òÅĞÏ¿¤·¤ÆÍ­¸ú¤Ë¤¹¤ë  (c-add-style "PERSONAL" my-c-style t)  ;; ¼¡¤Î¥¹¥¿¥¤¥ë¤¬¥Ç¥Õ¥©¥ë¥È¤ÇÍÑ°Õ¤µ¤ì¤Æ¤¤¤ë¤Î¤ÇÁªÂò¤·¤Æ¤â¤è¤¤  ;;  (c-set-style "gnu")  ;;  (c-set-style "cc-mode")  ;;  (c-set-style "stroustrup")  ;;  (c-set-style "ellemtel")  ;; ´ûÂ¸¤Î¥¹¥¿¥¤¥ë¤òÊÑ¹¹¤¹¤ë¾ì¹ç¤Ï¼¡¤Î¤è¤¦¤Ë¤¹¤ë  ;;  (c-set-offset 'member-init-intro '++)  ;; ¥¿¥ÖÄ¹¤ÎÀßÄê  (setq tab-width 4)  ;; ¥¿¥Ö¤ÎÂå¤ï¤ê¤Ë¥¹¥Ú¡¼¥¹¤ò»È¤¦  (setq indent-tabs-mode nil)  ;; ¼«Æ°²ş¹Ô(auto-newline)¤òÍ­¸ú¤Ë¤¹¤ë  (c-toggle-auto-state t)  ;; Ï¢Â³¤¹¤ë¶õÇò¤Î°ì³çºï½ü(hungry-delete)¤òÍ­¸ú¤Ë¤¹¤ë  (c-toggle-hungry-state t)  ;;  ;; ¥»¥ß¥³¥í¥ó¤Ç¼«Æ°²ş¹Ô¤·¤Ê¤¤  (setq c-hanging-semi&comma-criteria	'(c-semi&comma-no-newlines-before-nonblanks	  c-semi&comma-inside-parenlist	  c-semi&comma-no-newlines-for-oneline-inliners))  ;; ¥­¡¼¥Ğ¥¤¥ó¥É¤ÎÄÉ²Ã  ;; ------------------  ;; C-m	²ş¹Ô¡Ü¥¤¥ó¥Ç¥ó¥È  ;; C-c c	¥³¥ó¥Ñ¥¤¥ë¥³¥Ş¥ó¥É¤Îµ¯Æ°  ;; C-h	¶õÇò¤Î°ì³çºï½ü  (define-key c-mode-base-map "\C-m" 'newline-and-indent)  (define-key c-mode-base-map "\C-cc" 'compile);;  (define-key c-mode-base-map "\C-c\C-c" 'comment-or-uncomment-region)  (define-key c-mode-base-map "\C-h" 'c-electric-backspace)  (define-key c-mode-base-map [(control shift h)] help-map)  (define-key c-mode-base-map [(shift return)] 'newline)  (define-key c-mode-base-map [(meta right)] 'dabbrev-expand)  (define-key c-mode-base-map [(meta left)]  'dabbrev-completion)  ;; ¥³¥ó¥Ñ¥¤¥ë¥³¥Ş¥ó¥É¤ÎÀßÄê  (setq compile-command "make -k" )   ; Cygwin ¤Î make  ;; (setq compile-command "nmake /NOLOGO /S") ; VC++ ¤Î nmake  );; ¥â¡¼¥É¤ËÆş¤ë¤È¤­¤Ë¸Æ¤Ó½Ğ¤¹ hook ¤ÎÀßÄê(add-hook 'c-mode-common-hook 'my-c-mode-common-hook);; ¥Ø¥Ã¥À¥Õ¥¡¥¤¥ë¤âc++¥â¡¼¥É¤Ç³«¤¯ (setq auto-mode-alist (append		       '(("\\.h$"    . c++-mode))		       auto-mode-alist))
+
+
+;; C/C++ ç”¨ã®ã‚«ã‚¹ã‚¿ãƒã‚¤ã‚º
+(defconst my-c-style
+  '(
+    ;; åŸºæœ¬ã‚ªãƒ•ã‚»ãƒƒãƒˆé‡ã®è¨­å®š
+    (c-basic-offset		. 4)
+
+    ;; tab ã‚­ãƒ¼ã§ã‚¤ãƒ³ãƒ‡ãƒ³ãƒˆã‚’å®Ÿè¡Œ
+    (c-tab-always-indent	. t)
+
+    ;; ã‚³ãƒ¡ãƒ³ãƒˆè¡Œã®ã‚ªãƒ•ã‚»ãƒƒãƒˆé‡ã®è¨­å®š
+    (c-comment-only-line-offset . 0)
+
+    ;; ã‚«ãƒƒã‚³å‰å¾Œã®è‡ªå‹•æ”¹è¡Œå‡¦ç†ã®è¨­å®š
+    ;; åŸºæœ¬çš„ã«'{'ã¯ã¶ã‚‰ä¸‹ã’ã€'}'ã¯ä¸€è¡Œå–ã‚‹
+    (c-hanging-braces-alist
+     . (
+	(class-open after)		; ã‚¯ãƒ©ã‚¹å®£è¨€ã®'{'ã®å‰å¾Œ
+	(class-close after)		; ã‚¯ãƒ©ã‚¹å®£è¨€ã®'}'ã®å¾Œ
+	(defun-open after)		; é–¢æ•°å®£è¨€ã®'{'ã®å‰å¾Œ
+	(defun-close before after)	; é–¢æ•°å®£è¨€ã®'}'ã®å¾Œ
+	(inline-open after)		; ã‚¯ãƒ©ã‚¹å†…ã®ã‚¤ãƒ³ãƒ©ã‚¤ãƒ³é–¢æ•°å®£è¨€ã®'{'ã®å¾Œ
+	(inline-close before after)	; ã‚¯ãƒ©ã‚¹å†…ã®ã‚¤ãƒ³ãƒ©ã‚¤ãƒ³é–¢æ•°å®£è¨€ã®'}'ã®å¾Œ
+	(brace-list-open after)		; åˆ—æŒ™å‹ã€é…åˆ—å®£è¨€ã®'{'ã®å¾Œ
+	(brace-list-close before after) ; åˆ—æŒ™å‹ã€é…åˆ—å®£è¨€ã®'}'ã®å‰å¾Œ
+	(block-open after)		; ã‚¹ãƒ†ãƒ¼ãƒˆãƒ¡ãƒ³ãƒˆã®'{'ã®å¾Œ
+;;	  (block-close after)		  ; ã‚¹ãƒ†ãƒ¼ãƒˆãƒ¡ãƒ³ãƒˆã®'}'å‰å¾Œ
+	(block-close . c-snug-do-while) ;
+	(substatement-open after)	; ã‚µãƒ–ã‚¹ãƒ†ãƒ¼ãƒˆãƒ¡ãƒ³ãƒˆ(if æ–‡ç­‰)ã®'{'ã®å¾Œ
+	(statement-case-open after)	; case æ–‡ã®'{'ã®å¾Œ
+	(extern-lang-open before after) ; ä»–è¨€èªã¸ã®ãƒªãƒ³ã‚±ãƒ¼ã‚¸å®£è¨€ã®'{'ã®å‰å¾Œ
+	(extern-lang-close before)	; ä»–è¨€èªã¸ã®ãƒªãƒ³ã‚±ãƒ¼ã‚¸å®£è¨€ã®'}'ã®å‰
+	))
+
+    ;; ã‚³ãƒ­ãƒ³å‰å¾Œã®è‡ªå‹•æ”¹è¡Œå‡¦ç†ã®è¨­å®š
+    (c-hanging-colons-alist
+     . (
+	(case-label after)	  ; case ãƒ©ãƒ™ãƒ«ã®':'ã®å¾Œ
+	(label after)		  ; ãƒ©ãƒ™ãƒ«ã®':'ã®å¾Œ
+	(access-label after)	  ; ã‚¢ã‚¯ã‚»ã‚¹ãƒ©ãƒ™ãƒ«(publicç­‰)ã®':'ã®å¾Œ
+	(member-init-intro)	  ; ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ã§ã®ãƒ¡ãƒ³ãƒãƒ¼åˆæœŸåŒ–ãƒªã‚¹ãƒˆã®å…ˆé ­ã®':'ã§ã¯æ”¹è¡Œã—ãªã„
+	(inher-intro before)	  ; ã‚¯ãƒ©ã‚¹å®£è¨€ã§ã®ç¶™æ‰¿ãƒªã‚¹ãƒˆã®å…ˆé ­ã®':'ã§ã¯æ”¹è¡Œã—ãªã„
+	))
+
+    ;; æŒ¿å…¥ã•ã‚ŒãŸä½™è¨ˆãªç©ºç™½æ–‡å­—ã®ã‚­ãƒ£ãƒ³ã‚»ãƒ«æ¡ä»¶ã®è¨­å®š
+    ;; ä¸‹è¨˜ã®*ã‚’å‰Šé™¤ã™ã‚‹
+    (c-cleanup-list
+     . (
+	brace-else-brace		; else ã®ç›´å‰
+					; "} * else {"	->  "} else {"
+	brace-elseif-brace		; else if ã®ç›´å‰
+					; "} * else if (.*) {"
+					; ->  } "else if (.*) {"
+	brace-catch-brace		; } * catch (...) * { ã®ã¨ã“ã‚
+	empty-defun-braces		; ç©ºã®ã‚¯ãƒ©ã‚¹ãƒ»é–¢æ•°å®šç¾©ã®'}' ã®ç›´å‰
+					;ï¼›"{ * }"  ->	"{}"
+	defun-close-semi		; ã‚¯ãƒ©ã‚¹ãƒ»é–¢æ•°å®šç¾©å¾Œã®';' ã®ç›´å‰
+					; "} * ;"  ->  "};"
+	list-close-comma		; é…åˆ—åˆæœŸåŒ–æ™‚ã®'},'ã®ç›´å‰
+					; "} * ,"  ->  "},"
+	scope-operator			; ã‚¹ã‚³ãƒ¼ãƒ—æ¼”ç®—å­'::' ã®é–“
+					; ": * :"  ->  "::"
+	))
+
+    ;; ã‚ªãƒ•ã‚»ãƒƒãƒˆé‡ã®è¨­å®š
+    ;; å¿…è¦éƒ¨åˆ†ã®ã¿æŠœç²‹(ä»–ã®è¨­å®šã«ä»˜ã„ã¦ã¯ info å‚ç…§)
+    ;; ã‚ªãƒ•ã‚»ãƒƒãƒˆé‡ã¯ä¸‹è¨˜ã§æŒ‡å®š
+    ;; +  c-basic-offsetã® 1å€, ++ c-basic-offsetã® 2å€
+    ;; -  c-basic-offsetã®-1å€, -- c-basic-offsetã®-2å€
+    (c-offsets-alist
+     . (
+;;;	(arglist-intro	      . ++)		  ; å¼•æ•°ãƒªã‚¹ãƒˆã®é–‹å§‹è¡Œ
+	(arglist-intro	      . +)		  ; å¼•æ•°ãƒªã‚¹ãƒˆã®é–‹å§‹è¡Œ
+;;;	(arglist-close	      . c-lineup-arglist) ; å¼•æ•°ãƒªã‚¹ãƒˆã®çµ‚äº†è¡Œ
+	(arglist-close	      . 0)		  ; å¼•æ•°ãƒªã‚¹ãƒˆã®çµ‚äº†è¡Œ
+	(substatement-open    . 0)		  ; ã‚µãƒ–ã‚¹ãƒ†ãƒ¼ãƒˆãƒ¡ãƒ³ãƒˆã®é–‹å§‹è¡Œ
+	(statement-cont	      . +)		  ; ã‚¹ãƒ†ãƒ¼ãƒˆãƒ¡ãƒ³ãƒˆã®ç¶™ç¶šè¡Œ
+	(case-label	      . 0)		  ; case æ–‡ã®ãƒ©ãƒ™ãƒ«è¡Œ
+	(statement-case-intro . 4)		  ; case æ–‡ã®ã‚¹ãƒ†ãƒ¼ãƒˆãƒ¡ãƒ³ãƒˆè¡Œ
+	(access-label	      . /)		  ; ã‚¢ã‚¯ã‚»ã‚¹ãƒ©ãƒ™ãƒ«è¡Œ
+	(label		      . 0)		  ; ãƒ©ãƒ™ãƒ«è¡Œ
+	(block-open	      . 0)		  ; ãƒ–ãƒ­ãƒƒã‚¯ã®é–‹å§‹è¡Œ
+;;;	(member-init-intro    . ++)		  ; ãƒ¡ãƒ³ãƒã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®åˆæœŸåŒ–ãƒªã‚¹ãƒˆ
+	(member-init-intro    . +)		  ; ãƒ¡ãƒ³ãƒã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®åˆæœŸåŒ–ãƒªã‚¹ãƒˆ
+        (inextern-lang        . 0)
+	))
+
+    ;; ã‚¤ãƒ³ãƒ‡ãƒ³ãƒˆæ™‚ã«æ§‹æ–‡è§£ææƒ…å ±ã‚’è¡¨ç¤ºã™ã‚‹
+    (c-echo-syntactic-information-p . t)
+    )
+  "My C Programming Style")
+
+;; hook ç”¨ã®é–¢æ•°ã®å®šç¾©
+(defun my-c-mode-common-hook ()
+  ;; my-c-stye ã‚’ç™»éŒ²ã—ã¦æœ‰åŠ¹ã«ã™ã‚‹
+  (c-add-style "PERSONAL" my-c-style t)
+
+  ;; æ¬¡ã®ã‚¹ã‚¿ã‚¤ãƒ«ãŒãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã§ç”¨æ„ã•ã‚Œã¦ã„ã‚‹ã®ã§é¸æŠã—ã¦ã‚‚ã‚ˆã„
+  ;;  (c-set-style "gnu")
+  ;;  (c-set-style "cc-mode")
+  ;;  (c-set-style "stroustrup")
+  ;;  (c-set-style "ellemtel")
+  ;; æ—¢å­˜ã®ã‚¹ã‚¿ã‚¤ãƒ«ã‚’å¤‰æ›´ã™ã‚‹å ´åˆã¯æ¬¡ã®ã‚ˆã†ã«ã™ã‚‹
+  ;;  (c-set-offset 'member-init-intro '++)
+
+  ;; ã‚¿ãƒ–é•·ã®è¨­å®š
+  (setq tab-width 4)
+
+  ;; ã‚¿ãƒ–ã®ä»£ã‚ã‚Šã«ã‚¹ãƒšãƒ¼ã‚¹ã‚’ä½¿ã†
+  (setq indent-tabs-mode nil)
+
+  ;; è‡ªå‹•æ”¹è¡Œ(auto-newline)ã‚’æœ‰åŠ¹ã«ã™ã‚‹
+  (c-toggle-auto-state t)
+
+  ;; é€£ç¶šã™ã‚‹ç©ºç™½ã®ä¸€æ‹¬å‰Šé™¤(hungry-delete)ã‚’æœ‰åŠ¹ã«ã™ã‚‹
+  (c-toggle-hungry-state t)
+
+  ;;  ;; ã‚»ãƒŸã‚³ãƒ­ãƒ³ã§è‡ªå‹•æ”¹è¡Œã—ãªã„
+  (setq c-hanging-semi&comma-criteria
+	'(c-semi&comma-no-newlines-before-nonblanks
+	  c-semi&comma-inside-parenlist
+	  c-semi&comma-no-newlines-for-oneline-inliners))
+
+  ;; ã‚­ãƒ¼ãƒã‚¤ãƒ³ãƒ‰ã®è¿½åŠ 
+  ;; ------------------
+  ;; C-m	æ”¹è¡Œï¼‹ã‚¤ãƒ³ãƒ‡ãƒ³ãƒˆ
+  ;; C-c c	ã‚³ãƒ³ãƒ‘ã‚¤ãƒ«ã‚³ãƒãƒ³ãƒ‰ã®èµ·å‹•
+  ;; C-h	ç©ºç™½ã®ä¸€æ‹¬å‰Šé™¤
+  (define-key c-mode-base-map "\C-m" 'newline-and-indent)
+  (define-key c-mode-base-map "\C-cc" 'compile)
+;;  (define-key c-mode-base-map "\C-c\C-c" 'comment-or-uncomment-region)
+  (define-key c-mode-base-map "\C-h" 'c-electric-backspace)
+  (define-key c-mode-base-map [(control shift h)] help-map)
+  (define-key c-mode-base-map [(shift return)] 'newline)
+  (define-key c-mode-base-map [(meta right)] 'dabbrev-expand)
+  (define-key c-mode-base-map [(meta left)]  'dabbrev-completion)
+
+  ;; ã‚³ãƒ³ãƒ‘ã‚¤ãƒ«ã‚³ãƒãƒ³ãƒ‰ã®è¨­å®š
+  (setq compile-command "make -k" )   ; Cygwin ã® make
+  ;; (setq compile-command "nmake /NOLOGO /S") ; VC++ ã® nmake
+  )
+;; ãƒ¢ãƒ¼ãƒ‰ã«å…¥ã‚‹ã¨ãã«å‘¼ã³å‡ºã™ hook ã®è¨­å®š
+(add-hook 'c-mode-common-hook 'my-c-mode-common-hook)
+
+;; ãƒ˜ãƒƒãƒ€ãƒ•ã‚¡ã‚¤ãƒ«ã‚‚c++ãƒ¢ãƒ¼ãƒ‰ã§é–‹ã 
+(setq auto-mode-alist (append
+		       '(("\\.h$"    . c++-mode))
+		       auto-mode-alist))
+
