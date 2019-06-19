@@ -333,17 +333,17 @@
                 (local-set-key (kbd "M-,") 'rtags-location-stack-back)))))
  
 (use-package flycheck
+  :ensure t
+  :init(global-flycheck-mode)
   :commands
   (flycheck-irony-setup)
   
   :config
-  (flycheck-select-checker 'rtags)
   (setq-local flycheck-highlighting-mode nil)
   (setq-local flycheck-syntax-check-automatically nil)
   (add-hook 'c-mode-hook #'my-flycheck-rtags-setup)
   (add-hook 'c++-mode-hook #'my-flycheck-rtags-setup)
   (custom-set-variables
-   ;; エラーをポップアップで表示
    '(flycheck-display-errors-function
      (lambda (errors)
        (let ((messages (mapcar #'flycheck-error-message errors)))
@@ -353,6 +353,19 @@
   (define-key flycheck-mode-map (kbd "C-M-p") 'flycheck-previous-error)
   (add-hook 'c-mode-common-hook 'flycheck-mode))
 
+(use-package flycheck-rtags
+  :ensure t
+  :after flycheck rtags
+  :config
+  (defun my-flycheck-rtags-setup ()
+    (flycheck-select-checker 'rtags)
+    (setq-local flycheck-highlighting-mode nil) ;; RTags creates more accurate overlays.
+    (setq-local flycheck-check-syntax-automatically nil)
+    )
+  (add-hook 'c-mode-hook #'my-flycheck-rtags-setup)
+  (add-hook 'c++-mode-hook #'my-flycheck-rtags-setup)
+  (add-hook 'objc-mode-hook #'my-flycheck-rtags-setup)
+  )
 
 (use-package company
   :config
