@@ -52,6 +52,11 @@ case $KERNEL_RELEASE_INFO {
         *-Microsoft) export LINUX_ON_WINDOWS=wsl ;;
 }
 
+if [ -n "$LINUX_ON_WINDOWS" ]; then
+    fcitx-autostart
+fi
+
+
 export LANGUAGE=$LANG
 export LC_ALL=$LANG
 

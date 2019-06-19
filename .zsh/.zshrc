@@ -147,6 +147,8 @@ if [ -d /opt/silexica ]; then
 fi
 
 if [ -n "$LINUX_ON_WINDOWS" ]; then
+    export LIBGL_ALWAYS_INDIRECT=1
+    export DISPLAY=localhost:0.0
     export PATH=/mnt/c/Android/android-sdk/platform-tools:/mnt/c/Android/android-sdk/ndk-bundle/build:$PATH
     alias adb=adb.exe
 fi
