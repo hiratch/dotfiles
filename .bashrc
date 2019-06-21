@@ -89,7 +89,7 @@ fi
 # some more ls aliases
 alias ll='ls -alF'
 alias la='ls -A'
-alias l='ls -CF'
+alias l='ls -lCF'
 
 # Add an "alert" alias for long running commands.  Use like so:
 #   sleep 10; alert
@@ -115,6 +115,9 @@ if ! shopt -oq posix; then
   fi
 fi
 [ -r /home/k-hiramoto/.byobu/prompt ] && . /home/k-hiramoto/.byobu/prompt   #byobu-prompt#
+
+# avoid errors in building nicobar image
+export JAVA_TOOL_OPTIONS=-Dfile.encoding=UTF8
 
 bind 'set show-all-if-ambiguous on'
 bind 'set menu-complete-display-prefix on'
