@@ -116,9 +116,6 @@ if ! shopt -oq posix; then
 fi
 [ -r /home/k-hiramoto/.byobu/prompt ] && . /home/k-hiramoto/.byobu/prompt   #byobu-prompt#
 
-# avoid errors in building nicobar image
-export JAVA_TOOL_OPTIONS=-Dfile.encoding=UTF8
-
 bind 'set show-all-if-ambiguous on'
 bind 'set menu-complete-display-prefix on'
 bind '"\C-i": menu-complete'
