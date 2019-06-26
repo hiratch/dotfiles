@@ -2,7 +2,7 @@
 #
 echo "Loading $ZUSRDIR/lscolors"
 
-# color-ls $B$N?'$r@_Dj$9$k(B
+# color-ls の色を設定する
 
 # Attribute codes:
 # 00=none 01=bold 04=underscore 05=blink 07=reverse 08=concealed
@@ -26,7 +26,7 @@ LS_COLORS="$LS_COLORS:*.c=01;35:*.h=01;35:*.C=01;35:*.c++=01;35:*.cpp=01;35:*.cx
 LS_COLORS="$LS_COLORS:*.ps=01;33:*.pdf=01;33"
 LS_COLORS="$LS_COLORS:*.dvi=01;33:*.tex=01;35:*~=0"
 
-# $B:G8e$K(B export $B$7$FM-8z$K$9$k(B
+# 最後に export して有効にする
 
 export LS_COLORS
 
