@@ -111,29 +111,29 @@ $P" %D{%H}"$C":"$P"%D{%M}"$C":"$P"%D{%S}"$D
 }
 _setterm
 
-# screen ¤ò LANG=C ¤Çµ¯Æ°¤¹¤ë¤Î¤Ç
+# screen ã‚’ LANG=C ã§èµ·å‹•ã™ã‚‹ã®ã§
 if [ "$LANG" = "C" ]; then
     if [ `ps -p$PPID --no-headers -o"%c"` = "screen" ]; then
         LANG=ja_JP.ujis
     fi
 fi
 
-# Êä´°¸õÊä¤ò¢«¢­¢¬¢ª¤ÇÁªÂò¡£
+# è£œå®Œå€™è£œã‚’â†â†“â†‘â†’ã§é¸æŠã€‚
 zstyle ':completion:*:default' menu select=1
 
-# Êä´°¸õÊä¤Ë¿§¤ò¤Ä¤±¤ë
+# è£œå®Œå€™è£œã«è‰²ã‚’ã¤ã‘ã‚‹
 export ZLS_COLORS=$LS_COLORS
 zstyle ':completion:*' list-colors ${(s.:.)ZLS_COLORS}
 
-# Êä´°¸õÊä¤ò¥­¥ã¥Ã¥·¥å
+# è£œå®Œå€™è£œã‚’ã‚­ãƒ£ãƒƒã‚·ãƒ¥
 zstyle ':completion:*' use-cache true
 
-# ÂçÊ¸»ú¾®Ê¸»ú¤òÌµ»ë¤·¤ÆÊä´°¸õÊä¤Ë
+# å¤§æ–‡å­—å°æ–‡å­—ã‚’ç„¡è¦–ã—ã¦è£œå®Œå€™è£œã«
 zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
 
-# Ã±¸ì¤Î
+# å˜èªã®
 WORDCHARS='*?_-[]~=&;!#$%^(){}<>'
 
-# grep ¤Î¿§ÉÕ¤±
+# grep ã®è‰²ä»˜ã‘
 export GREP_COLOR="04:32"
 

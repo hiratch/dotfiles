@@ -4,95 +4,95 @@ echo "Loading $ZUSRDIR/completions"
 
 
 #-----------------------------------------------------------------
-# $B4pK\E*$JJd40BP>](B
+# 基本的な補完対象
 #-----------------------------------------------------------------
 
-# -f    $B%U%!%$%kL>(B/$B%G%#%l%/%H%jL>(B
-# -/    $B%Q%9L>(B
-# -c    $B%3%^%s%IL>(B( alias, function, builtin, $BM=LsL>(B $B$b4^$`(B )
-#   -F  function $BL>(B
-#   -B  $BFbIt%3%^%s%IL>(B(builtins)
-#   -m  $B30It%3%^%s%IL>(B
-#   -w  $BM=LsL>(B
-#   -a  alias $BL>(B
-# -o    zsh option $BL>(B
-# -v    $B%7%'%kJQ?t$*$h$S4D6-JQ?t(B
-#   -E  $B4D6-JQ?t(B (export $B$5$l$F$$$k$b$N(B)
-# -j    $B%8%g%VL>(B ($B%8%g%V$N:G=i$N%3%^%s%IL>(B)
-#   -r  $BF0:nCf$N%8%g%VL>(B
-#   -z  $B%5%9%Z%s%ICf$N%8%g%VL>(B
-# -u    $B%f!<%6L>(B
-# -A    $BG[NsL>(B
+# -f    ファイル名/ディレクトリ名
+# -/    パス名
+# -c    コマンド名( alias, function, builtin, 予約名 も含む )
+#   -F  function 名
+#   -B  内部コマンド名(builtins)
+#   -m  外部コマンド名
+#   -w  予約名
+#   -a  alias 名
+# -o    zsh option 名
+# -v    シェル変数および環境変数
+#   -E  環境変数 (export されているもの)
+# -j    ジョブ名 (ジョブの最初のコマンド名)
+#   -r  動作中のジョブ名
+#   -z  サスペンド中のジョブ名
+# -u    ユーザ名
+# -A    配列名
 
 #-----------------------------------------------------------------
-# $BFC<l$JJd40BP>](B
+# 特殊な補完対象
 #-----------------------------------------------------------------
 
-# -k <$BG[Ns(B>            $BJd40%j%9%H$K$h$k(B
-# -g <$B%U%!%$%kL>E83+(B>  (*/) $B$J$I(B
-# -s <substring>       man zshexpn $B$K$h$kJ}K!$G(B <substring> $B$rE83+(B
-# -K <function>        <function> $BFb$G@_Dj$5$l$kG[Ns(B reply 
+# -k <配列>            補完リストによる
+# -g <ファイル名展開>  (*/) など
+# -s <substring>       man zshexpn による方法で <substring> を展開
+# -K <function>        <function> 内で設定される配列 reply 
 
 #-----------------------------------------------------------------
-# $BJd40;XDj$NA0$KIU$1$k$b$N(B
+# 補完指定の前に付けるもの
 #-----------------------------------------------------------------
 
-# -Q          $BJd40$r(B quote $B$7$J$$(B
-# -P <$BJ8;zNs(B> $BJd40$,@.8y$7$?$i(B <$BJ8;zNs(B> $B$rF,$KIU$1$k(B
-# -S <$BJ8;zNs(B> $BJd40$,@.8y$7$?$i(B <$BJ8;zNs(B> $B$r:G8e$KIU$1$k(B
-# -X <$B@bL@(B>   $B@bL@$rI=<($9$k$7!"%^%C%A$7$?$b$N$N?t$O(B %n $B$GI=8=(B
+# -Q          補完を quote しない
+# -P <文字列> 補完が成功したら <文字列> を頭に付ける
+# -S <文字列> 補完が成功したら <文字列> を最後に付ける
+# -X <説明>   説明を表示するし、マッチしたものの数は %n で表現
 
 #-----------------------------------------------------------------
-# $B3HD%Jd40(B (-x)
+# 拡張補完 (-x)
 #-----------------------------------------------------------------
 
-# -x '<$B%Q%?!<%s(B1>' <$BJd40;XDj(B1> - '<$B%Q%?!<%s(B2>' <$BJd40;XDj(B2> .. -- $B$H$9$k(B
+# -x '<パターン1>' <補完指定1> - '<パターン2>' <補完指定2> .. -- とする
 
-# $B%Q%?!<%s(B
-# s[<$BJ8;zNs(B>]            $B8=:_$NC18l$,(B <$BJ8;zNs(B> $B$G;O$^$k$J$i(B <$BJd40(B>
-#                        s[<$BJ8;zNs(B1>][<$BJ8;zNs(B2>] $B$J$i!"$I$C$A$+(B
-# S[<$BJ8;zNs(B>]            s $B$HF1$8$@$,!"(B<$BJ8;zNs(B> $B$bJd40BP>]$K$J$k(B
-# p[<pos>]               $B8=:_$NC18l$,(B <pos> $BHVL\$K$"$k$J$i(B <$BJd40(B>
-# p[<from>,<to>]         $B8=:_$NC18l$,(B <from> $BHVL\$+$i(B <to> $BHVL\Cf$J$i(B <$BJd40(B>
-# c[<offset>,<$BJ8;zNs(B>]   $B8=:_$NC18l$+$i(B <offset> $BHVL\$,(B <$BJ8;zNs(B> $B$J$i(B <$BJd40(B>
-# C[<offset>,<$B%Q%?!<%s(B>] c $B$HF1$8$@$,!"(B<$B%Q%?!<%s(B> $B$r;H$&(B
-# w[<index>,<$BJ8;zNs(B>]    <index> $BHVL\$NC18l$,(B <$BJ8;zNs(B> $B$J$i(B <$BJd40(B>
-# W[<index>,<$B%Q%?!<%s(B>]  <index> $BHVL\$NC18l$,(B <$B%Q%?!<%s(B> $B$J$i(B <$BJd40(B>
-# m[<min>,<max>]         $BC18l?t$,(B <min> $B$+$i(B <max> $B$J$i(B <$BJd40(B>
-# r[<$BJ8;zNs(B1>,<$BJ8;zNs(B2>] $B%+!<%=%k$,(B <$BJ8;zNs(B1> $B$H(B <$BJ8;zNs(B2> $B$N4V$J$i(B <$BJd40(B>
-# R[<$B%Q%?(B1>,<$B%Q%?(B2>]     r $B$HF1$8$@$,(B <$B%Q%?!<%s(B> $B$r;H$&(B
+# パターン
+# s[<文字列>]            現在の単語が <文字列> で始まるなら <補完>
+#                        s[<文字列1>][<文字列2>] なら、どっちか
+# S[<文字列>]            s と同じだが、<文字列> も補完対象になる
+# p[<pos>]               現在の単語が <pos> 番目にあるなら <補完>
+# p[<from>,<to>]         現在の単語が <from> 番目から <to> 番目中なら <補完>
+# c[<offset>,<文字列>]   現在の単語から <offset> 番目が <文字列> なら <補完>
+# C[<offset>,<パターン>] c と同じだが、<パターン> を使う
+# w[<index>,<文字列>]    <index> 番目の単語が <文字列> なら <補完>
+# W[<index>,<パターン>]  <index> 番目の単語が <パターン> なら <補完>
+# m[<min>,<max>]         単語数が <min> から <max> なら <補完>
+# r[<文字列1>,<文字列2>] カーソルが <文字列1> と <文字列2> の間なら <補完>
+# R[<パタ1>,<パタ2>]     r と同じだが <パターン> を使う
 
-### $B@_DjFbMF$N3NG'(B
+### 設定内容の確認
 
-# compctl -L <command> $B$G8=:_(B <command> $B$K@_Dj$5$l$F$$$kFbMF$,$o$+$k(B
-# compctl -L $B8=:_$N@_Dj$r$=$N$^$^I|3h$5$;$k$?$a$N=PNO$,=P$k(B
-# compctl $B$G!"8=:_@_Dj$5$l$F$$$kA4$F$NFbMF$,$o$+$k(B
+# compctl -L <command> で現在 <command> に設定されている内容がわかる
+# compctl -L 現在の設定をそのまま復活させるための出力が出る
+# compctl で、現在設定されている全ての内容がわかる
 
 
 #-----------------------------------------------------------------
-# $B%G%U%)%k%H$NF0:n(B (-D -C -T)
+# デフォルトの動作 (-D -C -T)
 #-----------------------------------------------------------------
 
-# $B%3%^%s%ID>8e$G$O%U%!%$%kL>!&%G%#%l%/%H%jL>$rJd40(B
+# コマンド直後ではファイル名・ディレクトリ名を補完
 
 compctl -D -f
 
-# $B2?$bF~NO$7$F$$$J$$$H$-$O%3%^%s%IL>$GJd40(B
-# $B%3%^%s%IL>$KJd408uJd$,$J$1$l$P4D6-JQ?t$GJd40$7!"@.8y$J$iKvHx$K(B = $B$rIU2C(B
+# 何も入力していないときはコマンド名で補完
+# コマンド名に補完候補がなければ環境変数で補完し、成功なら末尾に = を付加
 
 compctl -C -c -f + -E -q -S '='
 
-# $B$I$s$J%3%^%s%IL>$N$H$-$b!"(B-fn $B$N$"$H$O%U%)%s%H%j%9%H$+$iJd40(B
+# どんなコマンド名のときも、-fn のあとはフォントリストから補完
 
 compctl -Tx 'c[-1,-fn]' -K _getfontlist
 
 
 #-----------------------------------------------------------------
-# zsh $BFbIt%3%^%s%I(B (builtins)
+# zsh 内部コマンド (builtins)
 #-----------------------------------------------------------------
 
-# cd $B$O(B * $B$K%^%C%A$9$k%G%#%l%/%H%j$+%G%#%l%/%H%j$X$N%j%s%/$rJd40(B
-# $B<:GT$7$?$i(B .* $B$K%^%C%A$9$k%G%#%l%/%H%j$+%G%#%l%/%H%j$X$N%j%s%/$rJd40(B
+# cd は * にマッチするディレクトリかディレクトリへのリンクを補完
+# 失敗したら .* にマッチするディレクトリかディレクトリへのリンクを補完
 
 compctl -g '*(-/)' + -g '.*(/)' cd chdir dirs pushd rmdir dircmp
 #compctl -/ cd chdir dirs pushd
@@ -101,7 +101,7 @@ compctl -g '*(-/)' + -g '.*(/)' cd chdir dirs pushd rmdir dircmp
 # cd/pushd only directories or symbolic links to directories
 #compctl -g '*(-/)' cd pushd
 
-# alias/unalias $B$O(B alias $BL>!"(Bsetopt/unsetopt $B$K$O(B options $B$J$I(B
+# alias/unalias は alias 名、setopt/unsetopt には options など
 
 compctl -a alias unalias
 
@@ -117,7 +117,7 @@ compctl -s '$(setopt 2>/dev/null)' + -o + -x 's[no]' -o -- unsetopt
 compctl -s '$(unsetopt 2>/dev/null)' + -o + -x 's[no]' -o -- setopt
 compctl -s '${^fpath}/*(N:t)' autoload
 
-# kill $B$O(B PID $B$^$?$O%8%g%VL>$+$iJd40(B
+# kill は PID またはジョブ名から補完
 
 #if [ $SYSTEM != sol -a $SYSTEM != sgi ]; then
 #  pscmd='ps -e'
@@ -130,8 +130,8 @@ compctl -j -P '%' + -s '`$pscmd | tail +2 | cut -c1-5`' wait
 compctl -j -P '%' + -s '`$pscmd | tail +2 | cut -c1-5`' + \
 	-x 's[-] p[1]' -k "($signals[1,-3])" -- kill
 
-# export $B$O4D6-JQ?t$GJd40$7!"@.8y$7$?$i(B = $B$rKvHx$KIU$1$k(B
-# $B8=:_$NC18l$,(B XMODIFIERS= $B$J$i(B @im=kinput2 $B$b$7$/$O(B @im=vje $B$rJd408uJd$K$9$k(B
+# export は環境変数で補完し、成功したら = を末尾に付ける
+# 現在の単語が XMODIFIERS= なら @im=kinput2 もしくは @im=vje を補完候補にする
 
 compctl -E -S '=' \
   -Q -x 's[XMODIFIERS=]' -Q -k '( @im=kinput2 @im=vje @im=_XWNMO )' \
@@ -180,7 +180,7 @@ compctl -x 'p[1]' -c - 'p[2,-1]' -k signals -- trap
 
 
 #-----------------------------------------------------------------
-# $B3F%3%^%s%I$N@_Dj(B
+# 各コマンドの設定
 #-----------------------------------------------------------------
 
 #----------------------
@@ -340,9 +340,9 @@ compctl -g "*(-/)" -x \
 # print etc.
 #----------------------
 
-# jlatex pkatex latex $B$O%G%#%l%/%H%j$+%G%#%l%/%H%j$X$N%j%s%/$+(B *.tex
-# dvi2ps xdvi dvi2tty jdvi2kps $B$O(B $B%G%#%l%/%H%j$+%G%#%l%/%H%j$X$N%j%s%/$+(B *.dvi
-# gv $B$O(B $B%G%#%l%/%H%j$+%G%#%l%/%H%j$X$N%j%s%/$+(B *.ps *.PS ... $B$N$$$:$l$+(B
+# jlatex pkatex latex はディレクトリかディレクトリへのリンクか *.tex
+# dvi2ps xdvi dvi2tty jdvi2kps は ディレクトリかディレクトリへのリンクか *.dvi
+# gv は ディレクトリかディレクトリへのリンクか *.ps *.PS ... のいずれか
 
 compctl -g '*(-/) *.tex*' {,p,j}latex texi2dvi
 compctl -g '*(-/) *.dvi' xdvi dvi2{ps,tty} jdvi2kps dvips dvipdf dvipdfmx
@@ -352,9 +352,9 @@ compctl -g '*(-/) *.ps *.PS *.eps *.epsi *.pdf *.PDF *.jpdf *.JPDF' gv ps2pdf
 # dd
 #----------------------
 
-# if= of= bs= skip= count= $B$rJd408uJd$K$7!"@.8y$7$F$b:G8e$K%9%Z!<%9$rF~$l$J$$(B
-# $B8=:_$NC18l$,(B if= $B$b$7$/$O(B of= $B$G;O$^$k$J$i%U%!%$%kL>$b$7$/$O%G%#%l%/%H%jL>!"(B
-# $B8=:_$NC18l$,(B bs= $B$G;O$^$k$J$i(B 256 512 ... 65536 $B$rJd408uJd$K$9$k(B
+# if= of= bs= skip= count= を補完候補にし、成功しても最後にスペースを入れない
+# 現在の単語が if= もしくは of= で始まるならファイル名もしくはディレクトリ名、
+# 現在の単語が bs= で始まるなら 256 512 ... 65536 を補完候補にする
 
 compctl -Q -S '' -k '( if= of= bs= skip= count= )' \
   -x 'S[(if|of)=]' -f \
@@ -368,11 +368,11 @@ compctl -Q -S '' -k '( if= of= bs= skip= count= )' \
 #	-q -S ',' - 'n[-1,=]' -X '<number>'  -- dd
 
 #----------------------
-# $B%0%k!<%WL>$N(B NIS $B$NM-L5$K1~$8$?Jd40(B
+# グループ名の NIS の有無に応じた補完
 #----------------------
 
-# groups, newgrp, chgrp, chown $B$N%0%k!<%WL>$O(B NIS $B$^$?$O(B /etc/group $B$+$iJd40(B
-# $B$3$3$G$O(B i386/Linux $B$K$@$1(B NIS $B$r0z$$$F$$$J$$@_Dj(B
+# groups, newgrp, chgrp, chown のグループ名は NIS または /etc/group から補完
+# ここでは i386/Linux にだけ NIS を引いていない設定
 
 #if [ $SYSTEM = gnu -a $MACHTYPE != sparc ]; then
 #  groups=( "${${(f)$(</etc/group)}%%:*}" )
@@ -385,12 +385,12 @@ compctl -Q -S '' -k '( if= of= bs= skip= count= )' \
 #	- 'p[1], p[2] C[-1,-*]' -u -S '.' -- chown
 
 
-### function $B$r;H$C$?Jd40(B (-K)
+### function を使った補完 (-K)
 
 #----------------------
 # umount
 #----------------------
-# umount $B$O(B mount $B$:$_$N%G%#%l%/%H%j$rJd40(B
+# umount は mount ずみのディレクトリを補完
 
 compctl -K _umounttab umount
 function _umounttab () { reply=( `mount | cut -d' ' -f3` ) }
@@ -398,9 +398,9 @@ function _umounttab () { reply=( `mount | cut -d' ' -f3` ) }
 #----------------------
 # ssh
 #----------------------
-# ssh $B$O(B /home/kazuhiro/.ssh/known_hosts $B$KF~$C$F$$$k$b$N$rJd40(B
-# scp $B$O(B /home/kazuhiro/.ssh/known_hosts $B$KF~$C$F$$$k$b$N$GJd40$7!"KvHx$K(B : $B$rIU$1$k(B
-# $B<:GT$7$?$i%U%!%$%k$b$7$/$O%G%#%l%/%H%jL>$rJd40(B
+# ssh は /home/kazuhiro/.ssh/known_hosts に入っているものを補完
+# scp は /home/kazuhiro/.ssh/known_hosts に入っているもので補完し、末尾に : を付ける
+# 失敗したらファイルもしくはディレクトリ名を補完
 
 compctl -K _sshhosts -k hosts -x 'c[-1,-l]' -u -- ssh ssh1 slogin slogin1
 #compctl -S ':' -K _sshhosts + -f scp
@@ -435,8 +435,8 @@ function _sshhosts () {
 #----------------------
 # man
 #----------------------
-# man $B$O4D6-JQ?t(B MANPATH $B0J2<$NA4%^%K%e%"%k%Z!<%8$h$jJd40(B
-# man <$B?t;z(B> $B$@$H%^%K%e%"%k$N(B section <$B?t;z(B> $B$+$iJd40(B
+# man は環境変数 MANPATH 以下の全マニュアルページより補完
+# man <数字> だとマニュアルの section <数字> から補完
 
 compctl -K _man_glob man jman whatis apropos
 
@@ -456,8 +456,8 @@ _man_glob () {
 #----------------------
 # jman
 #----------------------
-# jman $B$O4D6-JQ?t(B MANPATH $B0J2<$NA4%^%K%e%"%k%Z!<%8$h$jJd40(B
-# jman <$B?t;z(B> $B$@$H%^%K%e%"%k$N(B section <$B?t;z(B> $B$+$iJd40(B
+# jman は環境変数 MANPATH 以下の全マニュアルページより補完
+# jman <数字> だとマニュアルの section <数字> から補完
 
 compctl -K _jman_glob jman jman2txt
 
@@ -477,9 +477,9 @@ _jman_glob () {
 #----------------------
 # make, gmake
 #----------------------
-# make, gmake $B$O%+%l%s%H%G%#%l%/%H%j$N(B GNUmakefile, makefile, Makefile $B$+$i(B
-# <$B$[$2$[$2(B>: $B$H$J$C$F$$$k$b$N$GJd40$9$k(B
-# make -f <$B%U%!%$%kL>(B> $B$J$i$=$N%U%!%$%k$+$iJd40$9$k(B
+# make, gmake はカレントディレクトリの GNUmakefile, makefile, Makefile から
+# <ほげほげ>: となっているもので補完する
+# make -f <ファイル名> ならそのファイルから補完する
 
 compctl -K _makeentry -x 'c[-1,-f]' -f -- make gmake
 
@@ -516,16 +516,16 @@ function _makeentry () {
 #----------------------
 # tar, gtar
 #----------------------
-# tar, gtar $B$O(B 1 $BHVL\$G$NJd40(B
-#   tvzf xvzf ... czf $B$rJd40(B
-#   $B8=:_$NC18l$,(B -- $B$G$O$8$^$k$J$i(B atime-preserve ... help $B$rJd40(B
-#                   $B$D$$$G$K(B 'available ..' $B$rI=<((B
-# 2 $BHVL\$NJd40(B
-#   $B$R$H$DA0$NC18l$,(B f $B$+(B z $B$r4^$s$G$$$l$P(B *.tgz *.tar.gz $B$J$I$rJd40(B
-#   $B<:GT$7$F$R$H$DA0$NC18l$,(B f $B$r4^$s$G$$$l$P(B *.tar $B$J$I$rJd40(B
-# 3 $BHVL\0J9_$NJd40(B
-#   tar $B$NCf?H$N%j%9%H$rJd40(B
-# $B$<$s$V<:GT$7$?$i%U%!%$%kL>$rJd40(B
+# tar, gtar は 1 番目での補完
+#   tvzf xvzf ... czf を補完
+#   現在の単語が -- ではじまるなら atime-preserve ... help を補完
+#                   ついでに 'available ..' を表示
+# 2 番目の補完
+#   ひとつ前の単語が f か z を含んでいれば *.tgz *.tar.gz などを補完
+#   失敗してひとつ前の単語が f を含んでいれば *.tar などを補完
+# 3 番目以降の補完
+#   tar の中身のリストを補完
+# ぜんぶ失敗したらファイル名を補完
 
 compctl -f -x \
     's[--]' -Q -k '(atime-preserve remove-files checkpoint \
@@ -539,7 +539,7 @@ compctl -f -x \
     'p[3,-1]' -K _getfilenames \
     -- tar gtar
 
-# tar.Z, tar.gz, tgz $B$NFbMF$rJV$9(B
+# tar.Z, tar.gz, tgz の内容を返す
 
 function _getfilenames () {
     local a
@@ -644,7 +644,7 @@ compctl -K _kld kldload
 # #----------------------
 
 # # http://nmnl.jp/diary/20030512.html#p03
-# # ~/tmp/apt-pkgnames $B$O!"(Bapt-cache pkgnames > ~/temp/apt-pkgnames $B$G$"$i$+$8$a:n$C$F$*$/(B
+# # ~/tmp/apt-pkgnames は、apt-cache pkgnames > ~/temp/apt-pkgnames であらかじめ作っておく
 # # shell> alias apt-update='sudo apt-get update; apt-cache pkgnames > ~/temp/apt-pkgnames'
 
 # compctl -k '(update upgrade install remove source build-dep dist-upgrade dselect-upgrade clean autoclean check)' \
@@ -661,7 +661,7 @@ compctl -K _kld kldload
 # }
 
 ####################################################
-# $B@0M}A0!"$^$?$O;H$o$J$$%5%s%W%kNc(B
+# 整理前、または使わないサンプル例
 ####################################################
 
 # By Bart Schaefer
@@ -796,10 +796,10 @@ compctl -s '$(rpm -qa)' \
 #------------------------------------------------------------------------------
 
 #----------------------
-# $B%U%)%s%H$r0z?t$K<h$k(B X $B$N%/%i%$%"%s%H(B
+# フォントを引数に取る X のクライアント
 #----------------------
 
-# xlsfont $B$+$i(B font $B$N(B list $B$r$H$j$@$9(B
+# xlsfont から font の list をとりだす
 
 function _getfontlist (){
     local grephead
@@ -825,8 +825,8 @@ function _getfontlist (){
     fi
 }
 
-# xfd $B$G$O(B -display ... -fn $B$rJd40!"(B-$B$[$2$[$2(B $B$K$D$$$F$OJdB-$rI=<((B
-# $B$R$H$D$^$($,(B -fn $B$J$i%U%)%s%H%j%9%H$rJd40(B
+# xfd では -display ... -fn を補完、-ほげほげ については補足を表示
+# ひとつまえが -fn ならフォントリストを補完
 
 compctl -x \
   'C[-1,-display]' -X "<<X server to contacti ex)localhost:0.0>>" - \
@@ -838,9 +838,9 @@ compctl -x \
   'p[1,-1]' -k '(-display -geometry -start -box -center -rows -columns -fn)' \
   -- xfd
 
-# rxvt $B$G(B -fn -fk $B$N$"$H$O%U%)%s%H%j%9%H(B
-# kterm $B$G(B -fn -fk -fr $B$N$"$H$O%U%)%s%H%j%9%H(B
-# muel $B$G(B -fontset $B$N$"$H$O%U%)%s%H%j%9%H(B
+# rxvt で -fn -fk のあとはフォントリスト
+# kterm で -fn -fk -fr のあとはフォントリスト
+# muel で -fontset のあとはフォントリスト
 
 #compctl -x 'c[-1,-fn]' -K _getfontlist - -- xterm
 compctl -x 'C[-1,-f(n|k)]' -K _getfontlist - -- rxvt
