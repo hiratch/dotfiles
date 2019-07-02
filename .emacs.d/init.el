@@ -33,6 +33,8 @@
 (quelpa 'flycheck)
 (quelpa 'flycheck-rtags)
 (quelpa 'rtags)
+(quelpa 'racer)
+(quelpa 'flycheck-rust)
 ;; quelpa install package list end
 
 ;;; font-lockの設定
@@ -413,11 +415,54 @@
                      "~/.emacs.d/elpa/yasnippet-snippets-20190316.1919/snippets"
                      )))
 
+;;; rust-mode
+(use-package rust-mode
+  :defer t
+  :config
+  (add-to-list 'exec-path(expand-file-name "~/.cargo/bin"))
+  (setq rust-format-on-save t))
+
+;;; racer
+(use-package racer
+  :init
+  (add-hook 'rust-mode-hook #'racer-mode)
+  (add-hook 'racer-mode-hook #'eldoc-mode)
+  (add-hook 'racer-mode-hook
+            (lambda()
+              (company-mode)
+              (set (make-variable-buffer-local 'company-idle-delay) 0.1)
+              (set (make-variable-buffer-local 'company-minimum-prefix-length) 0))
+            )
+  )
+
+;;; flycheck-rust
+(use-package flycheck-rust
+  :init
+  (add-hook 'rust-mode-hook
+            '(lambda ()
+               (flycheck-mode)
+               (flycheck-rust-setup))))
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(flycheck-display-errors-delay 0.5)
+ '(flycheck-display-errors-function
+   (lambda
+     (errors)
+     (let
+         ((messages
+           (mapcar
+            (function flycheck-error-message)
+            errors)))
+       (popup-tip
+        (mapconcat
+         (quote identity)
+         messages "
+")))))
+ '(irony-additional-clang-options (quote ("-std=c++11")))
  '(package-selected-packages
    (quote
     (magit transient git-commit with-editor dash async popwin rainbow-delimiters quelpa-use-package use-package bind-key quelpa))))
