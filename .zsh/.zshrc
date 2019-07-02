@@ -135,6 +135,11 @@ if [ -d $HOME/bin ]; then
     export PATH=$HOME/bin:$PATH
 fi
 
+# cargo for Rust
+if [ -d $HOME/.cargo ]; then
+    source $HOME/.cargo/env
+fi
+
 if [ -d /opt/Halide ]; then
     export HALIDE_SDK_ROOT=/opt/Halide
 elif [ -d /usr/local/Cellar/halide/2017.10.30 ]; then
