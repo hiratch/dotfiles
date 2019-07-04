@@ -6,19 +6,19 @@
 
 ;; Quelpa
 (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/") t)
-(setq quelpa-update-melpa-p nil)
 (require 'quelpa)
-(if (require 'quelpa nil t)
-    (quelpa-self-upgrade)
-  (with-temp-buffer
-    (url-insert-file-contents "https://raw.github.com/quelpa/quelpa/master/bootstrap.el")
-    (eval-buffer)))
 
 (quelpa
  '(quelpa-use-package
    :fetcher git
    :url "https://framagit.org/steckerhalter/quelpa-use-package.git"))
 (require 'quelpa-use-package)
+(setq quelpa-update-melpa-p nil)
+(if (require 'quelpa nil t)
+    (quelpa-self-upgrade)
+  (with-temp-buffer
+    (url-insert-file-contents "https://raw.github.com/quelpa/quelpa/master/bootstrap.el")
+    (eval-buffer)))
 
 ;; quelpa install package list start
 (quelpa 'rainbow-delimiters)
@@ -62,15 +62,15 @@
 	      default-frame-alist))
 
 
-;;; 行番号・桁番号をモードラインに表示する・しない設定 
-(line-number-mode t)			; 行番号 
-(column-number-mode t)			; 桁番号 
+;;; 行番号・桁番号をモードラインに表示する・しない設定
+(line-number-mode t)			; 行番号
+(column-number-mode t)			; 桁番号
 
 ;; バッファの最初の行で previous-line しても、
 ;; "beginning-of-buffer" と注意されないようにする。
 (defun previous-line (arg)
   (interactive "p")
-  (if (interactive-p)
+  (if (called-interactively-p 'interactive)
       (condition-case nil
 	  (line-move (- arg))
 	((beginning-of-buffer end-of-buffer)))
@@ -141,7 +141,7 @@
 (setq-default truncate-lines t)
 ;; 折り返し表示ON/OFF
 (defun toggle-truncate-lines ()
-  "折り返し表示をトグル動作します．"
+  "折り返し表示をトグル動作します."
   (interactive)
   (if truncate-lines
       (setq truncate-lines nil)
@@ -267,7 +267,7 @@
 
 
 (defadvice cua-sequence-rectangle (around my-cua-sequence-rectangle activate)
-  "連番を挿入するとき、紫のところの文字を上書きしないで左にずらす"
+  "連番を挿入するとき、紫のところの文字を上書きしないで左にずらす."
   (interactive
    (list (if current-prefix-arg
              (prefix-numeric-value current-prefix-arg)
@@ -427,11 +427,10 @@
   :init
   (add-hook 'rust-mode-hook #'racer-mode)
   (add-hook 'racer-mode-hook #'eldoc-mode)
-  (add-hook 'racer-mode-hook
-            (lambda()
-              (company-mode)
-              (set (make-variable-buffer-local 'company-idle-delay) 0.1)
-              (set (make-variable-buffer-local 'company-minimum-prefix-length) 0))
+  (add-hook 'racer-mode-hook(lambda()
+                              (company-mode)
+                              (set (make-variable-buffer-local 'company-idle-delay) 0.1)
+                              (set (make-variable-buffer-local 'company-minimum-prefix-length) 0))
             )
   )
 
