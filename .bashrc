@@ -120,4 +120,6 @@ bind 'set show-all-if-ambiguous on'
 bind 'set menu-complete-display-prefix on'
 bind '"\C-i": menu-complete'
 
+stty werase undef
+bind '"\C-w": unix-filename-rubout'
 
