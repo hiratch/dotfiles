@@ -1,0 +1,8 @@
+#!/bin/sh
+
+if [ -d /opt/SLX/2019.2-SP1/silexica ]; then
+    export LM_LICENSE_FILE=$HOME/slx_license.lic:$LM_LICENSE_FILE
+    source /opt/SLX/2019.2-SP1/silexica/exports
+fi
+
+
