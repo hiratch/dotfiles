@@ -151,6 +151,11 @@ if [ -d /opt/silexica ]; then
     source /opt/silexica/exports
 fi
 
+# snap
+if [ -d /snap/ ]; then
+    export PATH=/snap/bin:$PATH
+fi
+
 if [ -n "$LINUX_ON_WINDOWS" ]; then
     export LIBGL_ALWAYS_INDIRECT=1
     export DISPLAY=localhost:0.0
