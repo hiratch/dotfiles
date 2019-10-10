@@ -113,6 +113,21 @@ if [ -f $ZUSRDIR/lscolors ]; then
 #  alias ll='ls -lAF --color=tty'
 fi
 
+# Android NDK
+ANDROID_NDK_PATH=$HOME/Android/Sdk/ndk/20.0.5594570
+if [ -d $ANDROID_NDK_PATH ]; then
+    export PATH=$ANDROID_NDK_PATH:$PATH
+fi
+
+
+# GRADLE NDK
+export ANDROID_HOME=$HOME/Android/Sdk
+GRADLE_PATH=/opt/android-studio/plugins/android/lib/templates/gradle/wrapper/
+if [ -d $GRADLE_PATH ]; then
+    export PATH=$GRADLE_PATH:$PATH
+fi
+
+
 
 # mor_tool
 if [ -d $HOME/Tool/mor_tool ]; then
