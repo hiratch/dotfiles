@@ -1,0 +1,13 @@
+[http "https://github.morpho.local"]
+	sslCAInfo = /usr/local/share/ca-certificates/mor_RootCA.crt
+[alias]
+	st = status
+	co = checkout
+	push-f = push --force-with-lease
+[user]
+	email = k-hiramoto@morphoinc.com
+	name = Kazuhiro Hiramoto
+[color]
+	ui = auto
+[diff]
+	tool = meld
