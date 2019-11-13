@@ -119,6 +119,10 @@ if [ -d $ANDROID_NDK_PATH ]; then
     export PATH=$ANDROID_NDK_PATH:$PATH
 fi
 
+ADB_PATH=$HOME/Android/Sdk/platform-tools
+if [ -d $ADB_PATH ]; then
+    export PATH=$ADB_PATH:$PATH
+fi
 
 # GRADLE NDK
 export ANDROID_HOME=$HOME/Android/Sdk
