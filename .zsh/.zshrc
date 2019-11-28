@@ -180,7 +180,6 @@ if [ -n "$LINUX_ON_WINDOWS" ]; then
     export DISPLAY=localhost:0.0
     export PATH=/mnt/c/Android/android-sdk/platform-tools:/mnt/c/Android/android-sdk/ndk-bundle/build:$PATH
     alias adb=adb.exe
-    unsetopt BG_NICE
 fi
 
 net_tools_deprecated_message () {
