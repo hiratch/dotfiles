@@ -275,3 +275,11 @@ function escape_html() {
     perl -MCGI -e "print CGI::escapeHTML('$1'), qq|\n|"
 }
 
+function svn_show_all_diff() {
+    svn st $* | grep '^[AM]'
+}
+
+function svn_tkdiff_all() {
+    svn_show_all_diff $* | cut -c9- | xargs svn diff --diff-cmd=tkdiff
+}
+
