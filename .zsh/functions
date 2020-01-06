@@ -292,3 +292,25 @@ function ffmpeg_cmp() {
         [b]scale=iw/2:ih/2
     " -vsync passthrough $3
 }
+
+function ffmpeg_extract() {
+    if [ $# = 2 ]; then
+        ffmpeg -i $1 -q:v 0 -vsync 2 -f image2 $2
+    else
+        echo "usage:"
+        echo "ffmpeg_extract <input file> <output files>"
+        echo "ex) ffmpeg_extract input.mp4 jpg/frame%05d.jpg"
+    fi
+}
+
+
+function ffmpeg_compose() {
+    if [ $# = 3 ]; then
+        ffmpeg -r $1 -i $2 -q:v 0 $3
+    else
+        echo "usage:"
+        echo "ffmpeg_compose <frame rate(floating num)> <input files> <output_file>"
+        echo "ex) ffmpeg_compose 29.97 input/%05d.jpg out.mp4"
+    fi
+}
+
