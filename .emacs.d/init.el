@@ -413,7 +413,7 @@
              :config
              (setq yas-snippet-dirs
                    '("~/.emacs.d/mysnippets"
-                     "~/.emacs.d/elpa/yasnippet-snippets-20190316.1919/snippets"
+                     "~/.emacs.d/elpa/yasnippet-snippets-20191211.11/snippets/"
                      )))
 
 ;;; rust-mode
