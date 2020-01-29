@@ -138,6 +138,10 @@ if [ -d $HOME/Tool/mor_tool ]; then
     export PATH=$HOME/Tool/mor_tool:$PATH
 fi
 
+if [ -d $HOME/Tool/local_tool ]; then
+    export PATH=$HOME/Tool/local_tool:$PATH
+fi
+
 if [ -d $HOME/Tool/pyenv ]; then
     export PYENV_ROOT="$HOME/Tool/pyenv"
     export PATH="$PYENV_ROOT/bin:$PATH"
