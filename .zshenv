@@ -51,7 +51,7 @@ TERM=xterm
 PAGER=lv
 
 # editor
-EDITOR=vi
+EDITOR=vim
 
 # surpress perl warning
 export PERL_BADLANG=0

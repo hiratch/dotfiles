@@ -114,11 +114,20 @@ if [ -f $ZUSRDIR/lscolors ]; then
 fi
 
 # Android NDK
-if [ -d $HOME/Android/Sdk/ndk/21.0.6113669 ]; then
-    export PATH=$HOME/Android/Sdk/ndk/20.0.5594570:$PATH
+case $SYSTEM {
+    mac) export ANDROID_NDK_PATH=$HOME/Library/Android/sdk/ndk/21.0.6113669 ;;
+    gnu) export ANDROID_NDK_PATH=$HOME/Android/Sdk/ndk/21.0.6113669 ;;
+}
+
+if [ -d $ANDROID_NDK_PATH ]; then
+    export PATH=$ANDROID_NDK_PATH:$PATH
 fi
 
-ADB_PATH=$HOME/Android/Sdk/platform-tools
+case $SYSTEM {
+    mac) export ADB_PATH=$HOME/Library/Android/Sdk/platform-tools ;;
+    gnu) export ADB_PATH=$HOME/Android/Sdk/platform-tools ;;
+}
+
 if [ -d $ADB_PATH ]; then
     export PATH=$ADB_PATH:$PATH
 fi
