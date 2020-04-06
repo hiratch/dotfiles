@@ -114,9 +114,8 @@ if [ -f $ZUSRDIR/lscolors ]; then
 fi
 
 # Android NDK
-ANDROID_NDK_PATH=$HOME/Android/Sdk/ndk/20.0.5594570
-if [ -d $ANDROID_NDK_PATH ]; then
-    export PATH=$ANDROID_NDK_PATH:$PATH
+if [ -d $HOME/Android/Sdk/ndk/21.0.6113669 ]; then
+    export PATH=$HOME/Android/Sdk/ndk/20.0.5594570:$PATH
 fi
 
 ADB_PATH=$HOME/Android/Sdk/platform-tools

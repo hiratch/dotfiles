@@ -333,7 +333,8 @@
                 (local-set-key (kbd "M-;") 'rtags-find-symbol)
                 (local-set-key (kbd "C-x M-.") 'rtags-find-references-at-point)
                 (local-set-key (kbd "M-@") 'rtags-find-references-at-point)
-                (local-set-key (kbd "M-,") 'rtags-location-stack-back)))))
+                (local-set-key (kbd "M-,") 'rtags-location-stack-back)
+                (local-set-key (kbd "C-,") 'rtags-location-stack-back)))))
  
 (use-package flycheck
   :ensure t
