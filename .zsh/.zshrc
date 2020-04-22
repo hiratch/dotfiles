@@ -139,7 +139,12 @@ if [ -d $GRADLE_PATH ]; then
     export PATH=$GRADLE_PATH:$PATH
 fi
 
-
+if type ndk-build > /dev/null 2>&1; then
+    type ndk-build.cmd > /dev/null 2>&1
+    if [ $? -ne 0 ]; then
+        alias ndk-build.cmd='ndk-build'
+    fi
+fi
 
 # mor_tool
 if [ -d $HOME/Tool/mor_tool ]; then
