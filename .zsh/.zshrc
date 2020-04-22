@@ -116,7 +116,7 @@ fi
 # Android NDK
 case $SYSTEM {
     mac) export ANDROID_NDK_PATH=$HOME/Library/Android/sdk/ndk/21.0.6113669 ;;
-    gnu) export ANDROID_NDK_PATH=$HOME/Android/Sdk/ndk/20.0.5594570 ;;
+    gnu) export ANDROID_NDK_PATH=$HOME/Android/Sdk/ndk/21.0.6113669 ;;
 }
 
 if [ -d $ANDROID_NDK_PATH ]; then
