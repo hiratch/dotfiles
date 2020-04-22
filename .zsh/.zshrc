@@ -233,8 +233,13 @@ if [ -f $ZUSRDIR/zshrc.user ]; then
     source $ZUSRDIR/zshrc.user
 fi
 
-if [ $PYENV_ROOT ]; then
+type pyenv > /dev/null 2>&1
+if [ $? -eq 0 ]; then
     eval "$(pyenv init -)"
+fi
+
+type pipenv > /dev/null 2>&1
+if [ $? -eq 0 ]; then
     eval "$(pipenv --completion)"
 fi
 
