@@ -114,12 +114,20 @@ if [ -f $ZUSRDIR/lscolors ]; then
 fi
 
 # Android NDK
-ANDROID_NDK_PATH=$HOME/Android/Sdk/ndk/20.0.5594570
+case $SYSTEM {
+    mac) export ANDROID_NDK_PATH=$HOME/Library/Android/sdk/ndk/21.0.6113669 ;;
+    gnu) export ANDROID_NDK_PATH=$HOME/Android/Sdk/ndk/21.0.6113669 ;;
+}
+
 if [ -d $ANDROID_NDK_PATH ]; then
     export PATH=$ANDROID_NDK_PATH:$PATH
 fi
 
-ADB_PATH=$HOME/Android/Sdk/platform-tools
+case $SYSTEM {
+    mac) export ADB_PATH=$HOME/Library/Android/Sdk/platform-tools ;;
+    gnu) export ADB_PATH=$HOME/Android/Sdk/platform-tools ;;
+}
+
 if [ -d $ADB_PATH ]; then
     export PATH=$ADB_PATH:$PATH
 fi
@@ -131,7 +139,12 @@ if [ -d $GRADLE_PATH ]; then
     export PATH=$GRADLE_PATH:$PATH
 fi
 
-
+if type ndk-build > /dev/null 2>&1; then
+    type ndk-build.cmd > /dev/null 2>&1
+    if [ $? -ne 0 ]; then
+        alias ndk-build.cmd='ndk-build'
+    fi
+fi
 
 # mor_tool
 if [ -d $HOME/Tool/mor_tool ]; then
@@ -225,8 +238,13 @@ if [ -f $ZUSRDIR/zshrc.user ]; then
     source $ZUSRDIR/zshrc.user
 fi
 
-if [ $PYENV_ROOT ]; then
+type pyenv > /dev/null 2>&1
+if [ $? -eq 0 ]; then
     eval "$(pyenv init -)"
+fi
+
+type pipenv > /dev/null 2>&1
+if [ $? -eq 0 ]; then
     eval "$(pipenv --completion)"
 fi
 
