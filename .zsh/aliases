@@ -245,13 +245,9 @@ case $OSTYPE {
 ####################################################
 alias civet='ssh -Y civet'
 
-alias panda1='ssh -Y 192.168.100.121'
-alias panda2='ssh -Y 192.168.100.131'
-
-alias imx6q='ssh -Y 192.168.100.138'
-alias imx6q_root='ssh -Y root@192.168.100.138'
-
-
 ####################################################
 alias adb_date='adb shell date $(date +%m%d%H%M%Y.%S)'
+
+###################################################
+
 
