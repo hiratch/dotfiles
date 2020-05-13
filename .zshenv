@@ -48,7 +48,7 @@ LESSCHARSET=
 TERM=xterm
 
 # pager
-PAGER=lv
+PAGER=less
 
 # editor
 EDITOR=vim
