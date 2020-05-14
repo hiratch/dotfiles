@@ -41,9 +41,6 @@ RPROMPT_DEFAULT="$RPROMPT"
 # jless
 LESSCHARSET=
 
-# for X client
-#DISPLAY="192.168.0.210:0.0"
-
 # term
 TERM=xterm
 
