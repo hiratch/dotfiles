@@ -103,6 +103,9 @@ if [ -f $ZUSRDIR/functions ]; then
     source $ZUSRDIR/functions
 fi
 
+if [ -f $ZUSRDIR/token ]; then
+    source $ZUSRDIR/token
+fi
 
 ### color ls
 
