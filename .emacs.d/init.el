@@ -228,7 +228,7 @@
 (use-package popwin
   :config
   ;; おまじない（よく分かってない、、）
-  (setq display-buffer-function 'popwin:display-buffer)
+  (popwin-mode 1)
   ;; ポップアップを画面下に表示
   (setq popwin:popup-window-position 'bottom))
              
