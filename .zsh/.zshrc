@@ -128,25 +128,11 @@ fi
 
 case $SYSTEM {
     mac) export ADB_PATH=$HOME/Library/Android/Sdk/platform-tools ;;
-    gnu) export ADB_PATH=$HOME/Android/Sdk/platform-tools ;;
+#    gnu) export ADB_PATH=$HOME/Android/Sdk/platform-tools ;;
 }
 
 if [ -d $ADB_PATH ]; then
     export PATH=$ADB_PATH:$PATH
-fi
-
-# GRADLE NDK
-export ANDROID_HOME=$HOME/Android/Sdk
-GRADLE_PATH=/opt/android-studio/plugins/android/lib/templates/gradle/wrapper/
-if [ -d $GRADLE_PATH ]; then
-    export PATH=$GRADLE_PATH:$PATH
-fi
-
-if type ndk-build > /dev/null 2>&1; then
-    type ndk-build.cmd > /dev/null 2>&1
-    if [ $? -ne 0 ]; then
-        alias ndk-build.cmd='ndk-build'
-    fi
 fi
 
 # mor_tool
@@ -200,6 +186,10 @@ if [ -n "$LINUX_ON_WINDOWS" ]; then
     export DISPLAY=localhost:0.0
     export PATH=/mnt/c/Android/android-sdk/platform-tools:/mnt/c/Android/android-sdk/ndk-bundle/build:$PATH
     alias adb=adb.exe
+fi
+
+if [ -f $HOME/.bc ]; then
+    export BC_ENV_ARGS="-l $HOME/.bc"
 fi
 
 net_tools_deprecated_message () {
