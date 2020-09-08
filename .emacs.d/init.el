@@ -4,14 +4,21 @@
         ("melpa" . "http://melpa.org/packages/")
         ("org" . "http://orgmode.org/elpa/")))
 
+;; Quelpa install
+(unless (package-installed-p 'quelpa)
+    (with-temp-buffer
+      (url-insert-file-contents "https://raw.githubusercontent.com/quelpa/quelpa/master/quelpa.el")
+      (eval-buffer)
+      (quelpa-self-upgrade)))
+
 ;; Quelpa
-(add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/") t)
+(add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
 (require 'quelpa)
 
 (quelpa
  '(quelpa-use-package
    :fetcher git
-   :url "https://framagit.org/steckerhalter/quelpa-use-package.git"))
+   :url "https://github.com/quelpa/quelpa-use-package.git"))
 (require 'quelpa-use-package)
 (setq quelpa-update-melpa-p nil)
 (if (require 'quelpa nil t)
@@ -221,7 +228,7 @@
 (use-package popwin
   :config
   ;; おまじない（よく分かってない、、）
-  (setq display-buffer-function 'popwin:display-buffer)
+  (popwin-mode 1)
   ;; ポップアップを画面下に表示
   (setq popwin:popup-window-position 'bottom))
              
@@ -466,7 +473,7 @@
  '(irony-additional-clang-options (quote ("-std=c++11")))
  '(package-selected-packages
    (quote
-    (magit transient git-commit with-editor dash async popwin rainbow-delimiters quelpa-use-package use-package bind-key quelpa))))
+    (gnu-elpa-keyring-update magit transient git-commit with-editor dash async popwin rainbow-delimiters quelpa-use-package use-package bind-key quelpa))))
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.

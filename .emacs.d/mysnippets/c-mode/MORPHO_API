@@ -1,0 +1,14 @@
+# key: MORPHO_API
+# name: MORPHO_API
+# --
+{
+    int ret = MORPHO_OK;
+    mor_$1 * const p = $2 ? $2->p : NULL;
+
+    CHECK_PARAM( $2 );
+    CHECK_STATE( p );
+
+    $0
+
+    RETURN( ret );
+}
