@@ -433,7 +433,7 @@
              (defun yas/load-all-directories ()
                (interactive)
                (yas/reload-all)
-               (mapc 'yas/load-directory-1 my-snippet-directories))
+               (mapc 'yas/load-directory my-snippet-directories))
              (yas/load-all-directories))
 
 ;;; rust-mode
@@ -474,18 +474,13 @@
      (errors)
      (let
          ((messages
-           (mapcar
-            (function flycheck-error-message)
-            errors)))
+           (mapcar #'flycheck-error-message errors)))
        (popup-tip
-        (mapconcat
-         (quote identity)
-         messages "
+        (mapconcat 'identity messages "
 ")))))
- '(irony-additional-clang-options (quote ("-std=c++11")))
+ '(irony-additional-clang-options '("-std=c++11"))
  '(package-selected-packages
-   (quote
-    (gnu-elpa-keyring-update magit transient git-commit with-editor dash async popwin rainbow-delimiters quelpa-use-package use-package bind-key quelpa))))
+   '(gnu-elpa-keyring-update magit transient git-commit with-editor dash async popwin rainbow-delimiters quelpa-use-package use-package bind-key quelpa)))
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
