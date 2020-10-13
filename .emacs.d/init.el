@@ -422,7 +422,19 @@
              (setq yas-snippet-dirs
                    '("~/.emacs.d/mysnippets"
                      "~/.emacs.d/snippets"
-                     )))
+                     ))
+             (defvar my-snippet-directories
+               (list (expand-file-name "~/.emacs.d/snippets")  ; CodeRepos
+                     (expand-file-name "~/.emacs.d/mysnippets")))          ; Private
+             ;; yasnippet公式提供のものと、自分用カスタマイズスニペットをロード同名
+             ;; のスニペットが複数ある場合、あとから読みこんだ自分用のものが優先され
+             ;; る。また、スニペットを変更、追加した場合、このコマンドを実行すること
+             ;; で、変更・追加が反映される。
+             (defun yas/load-all-directories ()
+               (interactive)
+               (yas/reload-all)
+               (mapc 'yas/load-directory-1 my-snippet-directories))
+             (yas/load-all-directories))
 
 ;;; rust-mode
 (use-package rust-mode
