@@ -1,11 +1,13 @@
 # key: MORPHO_API
 # name: MORPHO_API
 # --
+MORPHO_API($1)
+morpho_$2_$3( morpho_$2 * const $4 )
 {
     int ret = MORPHO_OK;
-    mor_$1 * const p = $2 ? $2->p : NULL;
+    mor_$2P * const p = $4 ? $4->p : NULL;
 
-    CHECK_PARAM( $2 );
+    CHECK_PARAM( $4 );
     CHECK_STATE( p );
 
     $0
