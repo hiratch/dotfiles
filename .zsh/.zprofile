@@ -53,6 +53,8 @@ case $KERNEL_RELEASE_INFO {
 }
 
 if [ -n "$LINUX_ON_WINDOWS" ]; then
+    export LIBGL_ALWAYS_INDIRECT=1
+    export DISPLAY=localhost:0.0
     fcitx-autostart
 fi
 
