@@ -1,6 +1,14 @@
 #!/bin/sh
 
-if [ -f $HOME/Qualcomm/Hexagon_SDK/3.5.1/setup_sdk_env.source ]; then
+if [ -f /local/mnt/workspace/Qualcomm/Hexagon_SDK/4.0.0/setup_sdk_env.source ]; then
+    source /local/mnt/workspace/Qualcomm/Hexagon_SDK/4.0.0/setup_sdk_env.source
+    export PATH="$HEXAGON_SDK_ROOT/tools/HEXAGON_Tools/8.4.04/Tools/bin:$PATH"
+    export HEXAGON_HALIDE_ROOT=$HEXAGON_SDK_ROOT/tools/HALIDE_Tools/2.2.06/Halide
+elif [ -f $HOME/Qualcomm/Hexagon_SDK/3.5.2/setup_sdk_env.source ]; then
+    source $HOME/Qualcomm/Hexagon_SDK/3.5.2/setup_sdk_env.source
+    export PATH="$HEXAGON_SDK_ROOT/tools/HEXAGON_Tools/8.3.07/Tools/bin:$PATH"
+    export HEXAGON_HALIDE_ROOT=$HEXAGON_SDK_ROOT/tools/HALIDE_Tools/2.2.03/Halide
+elif [ -f $HOME/Qualcomm/Hexagon_SDK/3.5.1/setup_sdk_env.source ]; then
     source $HOME/Qualcomm/Hexagon_SDK/3.5.1/setup_sdk_env.source
     export PATH="$HEXAGON_SDK_ROOT/tools/HEXAGON_Tools/8.3.07/Tools/bin:$PATH"
     export HEXAGON_HALIDE_ROOT=$HEXAGON_SDK_ROOT/tools/HALIDE_Tools/2.2.03/Halide
