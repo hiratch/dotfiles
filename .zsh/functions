@@ -276,13 +276,16 @@ function escape_html() {
 }
 
 function svn_show_all_diff() {
-    svn st -q $* | grep '^[AM]'
+    svn st -q $* | grep '^[AMCD]'
 }
 
 function svn_tkdiff_all() {
     svn_show_all_diff $* | cut -c9- | xargs svn diff --diff-cmd=tkdiff
 }
 
+function svn_revert_all() {
+    svn_show_all_diff $* | cut -c9- | xargs svn revert
+}
 
 # ffmpeg: create comparison video
 function ffmpeg_cmp() {
