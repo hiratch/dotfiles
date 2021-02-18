@@ -15,3 +15,6 @@ define t(x) {
 define sin(x) { return s(x) }
 define cos(x) { return c(x) }
 define tan(x) { return t(x) }
+
+define hypot(x, y) { return ( sqrt( x^2 + y^2 ) ) }
+
