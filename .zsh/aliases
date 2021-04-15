@@ -241,9 +241,10 @@ case $OSTYPE {
     darwin*)	export SYSTEM=mac ;;
 }
 
+case $SYSTEM {
+  mac)  alias uname='guname' ;;
+}
 
-####################################################
-alias civet='ssh -Y civet'
 
 ####################################################
 alias adb_date='adb shell date $(date +%m%d%H%M%Y.%S)'
