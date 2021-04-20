@@ -48,7 +48,7 @@
 (global-font-lock-mode nil)
 
 ;; Stop at the end of the file, not just add lines
-(setq next-line-add-newlines t)
+(setq next-line-add-newlines nil)
 
 ;; 初期フレームの設定
 (setq default-frame-alist
