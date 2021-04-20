@@ -5,6 +5,8 @@
 .emacs.d/quelpa
 .emacs.d/irony
 .emacs.d/transient
+.emacs.d/tramp
+.emacs.d/kkcrc
 .zsh/token
 /.emacs.d/bookmarks
 *~
