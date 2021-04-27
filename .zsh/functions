@@ -312,6 +312,36 @@ function ffmpeg_extract() {
     fi
 }
 
+function ffmpeg_extract_rot90() {
+    if [ $# = 2 ]; then
+        ffmpeg -i $1 -vf transpose=2 -q:v 0 -vsync 2 -f image2 $2
+    else
+        echo "usage:"
+        echo "ffmpeg_extract_rot90 <input file> <output files>"
+        echo "ex) ffmpeg_extract_rot90 input.mp4 jpg/frame%05d.jpg"
+    fi
+}
+
+function ffmpeg_extract_rot180() {
+    if [ $# = 2 ]; then
+        ffmpeg -i $1 -vf hflip,vflip -q:v 0 -vsync 2 -f image2 $2
+    else
+        echo "usage:"
+        echo "ffmpeg_extract_rot180 <input file> <output files>"
+        echo "ex) ffmpeg_extract input.mp4 jpg/frame%05d.jpg"
+    fi
+}
+
+function ffmpeg_extract_rot270() {
+    if [ $# = 2 ]; then
+        ffmpeg -i $1 -vf transpose=1 -q:v 0 -vsync 2 -f image2 $2
+    else
+        echo "usage:"
+        echo "ffmpeg_extract_rot270 <input file> <output files>"
+        echo "ex) ffmpeg_extract input.mp4 jpg/frame%05d.jpg"
+    fi
+}
+
 
 function ffmpeg_compose() {
     if [ $# = 3 ]; then
@@ -319,6 +349,36 @@ function ffmpeg_compose() {
     else
         echo "usage:"
         echo "ffmpeg_compose <frame rate(floating num)> <input files> <output_file>"
+        echo "ex) ffmpeg_compose 29.97 input/%05d.jpg out.mp4"
+    fi
+}
+
+function ffmpeg_compose_rot90() {
+    if [ $# = 3 ]; then
+        ffmpeg -r $1 -i $2 -vf transpose=2 -q:v 0 $3
+    else
+        echo "usage:"
+        echo "ffmpeg_compose_rot90 <frame rate(floating num)> <input files> <output_file>"
+        echo "ex) ffmpeg_compose 29.97 input/%05d.jpg out.mp4"
+    fi
+}
+
+function ffmpeg_compose_rot180() {
+    if [ $# = 3 ]; then
+        ffmpeg -r $1 -i $2 -vf hflip,vflip -q:v 0 $3
+    else
+        echo "usage:"
+        echo "ffmpeg_compose_rot180 <frame rate(floating num)> <input files> <output_file>"
+        echo "ex) ffmpeg_compose 29.97 input/%05d.jpg out.mp4"
+    fi
+}
+
+function ffmpeg_compose_rot270() {
+    if [ $# = 3 ]; then
+        ffmpeg -r $1 -i $2 -vf transpose=2 -q:v 0 $3
+    else
+        echo "usage:"
+        echo "ffmpeg_compose_rot270 <frame rate(floating num)> <input files> <output_file>"
         echo "ex) ffmpeg_compose 29.97 input/%05d.jpg out.mp4"
     fi
 }
