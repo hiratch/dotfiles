@@ -241,4 +241,9 @@ fi
 
 export SCREENDIR=$HOME/.screen
 
+# opam configuration
 test -r $HOME/.opam/opam-init/init.zsh && . $HOME/.opam/opam-init/init.zsh > /dev/null 2> /dev/null || true
+type opam > /dev/null 2>&1
+if [ $? -eq 0 ]; then
+    eval `opam config env`
+fi
