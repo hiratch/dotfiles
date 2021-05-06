@@ -251,4 +251,7 @@ alias adb_date='adb shell date $(date +%m%d%H%M%Y.%S)'
 
 ###################################################
 
-
+type rlwrap > /dev/null 2>&1
+if [ $? -eq 0 ]; then
+    alias ocaml='rlwrap ocaml'
+fi
