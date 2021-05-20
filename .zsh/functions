@@ -375,7 +375,7 @@ function ffmpeg_compose_rot180() {
 
 function ffmpeg_compose_rot270() {
     if [ $# = 3 ]; then
-        ffmpeg -r $1 -i $2 -vf transpose=2 -q:v 0 $3
+        ffmpeg -r $1 -i $2 -vf transpose=1 -q:v 0 $3
     else
         echo "usage:"
         echo "ffmpeg_compose_rot270 <frame rate(floating num)> <input files> <output_file>"
