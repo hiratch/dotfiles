@@ -144,10 +144,6 @@ if [ -d $HOME/Tool/local_tool ]; then
     export PATH=$HOME/Tool/local_tool:$PATH
 fi
 
-if [ -d $HOME/Tool/pyenv ]; then
-    export PYENV_ROOT="$HOME/Tool/pyenv"
-    export PATH="$PYENV_ROOT/bin:$PATH"
-fi
 
 ### User environment
 if [ -d $HOME/.rbenv ]; then
@@ -227,11 +223,6 @@ route () {
 
 if [ -f $ZUSRDIR/zshrc.user ]; then
     source $ZUSRDIR/zshrc.user
-fi
-
-type pyenv > /dev/null 2>&1
-if [ $? -eq 0 ]; then
-    eval "$(pyenv init -)"
 fi
 
 type pipenv > /dev/null 2>&1
