@@ -221,6 +221,14 @@ route () {
 
 # ユーザ独自の設定ファイルがあれば読み込む
 
+# pager
+type lv > /dev/null 2>&1
+if [ $? -eq 0 ]; then
+    PAGER=lv
+else
+    PAGER=less
+fi
+
 if [ -f $ZUSRDIR/zshrc.user ]; then
     source $ZUSRDIR/zshrc.user
 fi
