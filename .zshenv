@@ -44,8 +44,8 @@ LESSCHARSET=
 # term
 TERM=xterm
 
-# pager
-PAGER=less
+# pager moved to .zshrc
+#PAGER=less
 
 # editor
 EDITOR=vim
