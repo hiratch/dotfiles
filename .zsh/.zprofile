@@ -109,12 +109,3 @@ if [ -n "$LINUX_ON_WINDOWS" ]; then
     export DefaultIMModule=fcitx
 fi
 
-# PYENV
-if [ -d $HOME/Tool/pyenv ]; then
-    export PYENV_ROOT="$HOME/Tool/pyenv"
-    export PATH="$PYENV_ROOT/bin:$PATH"
-elif [ -d $HOME/Tool/.pyenv ]; then
-    export PYENV_ROOT="$HOME/.pyenv"
-    export PATH="$PYENV_ROOT/bin:$PATH"
-fi
-eval "$(pyenv init --path)"
