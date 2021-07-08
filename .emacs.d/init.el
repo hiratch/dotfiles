@@ -1,4 +1,5 @@
 (package-initialize)
+
 (setq package-archives
       '(("gnu". "http://elpa.gnu.org/packages/")
         ("melpa" . "http://melpa.org/packages/")
@@ -19,6 +20,7 @@
  '(quelpa-use-package
    :fetcher git
    :url "https://github.com/quelpa/quelpa-use-package.git"))
+
 (require 'quelpa-use-package)
 (setq quelpa-update-melpa-p nil)
 (if (require 'quelpa nil t)
@@ -68,7 +70,6 @@
 		    )
 	      default-frame-alist))
 
-
 ;;; 行番号・桁番号をモードラインに表示する・しない設定
 (line-number-mode t)			; 行番号
 (column-number-mode t)			; 桁番号
@@ -90,8 +91,10 @@
 ;;; 警告音のかわりに画面フラッシュ
 (setq visible-bell t)
 
+
 (setq max-specpdl-size 60000)
 (setq max-lisp-eval-depth 60000)
+
 
 ;; 行番号入れるやつ
 (line-number-mode t)
@@ -123,15 +126,13 @@
 		 '((lambda (ovelay after beg end &optional len)
 		     (when after
 		       (move-overlay overlay (point-max) (point-max))))))))
+
 (add-hook 'find-file-hooks 'set-buffer-end-mark)
 
 ;; shift + 矢印
 (windmove-default-keybindings)
 (setq windmove-wrap-around t)
-
-
 (setq minibuffer-max-depth nil)
-
 (when (eq system-type 'darwin)
   (setq ns-command-modifier (quote meta)))
 
@@ -146,6 +147,7 @@
 
 ;; 行の表示を折り返さない
 (setq-default truncate-lines t)
+
 ;; 折り返し表示ON/OFF
 (defun toggle-truncate-lines ()
   "折り返し表示をトグル動作します."
@@ -177,6 +179,7 @@
      (define-key
        electric-buffer-menu-mode-map
        "x" 'Buffer-menu-execute)))
+
 (global-set-key "\C-xk" 'kill-this-buffer)
 (global-set-key [(control shift l)] '(lambda () (interactive)(recenter 0)))
 (global-set-key "\M-g" 'goto-line)
@@ -231,7 +234,7 @@
   (popwin-mode 1)
   ;; ポップアップを画面下に表示
   (setq popwin:popup-window-position 'bottom))
-             
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; c#
@@ -249,10 +252,10 @@
 ;; which-func-mode
 (which-func-mode 1)
 (setq which-func-mode t)
+
 ;; 画面上部に表示
 (delete (assoc 'which-func-mode mode-line-format) mode-line-format)
 (setq-default header-line-format '(which-func-mode ("" which-func-format)))
-
 
 ;; GDB
 (use-package gud
@@ -271,7 +274,6 @@
   :config
   (progn
     (setq cua-enable-cua-keys nil)))
-
 
 (defadvice cua-sequence-rectangle (around my-cua-sequence-rectangle activate)
   "連番を挿入するとき、紫のところの文字を上書きしないで左にずらす."
@@ -310,14 +312,12 @@
    (let ((face (intern (format "rainbow-delimiters-depth-%d-face" index))))
     (cl-callf color-saturate-name (face-foreground face) 30))))
 
-
 (use-package magit)
 
 ;; c-mode
 (add-hook 'c-mode-common-hook
           (lambda()
             (setq show-trailing-whitespace t)))
-
 
 (use-package yasnippet
   :config
@@ -329,7 +329,7 @@
   ;; 何故かTABの無効化は両方とも必要・・・何故なのか
   (define-key yas-minor-mode-map (kbd "TAB") nil)
   (define-key yas-minor-mode-map [(tab)] nil))
- 
+
 ;rtags
 (use-package rtags
   :config
@@ -342,13 +342,13 @@
                 (local-set-key (kbd "M-@") 'rtags-find-references-at-point)
                 (local-set-key (kbd "M-,") 'rtags-location-stack-back)
                 (local-set-key (kbd "C-,") 'rtags-location-stack-back)))))
- 
+
 (use-package flycheck
   :ensure t
   :init(global-flycheck-mode)
   :commands
   (flycheck-irony-setup)
-  
+
   :config
   (setq-local flycheck-highlighting-mode nil)
   (setq-local flycheck-syntax-check-automatically nil)
@@ -387,11 +387,11 @@
   (define-key company-search-map (kbd "C-n") 'company-select-next)
   (define-key company-search-map (kbd "C-p") 'company-select-previous)
   (define-key company-active-map (kbd "<tab>") 'company-complete-selection))
- 
+
 (defun my-irony-mode-on ()
   (when (member major-mode irony-supported-major-modes)
     (irony-mode 1)))
- 
+
 (use-package irony
   :config
   (unless (irony--find-server-executable) (call-interactively #'irony-install-server))
@@ -401,8 +401,7 @@
   (add-hook 'c-mode-common-hook 'my-irony-mode-on)
   (add-hook 'c-mode-hook 'my-irony-mode-on)
   (add-hook 'c++-mode-hook 'my-irony-mode-on))
- 
- 
+
 ;; yasnippetとの連携
 (defvar company-mode/enable-yas t
   "Enable yasnippet for all backends.")
@@ -412,7 +411,6 @@
     (append (if (consp backend) backend (list backend))
             '(:with company-yasnippet))))
 (setq company-backends (mapcar #'company-mode/backend-with-yas company-backends))
-
 
 ; coding
 (use-package yasnippet
@@ -427,9 +425,8 @@
                (list (expand-file-name "~/.emacs.d/snippets")  ; CodeRepos
                      (expand-file-name "~/.emacs.d/mysnippets")))          ; Private
              ;; yasnippet公式提供のものと、自分用カスタマイズスニペットをロード同名
-             ;; のスニペットが複数ある場合、あとから読みこんだ自分用のものが優先され
-             ;; る。また、スニペットを変更、追加した場合、このコマンドを実行すること
-             ;; で、変更・追加が反映される。
+             ;; のスニペットが複数ある場合、あとから読みこんだ自分用のものが優先される。
+             ;; また、スニペットを変更、追加した場合、このコマンドを実行することで、変更・追加が反映される。
              (defun yas/load-all-directories ()
                (interactive)
                (yas/reload-all)
@@ -488,6 +485,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
+
 ;; ## added by OPAM user-setup for emacs / base ## 56ab50dc8996d2bb95e7856a6eddb17b ## you can edit, but keep this line
 (require 'opam-user-setup "~/.emacs.d/opam-user-setup.el")
 ;; ## end of OPAM user-setup addition for emacs / base ## keep this line
