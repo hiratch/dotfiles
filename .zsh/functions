@@ -304,7 +304,7 @@ function ffmpeg_cmp() {
 
 function ffmpeg_extract() {
     if [ $# = 2 ]; then
-        ffmpeg -i $1 -q:v 0 -vsync 2 -f image2 $2
+        ffmpeg -i $1 -q:v 0 -vsync passthrough -f image2 $2
     else
         echo "usage:"
         echo "ffmpeg_extract <input file> <output files>"
@@ -314,7 +314,7 @@ function ffmpeg_extract() {
 
 function ffmpeg_extract_rot90() {
     if [ $# = 2 ]; then
-        ffmpeg -i $1 -vf transpose=2 -q:v 0 -vsync 2 -f image2 $2
+        ffmpeg -i $1 -vf transpose=2 -q:v 0 -vsync passthrough -f image2 $2
     else
         echo "usage:"
         echo "ffmpeg_extract_rot90 <input file> <output files>"
@@ -324,7 +324,7 @@ function ffmpeg_extract_rot90() {
 
 function ffmpeg_extract_rot180() {
     if [ $# = 2 ]; then
-        ffmpeg -i $1 -vf hflip,vflip -q:v 0 -vsync 2 -f image2 $2
+        ffmpeg -i $1 -vf hflip,vflip -q:v 0 -vsync passthrough -f image2 $2
     else
         echo "usage:"
         echo "ffmpeg_extract_rot180 <input file> <output files>"
@@ -334,7 +334,7 @@ function ffmpeg_extract_rot180() {
 
 function ffmpeg_extract_rot270() {
     if [ $# = 2 ]; then
-        ffmpeg -i $1 -vf transpose=1 -q:v 0 -vsync 2 -f image2 $2
+        ffmpeg -i $1 -vf transpose=1 -q:v 0 -vsync passthrough -f image2 $2
     else
         echo "usage:"
         echo "ffmpeg_extract_rot270 <input file> <output files>"
