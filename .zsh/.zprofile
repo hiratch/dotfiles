@@ -58,6 +58,9 @@ if [ -n "$LINUX_ON_WINDOWS" ]; then
     fcitx-autostart
 fi
 
+if [ -n "$SSH_CONNECTION" ]; then
+    export LIBGL_ALWAYS_INDIRECT=1
+fi
 
 export LANGUAGE=$LANG
 export LC_ALL=$LANG
