@@ -144,6 +144,10 @@ if [ -d $HOME/Tool/local_tool ]; then
     export PATH=$HOME/Tool/local_tool:$PATH
 fi
 
+# for Mac
+if [ -d /usr/local/opt/coreutils/libexec/gnubin ]; then
+    export PATH=/usr/local/opt/coreutils/libexec/gnubin:$PATH
+fi
 
 ### User environment
 if [ -d $HOME/.rbenv ]; then
