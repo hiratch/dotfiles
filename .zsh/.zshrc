@@ -255,10 +255,16 @@ fi
 
 type pipenv > /dev/null 2>&1
 if [ $? -eq 0 ]; then
-    eval "$(pipenv --completion)"
+    eval "$(_PIPENV_COMPLETE=zsh_source pipenv)"
+#    eval "$(pipenv --completion)"
 fi
 
 export SCREENDIR=$HOME/.screen
 
 # opam configuration
-[[ ! -r /Users/wanpac/.opam/opam-init/init.zsh ]] || source /Users/wanpac/.opam/opam-init/init.zsh  > /dev/null 2> /dev/null
+test -r $HOME/.opam/opam-init/init.zsh && . $HOME/.opam/opam-init/init.zsh > /dev/null 2> /dev/null || true
+type opam > /dev/null 2>&1
+if [ $? -eq 0 ]; then
+    eval `opam config env`
+fi
+
