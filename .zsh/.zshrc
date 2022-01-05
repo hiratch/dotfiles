@@ -151,6 +151,10 @@ elif [ -d /opt/homebrew/opt/coreutils/libexec/gnubin ]; then
     export PATH=/opt/homebrew/opt/coreutils/libexec/gnubin:$PATH
 fi
 
+if [ -d /opt/homebrew/bin ]; then
+    export PATH=/opt/homebrew/bin:$PATH
+fi
+
 ### User environment
 if [ -d $HOME/.rbenv ]; then
     export PATH=$HOME/.rbenv/bin:$PATH
@@ -268,3 +272,9 @@ if [ $? -eq 0 ]; then
     eval `opam config env`
 fi
 
+if type brew &>/dev/null; then
+    FPATH=$(brew --prefix)/share/zsh-completions:$(brew --prefix)/share/zsh/site-functions:$FPATH
+
+    autoload -Uz compinit
+    compinit
+fi

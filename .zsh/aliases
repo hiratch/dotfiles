@@ -24,13 +24,11 @@ case $OSTYPE {
     darwin*)	export SYSTEM=mac ;;
 }
 
-#case $SYSTEM {
-#  mac)  alias ls='gls -F --color=tty --group-directories-first --show-control-chars' ;;
-#  *)	alias ls='ls -F --color=tty --group-directories-first --show-control-chars'  ;;
-#}
+case $SYSTEM {
+  mac)  alias ls='ls -F --color=tty' ;;
+  *)	alias ls='ls -F --color=tty --group-directories-first --show-control-chars'  ;;
+}
 
-alias ls='ls -F --color=tty --group-directories-first --show-control-chars'
- 
 alias l.='ls -d .[^.]*'
 alias ll.='ls -ld .[^.]*'
 alias ll='ls -l'
