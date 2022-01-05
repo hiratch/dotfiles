@@ -112,3 +112,4 @@ if [ -n "$LINUX_ON_WINDOWS" ]; then
     export DefaultIMModule=fcitx
 fi
 
+eval "$(/opt/homebrew/bin/brew shellenv)"
