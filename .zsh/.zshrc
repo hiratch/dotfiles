@@ -263,6 +263,11 @@ if [ $? -eq 0 ]; then
 #    eval "$(pipenv --completion)"
 fi
 
+type pip > /dev/null 2>&1
+if [ $? -eq 0 ]; then
+    eval "`pip completion --zsh`"
+fi
+
 export SCREENDIR=$HOME/.screen
 
 # opam configuration
