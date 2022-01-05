@@ -29,6 +29,10 @@ case $SYSTEM {
   *)	alias ls='ls -F --color=tty --group-directories-first --show-control-chars'  ;;
 }
 
+case $SYSTEM {
+  mac)  alias emacs='open /Applications/Emacs.app' ;;
+}
+
 alias l.='ls -d .[^.]*'
 alias ll.='ls -ld .[^.]*'
 alias ll='ls -l'
