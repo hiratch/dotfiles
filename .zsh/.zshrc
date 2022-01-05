@@ -255,7 +255,7 @@ fi
 
 type pipenv > /dev/null 2>&1
 if [ $? -eq 0 ]; then
-    eval "$(pipenv --completion)"
+    eval "$(_PIPENV_COMPLETE=zsh_source pipenv)"
 fi
 
 export SCREENDIR=$HOME/.screen
