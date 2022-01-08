@@ -1190,3 +1190,9 @@ autoload -U compinit && compinit -u
 compctl -g '*.cs' mcs
 compctl -g '*.exe' mono
 
+if type brew &>/dev/null; then
+    FPATH=$(brew --prefix)/share/zsh-completions:$(brew --prefix)/share/zsh/site-functions:$FPATH
+
+    autoload -Uz compinit
+    compinit
+fi
