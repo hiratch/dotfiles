@@ -276,10 +276,3 @@ type opam > /dev/null 2>&1
 if [ $? -eq 0 ]; then
     eval `opam config env`
 fi
-
-if type brew &>/dev/null; then
-    FPATH=$(brew --prefix)/share/zsh-completions:$(brew --prefix)/share/zsh/site-functions:$FPATH
-
-    autoload -Uz compinit
-    compinit
-fi
