@@ -3,8 +3,11 @@
 	co = checkout
 	push-f = push --force-with-lease
 [user]
-	email = k-hiramoto@morphoinc.com
+	email = wanpac@gmail.com
 	name = Kazuhiro Hiramoto
+
+[includeIf "gitdir:~/NMWork/"]
+        path = ~/.gitconfig_nm
 
 [color]
 	ui = auto
