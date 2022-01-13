@@ -253,7 +253,6 @@ elif [ -d $HOME/Tool/.pyenv ]; then
 fi
 type pyenv > /dev/null 2>&1
 if [ $? -eq 0 ]; then
-    eval "$(pyenv init --path)"
     eval "$(pyenv init -)"
 fi
 
