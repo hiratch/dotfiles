@@ -1,15 +1,18 @@
+[color]
+	ui = auto
 [alias]
 	st = status
 	co = checkout
 	push-f = push --force-with-lease
 [user]
 	email = wanpac@gmail.com
-	name = Kazuhiro Hiramoto
+	name = hiratch
 
 [includeIf "gitdir:~/NMWork/"]
         path = ~/.gitconfig_nm
 
-[color]
-	ui = auto
 [diff]
 	tool = meld
+[credential]
+	helper = osxkeychain
+
