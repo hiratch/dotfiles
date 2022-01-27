@@ -250,10 +250,15 @@ if [ -d $HOME/Tool/pyenv ]; then
 elif [ -d $HOME/Tool/.pyenv ]; then
     export PYENV_ROOT="$HOME/.pyenv"
     export PATH="$PYENV_ROOT/bin:$PATH"
+elif [ -d $HOME/.pyenv ]; then
+    export PYENV_ROOT="$HOME/.pyenv"
+    export PATH="$PYENV_ROOT/bin:$PATH"
 fi
+
 type pyenv > /dev/null 2>&1
 if [ $? -eq 0 ]; then
     eval "$(pyenv init -)"
+    eval "$(pyenv init --path)"
 fi
 
 type pipenv > /dev/null 2>&1
