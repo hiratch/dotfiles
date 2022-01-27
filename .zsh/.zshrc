@@ -246,13 +246,10 @@ fi
 # PYENV
 if [ -d $HOME/Tool/pyenv ]; then
     export PYENV_ROOT="$HOME/Tool/pyenv"
-    export PATH="$PYENV_ROOT/bin:$PATH"
 elif [ -d $HOME/Tool/.pyenv ]; then
     export PYENV_ROOT="$HOME/.pyenv"
-    export PATH="$PYENV_ROOT/bin:$PATH"
 elif [ -d $HOME/.pyenv ]; then
     export PYENV_ROOT="$HOME/.pyenv"
-    export PATH="$PYENV_ROOT/bin:$PATH"
 fi
 
 type pyenv > /dev/null 2>&1
