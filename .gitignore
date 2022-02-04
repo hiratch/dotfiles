@@ -8,5 +8,7 @@
 .emacs.d/tramp
 .emacs.d/kkcrc
 .zsh/token
+.zsh/.zsh_sessions
 /.emacs.d/bookmarks
+.DS_STORE
 *~
