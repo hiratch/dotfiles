@@ -60,7 +60,7 @@
 		    '(mouse-color . "white")
 		    '(vertical-scroll-bars . right)
 		    '(width . 120)
-		    '(height . 45)
+		    '(height . 55)
 		    '(top . 15)
 		    '(left . 290)
 		    '(cursor-type . box)
