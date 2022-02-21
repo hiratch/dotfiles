@@ -272,6 +272,12 @@ if [ $? -eq 0 ]; then
     eval "`pip completion --zsh`"
 fi
 
+# poetry
+if [ -d $HOME/.poetry ]; then
+    export PATH=$HOME/.poetry/bin:$PATH
+fi
+export SYSTEM_VERSION_COMPAT=1
+
 export SCREENDIR=$HOME/.screen
 
 # opam configuration
