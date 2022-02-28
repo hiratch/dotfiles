@@ -320,11 +320,6 @@
   (add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
   (add-hook 'emacs-startup-hook 'rainbow-delimiters-using-stronger-colors))
 
-;; Matlab/Octave Mode
-(autoload 'octave-mode "octave-mode" nil t)
-(setq auto-mode-alist
-      (cons '("\\.m$" . octave-mode) auto-mode-alist))
-
 ;; 括弧の色を強調する設定
 (use-package cl-lib)
 (use-package color)
