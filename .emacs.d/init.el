@@ -45,6 +45,7 @@
 (quelpa 'racer)
 (quelpa 'flycheck-rust)
 (quelpa 'migemo)
+(quelpa 'matlab-mode)
 
 ;; quelpa install package list end
 
@@ -496,7 +497,7 @@
 ")))))
  '(irony-additional-clang-options '("-std=c++11"))
  '(package-selected-packages
-   '(gnu-elpa-keyring-update magit transient git-commit with-editor dash async popwin rainbow-delimiters quelpa-use-package use-package bind-key quelpa)))
+   '(matlab-mode gnu-elpa-keyring-update magit transient git-commit with-editor dash async popwin rainbow-delimiters quelpa-use-package use-package bind-key quelpa)))
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
