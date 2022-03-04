@@ -242,6 +242,12 @@
 	    (lambda () (set-cursor-color "RoyalBlue1")))
   )
 
+;;; *.~ とかのバックアップファイルを作らない
+(setq make-backup-files nil)
+;;; .#* とかのバックアップファイルを作らない
+(setq auto-save-default nil)
+
+
 ;; shell
 (add-hook 'shell-mode-hook
 	  (local-set-key "\C-l" '(lambda () (interactive)(recenter 0))))
