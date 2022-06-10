@@ -7,7 +7,7 @@
         graph = log --graph --all
 [user]
 	email = wanpac@gmail.com
-	name = hiratch
+	name = K.Hiramoto
 
 [includeIf "gitdir:~/NMWork/"]
         path = ~/.gitconfig_nm
@@ -16,3 +16,8 @@
 	tool = meld
 [credential]
 	helper = osxkeychain
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true
