@@ -1,6 +1,6 @@
 .zsh_history*
 .zcompcache
-.zcompdump
+.zcompdump*
 .emacs.d/elpa
 .emacs.d/quelpa
 .emacs.d/irony
