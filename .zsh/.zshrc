@@ -234,10 +234,11 @@ route () {
 # pager
 type lv > /dev/null 2>&1
 if [ $? -eq 0 ]; then
-    PAGER=lv
+    export PAGER=lv
 else
-    PAGER=less
+    export PAGER=less
 fi
+export BAT_PAGER=less
 
 if [ -f $ZUSRDIR/zshrc.user ]; then
     source $ZUSRDIR/zshrc.user
@@ -291,3 +292,5 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"  # This loads nvm
 [ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
 
+# iterm2 shell integration
+[ -s "~/.iterm2_shell_integration.zsh" ] && source "~/.iterm2_shell_integration.zsh"
