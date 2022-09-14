@@ -44,7 +44,6 @@
 (quelpa 'rtags)
 (quelpa 'racer)
 (quelpa 'flycheck-rust)
-(quelpa 'migemo)
 (quelpa 'matlab-mode)
 
 ;; quelpa install package list end
@@ -182,23 +181,6 @@
      (define-key
        electric-buffer-menu-mode-map
        "x" 'Buffer-menu-execute)))
-
-;;
-;; migemo.elの設定 (for macOS)
-;;
-(when (and (executable-find "cmigemo")
-           (require 'migemo nil t))
-  (setq migemo-command "cmigemo")
-  (setq migemo-options '("-q" "--emacs"))
-
-  (setq migemo-dictionary "/opt/homebrew/Cellar/cmigemo/20110227/share/migemo/utf-8/migemo-dict")
-
-  (setq migemo-user-dictionary nil)
-  (setq migemo-regex-dictionary nil)
-  (setq migemo-coding-system 'utf-8-unix)
-  (load-library "migemo")
-  (migemo-init)
-  )
 
 (global-set-key "\C-xk" 'kill-this-buffer)
 (global-set-key [(control shift l)] '(lambda () (interactive)(recenter 0)))
