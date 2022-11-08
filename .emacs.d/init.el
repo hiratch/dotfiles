@@ -488,7 +488,7 @@
 ")))))
  '(irony-additional-clang-options '("-std=c++11"))
  '(package-selected-packages
-   '(typescript-mode flycheck-rust flycheck-rtags flycheck company-rtags company-irony company matlab-mode gnu-elpa-keyring-update magit transient git-commit with-editor dash async popwin rainbow-delimiters quelpa-use-package use-package bind-key quelpa)))
+   '(blacken typescript-mode flycheck-rust flycheck-rtags flycheck company-rtags company-irony company matlab-mode gnu-elpa-keyring-update magit transient git-commit with-editor dash async popwin rainbow-delimiters quelpa-use-package use-package bind-key quelpa)))
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
