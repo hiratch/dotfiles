@@ -14,6 +14,7 @@
 
 [diff]
 	tool = meld
+
 [credential]
 	helper = osxkeychain
 [filter "lfs"]
@@ -23,3 +24,5 @@
 	required = true
 [push]
 	autoSetupRemote = true
+[rebase]
+	autoStash = true
