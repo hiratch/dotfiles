@@ -18,3 +18,13 @@ define tan(x) { return t(x) }
 
 define hypot(x, y) { return ( sqrt( x^2 + y^2 ) ) }
 
+define feet2meter(x) { return 0.3048 * x }
+define meter2feet(x) { return 3.28084* x }
+
+define nm2meter(x) { return 1852 * x }
+define meter2nm(x) { return 0.0005399568 * x }
+
+define ft_nm2deg(y, x) {
+    return deg(a(feet2meter(y) / nm2meter(x)))
+}
+
