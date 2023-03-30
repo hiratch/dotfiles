@@ -129,4 +129,9 @@ if [ $? -eq 0 ]; then
     eval "$(pyenv init --path)"
 fi
 
-eval "$(/opt/homebrew/bin/brew shellenv)"
+if [ -d /opt/homebrew/bin ]; then
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+elif [ -f /usr/local/bin/homebew ]; then
+    eval "$(/usr/local/bin/brew shellenv)"
+fi
+
