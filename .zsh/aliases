@@ -102,7 +102,7 @@ alias ee='ee -i'
 alias du='du -ck'
 alias diff='diff -Naur'
 alias scp='scp -p'
-alias gitk='gitk --all'
+alias gitk='gitk --all --date-order'
 
 
 case $SYSTEM {
