@@ -30,7 +30,7 @@ case $SYSTEM {
 }
 
 case $SYSTEM {
-  mac)  alias emacs='open /Applications/Emacs.app' ;;
+  mac)  alias emacs='/Applications/Emacs.app/Contents/MacOS/Emacs' ;;
 }
 
 alias l.='ls -d .[^.]*'
