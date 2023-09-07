@@ -257,9 +257,14 @@
 (load "~/.emacs.d/cc-mode-set.el")
 (setq-default indent-tabs-mode nil)
 
-;; which-func-mode
-(which-func-mode 1)
-(setq which-func-mode t)
+
+;; topsy instead of which-function-mode
+(use-package topsy
+  :quelpa (topsy :fetcher github :repo "alphapapa/topsy.el")
+  :hook
+  (prog-mode . topsy-mode)
+  (magit-section-mode . topsy-mode))
+
 
 ;; 画面上部に表示
 (delete (assoc 'which-func-mode mode-line-format) mode-line-format)
@@ -484,8 +489,7 @@
          ((messages
            (mapcar #'flycheck-error-message errors)))
        (popup-tip
-        (mapconcat 'identity messages "
-")))))
+        (mapconcat 'identity messages "\12")))))
  '(irony-additional-clang-options '("-std=c++11"))
  '(package-selected-packages
    '(magit-section python-mode blacken typescript-mode flycheck-rust flycheck-rtags flycheck company-rtags company-irony company matlab-mode gnu-elpa-keyring-update magit transient git-commit with-editor dash async popwin rainbow-delimiters quelpa-use-package use-package bind-key quelpa)))
