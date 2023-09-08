@@ -131,6 +131,8 @@
 
 (add-hook 'find-file-hooks 'set-buffer-end-mark)
 
+(setq-default find-file-visit-truename t)
+
 ;; shift + 矢印
 (windmove-default-keybindings)
 (setq windmove-wrap-around t)
