@@ -236,16 +236,6 @@ function mysudo() {
 ###############################################
 ##### for each OS
 
-case $OSTYPE {
-    sunos*)	export SYSTEM=sun ;;
-    solaris*)	export SYSTEM=sol ;;
-    irix*)	export SYSTEM=sgi ;;
-    osf*)	export SYSTEM=dec ;;
-    linux*)	export SYSTEM=gnu ;;
-    freebsd*)	export SYSTEM=bsd ;;
-    darwin*)	export SYSTEM=mac ;;
-}
-
 #case $SYSTEM {
 #  mac)  alias uname='guname' ;;
 #}
