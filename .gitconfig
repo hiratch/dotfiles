@@ -34,3 +34,5 @@
 
 [pull]
         ff = only
+[core]
+	symlinks = true
