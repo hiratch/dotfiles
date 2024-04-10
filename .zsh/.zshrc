@@ -182,6 +182,17 @@ if [ -d /opt/silexica ]; then
     source /opt/silexica/exports
 fi
 
+
+case $SYSTEM in
+    mac)
+        if [ -d /opt/homebrew/opt/llvm ]; then
+            export PATH=/opt/homebrew/opt/llvm/bin:$PATH
+            export DYLD_LIBRARY_PATH=$DYLD_LIBRARY_PATH:/opt/homebrew/opt/llvm/lib/
+        fi
+        ;;
+esac
+
+
 # snap
 if [ -d /snap/ ]; then
     export PATH=/snap/bin:$PATH
