@@ -188,6 +188,9 @@ case $SYSTEM in
         if [ -d /opt/homebrew/opt/llvm ]; then
             export PATH=/opt/homebrew/opt/llvm/bin:$PATH
             export DYLD_LIBRARY_PATH=$DYLD_LIBRARY_PATH:/opt/homebrew/opt/llvm/lib/
+        elif [ -d /usr/local/opt/llvm/ ]; then
+            export PATH=/usr/local/opt/llvm/bin:$PATH
+            export DYLD_LIBRARY_PATH=$DYLD_LIBRARY_PATH:/usr/local/opt/llvm/lib/
         fi
         ;;
 esac
