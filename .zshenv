@@ -34,7 +34,7 @@ if [ $UID = 0 ]; then
     PROMPT="%BROOT%b@%l'%U%m%u[\${#jobstates}]:%5~%# "
 fi
 
-# set defaault
+# set default
 PROMPT_DEFAULT="$PROMPT"
 RPROMPT_DEFAULT="$RPROMPT"
 
