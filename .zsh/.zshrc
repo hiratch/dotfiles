@@ -187,10 +187,14 @@ case $SYSTEM in
     mac)
         if [ -d /opt/homebrew/opt/llvm ]; then
             export PATH=/opt/homebrew/opt/llvm/bin:$PATH
-            export DYLD_LIBRARY_PATH=$DYLD_LIBRARY_PATH:/opt/homebrew/opt/llvm/lib/
+            export DYLD_LIBRARY_PATH=/opt/homebrew/opt/llvm/lib:$DYLD_LIBRARY_PATH
+            export LDFLAGS="-L/opt/homebrew/opt/llvm/lib"
+            export CPPFLAGS="-I/opt/homebrew/opt/llvm/include"
         elif [ -d /usr/local/opt/llvm/ ]; then
             export PATH=/usr/local/opt/llvm/bin:$PATH
-            export DYLD_LIBRARY_PATH=$DYLD_LIBRARY_PATH:/usr/local/opt/llvm/lib/
+            export DYLD_LIBRARY_PATH=/usr/local/opt/llvm/lib:$DYLD_LIBRARY_PATH
+            export LDFLAGS="-L/usr/local/opt/llvm/lib"
+            export CPPFLAGS="-I/usr/local/opt/llvm/include"
         fi
         ;;
 esac
