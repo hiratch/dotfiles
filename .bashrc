@@ -123,3 +123,4 @@ bind '"\C-i": menu-complete'
 stty werase undef
 bind '"\C-w": unix-filename-rubout'
 
+. "$HOME/.cargo/env"
