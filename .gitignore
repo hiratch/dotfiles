@@ -9,7 +9,8 @@
 .emacs.d/kkcrc
 .zsh/token
 .zsh/.zsh_sessions
-/.emacs.d/bookmarks
+.emacs.d/bookmarks
 .emacs.d/snippets
 .DS_STORE
 *~
+.gitconfig_local
