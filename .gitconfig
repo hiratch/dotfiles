@@ -9,8 +9,8 @@
 	email = wanpac@gmail.com
 	name = K.Hiramoto
 
-[includeIf "gitdir:~/NMWork/"]
-        path = ~/.gitconfig_nm
+[includeIf "exists:~/.gitconfig_local"]
+        path = ~/.gitconfig_local
 
 [diff]
 	tool = meld
