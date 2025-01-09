@@ -9,7 +9,7 @@
 	email = wanpac@gmail.com
 	name = K.Hiramoto
 
-[includeIf "exists:~/.gitconfig_local"]
+[include]
         path = ~/.gitconfig_local
 
 [diff]
