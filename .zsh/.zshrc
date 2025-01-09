@@ -151,6 +151,10 @@ elif [ -d /opt/homebrew/opt/coreutils/libexec/gnubin ]; then
     export PATH=/opt/homebrew/opt/coreutils/libexec/gnubin:$PATH
 fi
 
+if [ -d /opt/homebrew/opt/gnu-tar/libexec/gnubin ]; then
+    export PATH=/opt/homebrew/opt/gnu-tar/libexec/gnubin:$PATH
+fi
+
 if [ -d /opt/homebrew/bin ]; then
     export PATH=/opt/homebrew/bin:$PATH
 fi
@@ -278,7 +282,10 @@ type pyenv > /dev/null 2>&1
 if [ $? -eq 0 ]; then
     eval "$(pyenv init -)"
     eval "$(pyenv init --path)"
+    eval "$(pyenv virtualenv-init -)"
 fi
+
+
 
 type pipenv > /dev/null 2>&1
 if [ $? -eq 0 ]; then
