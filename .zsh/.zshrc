@@ -126,6 +126,7 @@ if [ -d $ANDROID_NDK_PATH ]; then
     export PATH=$ANDROID_NDK_PATH:$PATH
 fi
 
+
 case $SYSTEM {
     mac) export ADB_PATH=$HOME/Library/Android/Sdk/platform-tools ;;
 #    gnu) export ADB_PATH=$HOME/Android/Sdk/platform-tools ;;
@@ -182,6 +183,28 @@ case $SYSTEM in
         fi
         ;;
 esac
+
+# for Mac
+if [ -d /opt/local/bin ]; then
+    export PATH=/opt/local/bin:$PATH
+fi
+
+if [ -d /opt/homebrew/bin ]; then
+    export PATH=/opt/homebrew/bin:$PATH
+fi
+
+if [ -d /usr/local/opt/coreutils/libexec/gnubin ]; then
+    export PATH=/usr/local/opt/coreutils/libexec/gnubin:$PATH
+elif [ -d /opt/homebrew/opt/coreutils/libexec/gnubin ]; then
+    export PATH=/opt/homebrew/opt/coreutils/libexec/gnubin:$PATH
+fi
+
+if [ -d /opt/homebrew/opt/gnu-tar/libexec/gnubin ]; then
+    export PATH=/opt/homebrew/opt/gnu-tar/libexec/gnubin:$PATH
+elif [ -d /usr/local/opt/gnu-tar/libexec/gnubin ]; then
+    export PATH=/usr/local/opt/gnu-tar/libexec/gnubin:$PATH
+fi
+
 
 
 # snap
@@ -282,6 +305,8 @@ fi
 if [ -d $HOME/.poetry ]; then
     export PATH=$HOME/.poetry/bin:$PATH
 fi
+
+
 export SYSTEM_VERSION_COMPAT=1
 
 export SCREENDIR=$HOME/.screen

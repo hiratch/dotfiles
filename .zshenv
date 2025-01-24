@@ -60,7 +60,6 @@ export LESS='-g -i -M -R'
 ### path setting
 PATH="/opt/local/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:$PATH"
 
-# for Mac
 if [ -d /opt/local/bin ]; then
     export PATH=/opt/local/bin:$PATH
 fi
@@ -80,6 +79,7 @@ if [ -d /opt/homebrew/opt/gnu-tar/libexec/gnubin ]; then
 elif [ -d /usr/local/opt/gnu-tar/libexec/gnubin ]; then
     export PATH=/usr/local/opt/gnu-tar/libexec/gnubin:$PATH
 fi
+
 
 # #path=($HOME/bin)
 # path=(/usr/local/bin /usr/bin    \
