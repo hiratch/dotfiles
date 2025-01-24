@@ -153,6 +153,8 @@ fi
 
 if [ -d /opt/homebrew/opt/gnu-tar/libexec/gnubin ]; then
     export PATH=/opt/homebrew/opt/gnu-tar/libexec/gnubin:$PATH
+elif [ -d /usr/local/opt/gnu-tar/libexec/gnubin ]; then
+    export PATH=/usr/local/opt/gnu-tar/libexec/gnubin:$PATH
 fi
 
 if [ -d /opt/homebrew/bin ]; then
