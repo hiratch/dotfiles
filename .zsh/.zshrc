@@ -144,22 +144,6 @@ if [ -d $HOME/Tool/local_tool ]; then
     export PATH=$HOME/Tool/local_tool:$PATH
 fi
 
-# for Mac
-if [ -d /usr/local/opt/coreutils/libexec/gnubin ]; then
-    export PATH=/usr/local/opt/coreutils/libexec/gnubin:$PATH
-elif [ -d /opt/homebrew/opt/coreutils/libexec/gnubin ]; then
-    export PATH=/opt/homebrew/opt/coreutils/libexec/gnubin:$PATH
-fi
-
-if [ -d /opt/homebrew/opt/gnu-tar/libexec/gnubin ]; then
-    export PATH=/opt/homebrew/opt/gnu-tar/libexec/gnubin:$PATH
-elif [ -d /usr/local/opt/gnu-tar/libexec/gnubin ]; then
-    export PATH=/usr/local/opt/gnu-tar/libexec/gnubin:$PATH
-fi
-
-if [ -d /opt/homebrew/bin ]; then
-    export PATH=/opt/homebrew/bin:$PATH
-fi
 
 ### User environment
 if [ -d $HOME/.rbenv ]; then
@@ -182,12 +166,6 @@ if [ -d /opt/Halide ]; then
 elif [ -d /usr/local/Cellar/halide/2017.10.30 ]; then
     export HALIDE_SDK_ROOT=/usr/local/Cellar/halide/2017.10.30
 fi  
-
-if [ -d /opt/silexica ]; then
-    export LM_LICENSE_FILE=/opt/silexica/license/silexica_nodelock.lic:$LM_LICENSE_FILE
-    source /opt/silexica/exports
-fi
-
 
 case $SYSTEM in
     mac)
