@@ -112,23 +112,6 @@ if [ -n "$LINUX_ON_WINDOWS" ]; then
     export DefaultIMModule=fcitx
 fi
 
-if [ -d $HOME/Tool/pyenv ]; then
-    export PYENV_ROOT="$HOME/Tool/pyenv"
-    export PATH="$PYENV_ROOT/bin:$PATH"
-elif [ -d $HOME/Tool/.pyenv ]; then
-    export PYENV_ROOT="$HOME/.pyenv"
-    export PATH="$PYENV_ROOT/bin:$PATH"
-elif [ -d $HOME/.pyenv ]; then
-    export PYENV_ROOT="$HOME/.pyenv"
-    export PATH="$PYENV_ROOT/bin:$PATH"
-fi
-
-
-type pyenv > /dev/null 2>&1
-if [ $? -eq 0 ]; then
-    eval "$(pyenv init --path)"
-fi
-
 if [ -d /opt/homebrew/bin ]; then
     eval "$(/opt/homebrew/bin/brew shellenv)"
 elif [ -f /usr/local/bin/homebew ]; then
