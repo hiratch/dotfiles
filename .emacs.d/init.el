@@ -44,7 +44,6 @@
 (quelpa 'rtags)
 (quelpa 'racer)
 (quelpa 'flycheck-rust)
-(quelpa 'matlab-mode)
 
 ;; quelpa install package list end
 
