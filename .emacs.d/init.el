@@ -32,6 +32,7 @@
 ;; quelpa install package list start
 (quelpa 'rainbow-delimiters)
 (quelpa 'popwin)
+(quelpa '(compat :fetcher github :repo "emacs-compat/compat"))
 (quelpa 'magit)
 (quelpa 'yasnippet)
 (quelpa 'yasnippet-snippets)
