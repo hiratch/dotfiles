@@ -184,7 +184,7 @@
        electric-buffer-menu-mode-map
        "x" 'Buffer-menu-execute)))
 
-(global-set-key "\C-xk" 'kill-this-buffer)
+(global-set-key "\C-xk" 'kill-current-buffer)
 (global-set-key [(control shift l)] '(lambda () (interactive)(recenter 0)))
 (global-set-key "\M-g" 'goto-line)
 (global-set-key "\M-s" 'shell)
