@@ -316,8 +316,6 @@ if [ -d /opt/homebrew/lib/ruby/gems/3.4.0/bin ]; then
 fi
 
 
-export SYSTEM_VERSION_COMPAT=1
-
 export SCREENDIR=$HOME/.screen
 
 # opam configuration
