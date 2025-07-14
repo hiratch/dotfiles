@@ -306,6 +306,15 @@ if [ -d $HOME/.poetry ]; then
     export PATH=$HOME/.poetry/bin:$PATH
 fi
 
+# ruby
+if [ -d /opt/homebrew/opt/ruby/bin ]; then
+    export PATH=/opt/homebrew/opt/ruby/bin:$PATH
+fi
+
+if [ -d /opt/homebrew/lib/ruby/gems/3.4.0/bin ]; then
+    export PATH=/opt/homebrew/lib/ruby/gems/3.4.0/bin:$PATH
+fi
+
 
 export SYSTEM_VERSION_COMPAT=1
 
