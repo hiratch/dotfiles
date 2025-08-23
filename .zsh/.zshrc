@@ -225,33 +225,35 @@ net_tools_deprecated_message () {
   echo -n 'net-tools コマンドはもう非推奨ですよ？おじさんなんじゃないですか？ '
 }
 
-arp () {
-  net_tools_deprecated_message
-  echo 'Use `ip n`'
-}
+if [[ "$(uname)" == "Linux" ]]; then
+    arp () {
+        net_tools_deprecated_message
+        echo 'Use `ip n`'
+    }
+fi
 ifconfig () {
-  net_tools_deprecated_message
-  echo 'Use `ip a`, `ip link`, `ip -s link`'
+    net_tools_deprecated_message
+    echo 'Use `ip a`, `ip link`, `ip -s link`'
 }
 iptunnel () {
-  net_tools_deprecated_message
-  echo 'Use `ip tunnel`'
+    net_tools_deprecated_message
+    echo 'Use `ip tunnel`'
 }
 iwconfig () {
-  echo -n 'iwconfig コマンドはもう非推奨ですよ？おじさんなんじゃないですか？ '
-  echo 'Use `iw`'
+    echo -n 'iwconfig コマンドはもう非推奨ですよ？おじさんなんじゃないですか？ '
+    echo 'Use `iw`'
 }
 nameif () {
-  net_tools_deprecated_message
-  echo 'Use `ip link`, `ifrename`'
+    net_tools_deprecated_message
+    echo 'Use `ip link`, `ifrename`'
 }
 netstat () {
-  net_tools_deprecated_message
-  echo 'Use `ss`, `ip route` (for netstat -r), `ip -s link` (for netstat -i), `ip maddr` (for netstat -g)'
+    net_tools_deprecated_message
+    echo 'Use `ss`, `ip route` (for netstat -r), `ip -s link` (for netstat -i), `ip maddr` (for netstat -g)'
 }
 route () {
-  net_tools_deprecated_message
-  echo 'Use `ip r`'
+    net_tools_deprecated_message
+    echo 'Use `ip r`'
 }
 
 # ユーザ独自の設定ファイルがあれば読み込む
