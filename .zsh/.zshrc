@@ -193,19 +193,6 @@ if [ -d /opt/homebrew/bin ]; then
     export PATH=/opt/homebrew/bin:$PATH
 fi
 
-if [ -d /usr/local/opt/coreutils/libexec/gnubin ]; then
-    export PATH=/usr/local/opt/coreutils/libexec/gnubin:$PATH
-elif [ -d /opt/homebrew/opt/coreutils/libexec/gnubin ]; then
-    export PATH=/opt/homebrew/opt/coreutils/libexec/gnubin:$PATH
-fi
-
-if [ -d /opt/homebrew/opt/gnu-tar/libexec/gnubin ]; then
-    export PATH=/opt/homebrew/opt/gnu-tar/libexec/gnubin:$PATH
-elif [ -d /usr/local/opt/gnu-tar/libexec/gnubin ]; then
-    export PATH=/usr/local/opt/gnu-tar/libexec/gnubin:$PATH
-fi
-
-
 
 # snap
 if [ -d /snap/ ]; then
