@@ -2,13 +2,18 @@
 #
 echo "Loading $ZDOTDIR/.zshrc"
 
-#Setup ssh-agent
-if [ -f ~/.ssh-agent ]; then
-    . ~/.ssh-agent
+SSH_AGENT_FILE=~/.ssh-agent
+
+# extract the process ID from the file
+if [ -f "$SSH_AGENT_FILE" ]; then
+    AGENT_PID=$(grep 'SSH_AGENT_PID=' "$SSH_AGENT_FILE" | sed 's/SSH_AGENT_PID=//;s/;//')
 fi
-if [ -z "$SSH_AGENT_PID" ] || ! kill -0 $SSH_AGENT_PID; then
-    ssh-agent > ~/.ssh-agent
-    . ~/.ssh-agent
+
+if [ -n "$AGENT_PID" ] && kill -0 "$AGENT_PID" 2>/dev/null; then
+    . "$SSH_AGENT_FILE"
+else
+    ssh-agent > "$SSH_AGENT_FILE"
+    . "$SSH_AGENT_FILE"
 fi
 ssh-add -l >& /dev/null || ssh-add
 
