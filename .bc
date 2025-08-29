@@ -28,3 +28,15 @@ define ft_nm2deg(y, x) {
     return deg(a(feet2meter(y) / nm2meter(x)))
 }
 
+define mach_from_celsius(t) {
+    return 331.5 + 0.6 * t
+}
+
+define meter_per_sec2kt(v) {
+    return 1.94384 * v
+}
+
+define kt2meter_per_sec(v) {
+    return 0.514444 * v
+}
+
