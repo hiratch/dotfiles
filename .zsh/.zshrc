@@ -2,19 +2,23 @@
 #
 echo "Loading $ZDOTDIR/.zshrc"
 
-SSH_AGENT_FILE=~/.ssh-agent
-
-# extract the process ID from the file
-if [ -f "$SSH_AGENT_FILE" ]; then
-    AGENT_PID=$(grep 'SSH_AGENT_PID=' "$SSH_AGENT_FILE" | sed 's/SSH_AGENT_PID=//;s/;//')
+if [ -f ~/.ssh-agent ]; then
+    . ~/.ssh-agent >/dev/null
 fi
 
-if [ -n "$AGENT_PID" ] && kill -0 "$AGENT_PID" 2>/dev/null; then
-    . "$SSH_AGENT_FILE"
-else
-    ssh-agent > "$SSH_AGENT_FILE"
-    . "$SSH_AGENT_FILE"
+# ssh-agentが起動しているかを確認する
+# - $SSH_AGENT_PIDが設定されていない (ファイルがなかった)
+# - または、そのPIDのプロセスが存在しない (再起動などで古くなった)
+# 上記のいずれかの場合は、新しいエージェントを起動する
+if [ -z "$SSH_AGENT_PID" ] || ! kill -0 "$SSH_AGENT_PID" 2>/dev/null; then
+    # 新しいエージェントを起動し、その設定情報をファイルに上書き保存
+    ssh-agent > ~/.ssh-agent
+    # 新しく作成した設定ファイルを読み込む
+    . ~/.ssh-agent >/dev/null
 fi
+
+# この時点で、環境変数は必ず有効なssh-agentのものを指している
+# 最後に、エージェントに鍵が登録されていなければ登録する
 ssh-add -l >& /dev/null || ssh-add
 
 ### shell variables
