@@ -40,3 +40,53 @@ define kt2meter_per_sec(v) {
     return 0.514444 * v
 }
 
+/*
+ * 度分形式 (例: 34度37.6分 -> 3437.6) を
+ * 10進数の度 (例: 34.6266...) に変換します。
+ * dms: degree minute second
+ * dec: decimal
+ */
+define dms2dec(dms) {
+    auto temp_scale, deg, min;
+
+    /* 現在のscaleを保存 */
+    temp_scale = scale;
+
+    /* 整数部分（度）を取得するためにscaleを0に設定 */
+    scale = 0;
+    deg = dms / 100; /* これで整数除算になり、34が取得できる */
+
+    /* scaleを元の設定に戻す */
+    scale = temp_scale;
+
+    /* 分の部分を取得 (例: 3437.6 - (34 * 100) = 37.6) */
+    min = dms - (deg * 100);
+
+    /* 度 + (分 / 60) を計算して返す */
+    return (deg + min / 60);
+}
+
+
+/*
+ * 10進数の度 (例: 34.6266...) を
+ * 度分形式 (例: 3437.6) に変換します。
+ */
+define dec2dms(dec) {
+    auto temp_scale, deg, min;
+
+    /* 計算用に一時的に現在のscaleを保存 */
+    temp_scale = scale;
+
+    /* 整数部分（度）を取得するためにscaleを0にする */
+    scale = 0;
+    deg = dec / 1;
+
+    /* scaleを元に戻して小数点以下の計算を行う */
+    scale = temp_scale;
+    min = (dec - deg) * 60;
+
+    /* 度*100 + 分 の形式で返す */
+    return (deg * 100 + min);
+}
+
+
