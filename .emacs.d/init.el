@@ -90,6 +90,9 @@
                        (move-overlay overlay (point-max) (point-max))))))))
 (add-hook 'find-file-hooks 'set-buffer-end-mark)
 
+;; for macOS: CommandキーをMetaキーとして扱う
+(when (eq system-type 'darwin)
+  (setq ns-command-modifier 'meta))
 
 ;;; ==========================================================================
 ;;; Section 3: Package Configurations - 各パッケージの設定
