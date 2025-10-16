@@ -1,483 +1,227 @@
+;;; init.el --- A Modern Emacs Configuration with Quelpa and use-package
+
+;;; ==========================================================================
+;;; Section 1: Bootstrap - パッケージ管理システムの準備
+;;; ==========================================================================
+;; Emacs 27.1以降のLisp readerのバグを回避
+(setq read-process-output-max (* 1024 1024))
+
+;; パッケージ取得先リポジトリを設定
+(setq package-archives
+      '(("gnu"   . "https://elpa.gnu.org/packages/")
+        ("melpa" . "https://melpa.org/packages/")
+        ("org"   . "https://orgmode.org/elpa/")))
+
+;; package.elを初期化
 (package-initialize)
 
-(setq package-archives
-      '(("gnu". "http://elpa.gnu.org/packages/")
-        ("melpa" . "http://melpa.org/packages/")
-        ("org" . "http://orgmode.org/elpa/")))
-
-;; Quelpa install
+;; Quelpaのインストール (なければ)
 (unless (package-installed-p 'quelpa)
-    (with-temp-buffer
-      (url-insert-file-contents "https://raw.githubusercontent.com/quelpa/quelpa/master/quelpa.el")
-      (eval-buffer)
-      (quelpa-self-upgrade)))
-
-;; Quelpa
-(add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
+  (with-temp-buffer
+    (url-insert-file-contents "https://raw.githubusercontent.com/quelpa/quelpa/master/quelpa.el")
+    (eval-buffer)
+    (quelpa-self-upgrade)))
 (require 'quelpa)
 
+;; use-packageのインストール (なければ)
+;; quelpa-use-packageもここで導入する
+(unless (package-installed-p 'use-package)
+  (package-refresh-contents)
+  (package-install 'use-package))
+(require 'use-package)
+
+;; quelpaをuse-packageで使えるようにする
 (quelpa
  '(quelpa-use-package
    :fetcher git
    :url "https://github.com/quelpa/quelpa-use-package.git"))
-
 (require 'quelpa-use-package)
-(setq quelpa-update-melpa-p nil)
-(if (require 'quelpa nil t)
-    (quelpa-self-upgrade)
-  (with-temp-buffer
-    (url-insert-file-contents "https://raw.github.com/quelpa/quelpa/master/bootstrap.el")
-    (eval-buffer)))
-
-;; quelpa install package list start
-(quelpa 'rainbow-delimiters)
-(quelpa 'popwin)
-(quelpa '(compat :fetcher github :repo "emacs-compat/compat"))
-(quelpa 'magit)
-(quelpa 'yasnippet)
-(quelpa 'yasnippet-snippets)
-(quelpa 'company)
-(quelpa 'company-irony)
-(quelpa 'company-rtags)
-(quelpa 'irony)
-(quelpa 'flycheck)
-(quelpa 'flycheck-rtags)
-(quelpa 'rtags)
-(quelpa 'racer)
-(quelpa 'flycheck-rust)
-
-;; quelpa install package list end
-
-;;; font-lockの設定
-(global-font-lock-mode nil)
-
-;; Stop at the end of the file, not just add lines
-(setq next-line-add-newlines nil)
-
-;; 初期フレームの設定
-(setq default-frame-alist
-      (append (list '(foreground-color . "gray85")
-		    '(background-color . "gray2") ;"LemonChiffon")
-		    '(border-color . "black")
-		    '(mouse-color . "white")
-		    '(vertical-scroll-bars . right)
-		    '(width . 120)
-		    '(height . 55)
-		    '(top . 15)
-		    '(left . 290)
-		    '(cursor-type . box)
-		    '(cursor-color . "red")
-		    '(cursor-height . 4)
-		    '(alpha . (90 70 50 30))
-		    )
-	      default-frame-alist))
-
-;;; 行番号・桁番号をモードラインに表示する・しない設定
-(line-number-mode t)			; 行番号
-(column-number-mode t)			; 桁番号
-
-;; バッファの最初の行で previous-line しても、
-;; "beginning-of-buffer" と注意されないようにする。
-(defun previous-line (arg)
-  (interactive "p")
-  (if (called-interactively-p 'interactive)
-      (condition-case nil
-	  (line-move (- arg))
-	((beginning-of-buffer end-of-buffer)))
-    (line-move (- arg)))
-  nil)
-
-;;; C-k(kill-line) で行末の改行も含めて kill する
-(setq kill-whole-line t)
-
-;;; 警告音のかわりに画面フラッシュ
-(setq visible-bell t)
 
 
-(setq max-specpdl-size 60000)
-(setq max-lisp-eval-depth 60000)
+;;; ==========================================================================
+;;; Section 2: Core Emacs Settings - Emacsの基本設定
+;;; ==========================================================================
 
+;; UI設定 --------------------------------------------------------------------
+(setq-default
+ inhibit-startup-message t      ; スタートアップメッセージを非表示
+ line-number-mode t             ; 行番号をモードラインに表示
+ column-number-mode t           ; 桁番号をモードラインに表示
+ indent-tabs-mode nil           ; タブの代わりにスペースを使用
+ kill-whole-line t              ; C-kで行全体をキル
+ visible-bell t                 ; ビープ音の代わりに画面をフラッシュ
+ truncate-lines t               ; 行を折り返さない
+ find-file-visit-truename t     ; ファイルアクセス時にシンボリックリンクを解決
+ read-file-name-completion-ignore-case t) ; ファイル名補完で大文字小文字を無視
 
-;; 行番号入れるやつ
-(line-number-mode t)
-(column-number-mode t)
-
-;; ツールバー消す
-(tool-bar-mode 0)
-
-;; maximize-window
-(defun my-fullscreen ()
-  (interactive)
-  (let ((fullscreen (frame-parameter (selected-frame) 'fullscreen)))
-    (cond
-     ((null fullscreen)
-      (set-frame-parameter (selected-frame) 'fullscreen 'fullboth))
-     (t
-      (set-frame-parameter (selected-frame) 'fullscreen 'nil))))
-  (redisplay))
-
-(setq-default indent-tabs-mode nil)
-
-;; region color
-(set-face-background 'region "forest green")
-
-(defun set-buffer-end-mark()
-  (let ((overlay (make-overlay (point-max) (point-max))))
-    (overlay-put overlay 'before-string #("[EOF]" 0 5 (face highlight)))
-    (overlay-put overlay 'insert-behind-hooks
-		 '((lambda (ovelay after beg end &optional len)
-		     (when after
-		       (move-overlay overlay (point-max) (point-max))))))))
-
-(add-hook 'find-file-hooks 'set-buffer-end-mark)
-
-(setq-default find-file-visit-truename t)
-
-;; shift + 矢印
-(windmove-default-keybindings)
-(setq windmove-wrap-around t)
-(setq minibuffer-max-depth nil)
-(when (eq system-type 'darwin)
-  (setq ns-command-modifier (quote meta)))
-
-;; ;;; 初期ディレクトリの設定
-(cd "~/")
-
-;; スクロールバー出す
-;(set-scroll-bar-mode 'right)
+;; ツールバー、メニューバー、スクロールバーを非表示
+(tool-bar-mode -1)
+(menu-bar-mode -1)
+(scroll-bar-mode -1)
 
 ;; 対応する括弧をハイライト
 (show-paren-mode t)
 
-;; 行の表示を折り返さない
-(setq-default truncate-lines t)
-
-;; 折り返し表示ON/OFF
-(defun toggle-truncate-lines ()
-  "折り返し表示をトグル動作します."
-  (interactive)
-  (if truncate-lines
-      (setq truncate-lines nil)
-    (setq truncate-lines t))
-  (recenter))
-
-(global-set-key "\C-c\C-l" 'toggle-truncate-lines)
-
-;; C-x C-f で大小文字を区別しない
-(setq read-file-name-completion-ignore-case t)
-
-(auto-fill-mode nil)
-(auto-fill-mode t)
-(set-fill-column 120)
-
-;;; バインド変更など
-;;(setq make-backup-files nil)
-(setq auto-save-list-file-prefix nil)
-(setq visible-bell t)
-(global-set-key "\M-?" 'help-for-help)
-(global-set-key "\C-ci" 'info)
-
-(global-set-key "\C-x\C-b" 'electric-buffer-list)
-(eval-after-load "ebuff-menu"
-  '(progn
-     (define-key
-       electric-buffer-menu-mode-map
-       "x" 'Buffer-menu-execute)))
-
-(global-set-key "\C-xk" 'kill-current-buffer)
-(global-set-key [(control shift l)] '(lambda () (interactive)(recenter 0)))
-(global-set-key "\M-g" 'goto-line)
-(global-set-key "\M-s" 'shell)
-(global-set-key "\C-h" 'delete-backward-char)
-(global-set-key
- [C-mouse-wheel1]
- '(lambda (event) (interactive "e")
-    (let* ((position (event-start event))
-	   (lines (w32-get-mouse-wheel-scroll-lines (nth 4 position))))
-      (if (> lines 0) (scroll-up) (scroll-down)))))
-(global-set-key
- [S-mouse-wheel1]
- '(lambda (event) (interactive "e")
-    (let* ((position (event-start event))
-	   (lines (w32-get-mouse-wheel-scroll-lines (nth 4 position))))
-      (if (> lines 0) (scroll-up 1) (scroll-down 1)))))
-
-
-(defun set-background-dark-color ()
-  "Change foregrand-color and background-color."
-  (interactive)
-  ;;  (assoc 'background-color default-frame-alist)
-  (set-background-color "gray15")
-  (set-foreground-color "gray85")
-  (add-hook 'mw32-ime-on-hook
-	    (lambda () (set-cursor-color "lawn green")))
-  (add-hook 'mw32-ime-off-hook
-	    (lambda () (set-cursor-color "LemonChiffon")))
-  )
-
-(defun set-background-bright-color ()
-  "Change foregrand-color and background-color."
-  (interactive)
-  (set-background-color "azure")
-  (set-foreground-color "black")
-  (add-hook 'mw32-ime-on-hook
-	    (lambda () (set-cursor-color "orange")))
-  (add-hook 'mw32-ime-off-hook
-	    (lambda () (set-cursor-color "RoyalBlue1")))
-  )
-
-;;; *.~ とかのバックアップファイルを作らない
+;; バックアップファイルを作成しない
 (setq make-backup-files nil)
-;;; .#* とかのバックアップファイルを作らない
 (setq auto-save-default nil)
+(setq auto-save-list-file-prefix nil)
+
+;; 初期フレーム（ウィンドウ）の設定
+(setq default-frame-alist
+      '((foreground-color . "gray85")
+        (background-color . "gray2")
+        (border-color . "black")
+        (mouse-color . "white")
+        (vertical-scroll-bars . right)
+        (width . 120)
+        (height . 55)
+        (top . 15)
+        (left . 290)
+        (cursor-type . box)
+        (cursor-color . "red")
+        (alpha . (90 70))))
+
+;; リージョン（選択範囲）の色
+(set-face-background 'region "forest green")
+
+;; キーバインド --------------------------------------------------------------
+(global-set-key (kbd "C-h") 'delete-backward-char)
+(global-set-key (kbd "M-g") 'goto-line)
+(global-set-key (kbd "M-s") 'shell)
+(global-set-key (kbd "C-x k") 'kill-current-buffer)
+
+;; windmove (Shift + 矢印でウィンドウ間を移動)
+(windmove-default-keybindings)
+(setq windmove-wrap-around t)
 
 
-;; shell
-(add-hook 'shell-mode-hook
-	  (local-set-key "\C-l" '(lambda () (interactive)(recenter 0))))
+;;; ==========================================================================
+;;; Section 3: Package Configurations - 各パッケージの設定
+;;; ==========================================================================
 
-
-;; popwin.el
+;; 汎用ユーティリティ ----------------------------------------------------
 (use-package popwin
+  :quelpa t
   :config
-  ;; おまじない（よく分かってない、、）
   (popwin-mode 1)
-  ;; ポップアップを画面下に表示
   (setq popwin:popup-window-position 'bottom))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; c#
-(autoload 'csharp-mode "csharp-mode"
-  "Major mode for editing C# code." t)
-(setq auto-mode-alist (cons '( "\\.cs\\'" . csharp-mode ) auto-mode-alist ))
-
-;; cperl
-(setq auto-mode-alist (cons '( "\\.pl\\'" . cperl-mode ) auto-mode-alist ))
-(setq auto-mode-alist (cons '( "\\.cgi\\'" . cperl-mode ) auto-mode-alist ))
-
-(load "~/.emacs.d/cc-mode-set.el")
-(setq-default indent-tabs-mode nil)
-
-
-;; topsy instead of which-function-mode
-(use-package topsy
-  :quelpa (topsy :fetcher github :repo "alphapapa/topsy.el")
-  :hook
-  (prog-mode . topsy-mode)
-  (magit-section-mode . topsy-mode))
-
-
-;; 画面上部に表示
-(delete (assoc 'which-func-mode mode-line-format) mode-line-format)
-(setq-default header-line-format '(which-func-mode ("" which-func-format)))
-
-;; GDB
-(use-package gud
-  :init
-  (bind-keys :map mode-specific-map
-             ("\C-c\C-SPC" . gud-break))
-  (add-hook 'gdb-mode-hook '(lambda () (gud-tooltip-mode t)))
-  :config
-  (setq gdb-many-windows t)
-  (setq gdb-use-serapate-io-buffer t)
-  (setq gud-tooltip-echo-area nil))
-
-;; cua-mode (Common User Acess Mode) 矩形選択用
-(use-package cua-base
-  :init (cua-mode 1)
-  :config
-  (progn
-    (setq cua-enable-cua-keys nil)))
-
-(defadvice cua-sequence-rectangle (around my-cua-sequence-rectangle activate)
-  "連番を挿入するとき、紫のところの文字を上書きしないで左にずらす."
-  (interactive
-   (list (if current-prefix-arg
-             (prefix-numeric-value current-prefix-arg)
-           (string-to-number
-            (read-string "Start value: (0) " nil nil "0")))
-         (string-to-number
-          (read-string "Increment: (1) " nil nil "1"))
-         (read-string (concat "Format: (" cua--rectangle-seq-format ") "))))
-  (if (= (length format) 0)
-      (setq format cua--rectangle-seq-format)
-    (setq cua--rectangle-seq-format format))
-  (cua--rectangle-operation 'clear nil t 1 nil
-     '(lambda (s e l r)
-         (kill-region s e)
-         (insert (format format first))
-         (yank)
-         (setq first (+ first incr)))))
-
-;; rainbow-delimiters を使うための設定
 (use-package rainbow-delimiters
-  :init
-  (add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
-  (add-hook 'emacs-startup-hook 'rainbow-delimiters-using-stronger-colors))
+  :quelpa t
+  :hook (prog-mode . rainbow-delimiters-mode))
 
-;; 括弧の色を強調する設定
-(use-package cl-lib)
-(use-package color)
-(defun rainbow-delimiters-using-stronger-colors ()
-  (interactive)
-  (cl-loop
-   for index from 1 to rainbow-delimiters-max-face-count
-   do
-   (let ((face (intern (format "rainbow-delimiters-depth-%d-face" index))))
-    (cl-callf color-saturate-name (face-foreground face) 30))))
-
-(use-package magit)
-
-;; c-mode
-(add-hook 'c-mode-common-hook
-          (lambda()
-            (setq show-trailing-whitespace t)))
-
-(use-package yasnippet
+;; CUA-mode (矩形選択)
+(use-package cua-base
+  :quelpa t
   :config
-  (yas-global-mode 1)
+  (cua-mode 1)
+  (setq cua-enable-cua-keys nil)) ; C-x, C-cなどを上書きしない
+
+;; Magit (Gitクライアント)
+(use-package magit
+  :quelpa t
+  :bind (("C-x g" . magit-status)))
+
+(use-package compat
+  :quelpa (compat :fetcher github :repo "emacs-compat/compat"))
+
+;; コード補完 & スニペット -----------------------------------------------
+(use-package yasnippet
+  :quelpa t
+  :hook (after-init . yas-global-mode)
+  :config
+  ;; スニペットディレクトリの指定
+  (setq yas-snippet-dirs (list "~/.emacs.d/snippets" "~/.emacs.d/mysnippets"))
+  ;; 以前のinit.elにあったキーバインドを復元
   (define-key yas-minor-mode-map (kbd "C-c C-s") 'yas-insert-snippet)
   (define-key yas-minor-mode-map (kbd "C-c C-n") 'yas-new-snippet)
   (define-key yas-minor-mode-map (kbd "C-c C-v") 'yas-visit-snippet-file)
-  (define-key yas-minor-mode-map (kbd "C-c C-x") 'yas-expand)
-  ;; 何故かTABの無効化は両方とも必要・・・何故なのか
+  ;; companyとの連携のため、TABキーのバインドはここでは無効化しておく
   (define-key yas-minor-mode-map (kbd "TAB") nil)
-  (define-key yas-minor-mode-map [(tab)] nil))
+  (define-key yas-minor-mode-map (kbd "<tab>") nil))
 
-;rtags
-(use-package rtags
-  :config
-  (add-hook 'c-mode-common-hook
-            (lambda ()
-              (when (rtags-is-indexed)
-                (local-set-key (kbd "M-.") 'rtags-find-symbol-at-point)
-                (local-set-key (kbd "M-;") 'rtags-find-symbol)
-                (local-set-key (kbd "C-x M-.") 'rtags-find-references-at-point)
-                (local-set-key (kbd "M-@") 'rtags-find-references-at-point)
-                (local-set-key (kbd "M-,") 'rtags-location-stack-back)
-                (local-set-key (kbd "C-,") 'rtags-location-stack-back)))))
-
-(use-package flycheck
-  :ensure t
-  :init(global-flycheck-mode)
-  :commands
-  (flycheck-irony-setup)
-
-  :config
-  (setq-local flycheck-highlighting-mode nil)
-  (setq-local flycheck-syntax-check-automatically nil)
-  (add-hook 'c-mode-hook #'my-flycheck-rtags-setup)
-  (add-hook 'c++-mode-hook #'my-flycheck-rtags-setup)
-  (custom-set-variables
-   '(flycheck-display-errors-function
-     (lambda (errors)
-       (let ((messages (mapcar #'flycheck-error-message errors)))
-         (popup-tip (mapconcat 'identity messages "\n")))))
-   '(flycheck-display-errors-delay 0.5))
-  (define-key flycheck-mode-map (kbd "C-M-n") 'flycheck-next-error)
-  (define-key flycheck-mode-map (kbd "C-M-p") 'flycheck-previous-error)
-  (add-hook 'c-mode-common-hook 'flycheck-mode))
-
-(use-package flycheck-rtags
-  :ensure t
-  :after flycheck rtags
-  :config
-  (defun my-flycheck-rtags-setup ()
-    (flycheck-select-checker 'rtags)
-    (setq-local flycheck-highlighting-mode nil) ;; RTags creates more accurate overlays.
-    (setq-local flycheck-check-syntax-automatically nil)
-    )
-  (add-hook 'c-mode-hook #'my-flycheck-rtags-setup)
-  (add-hook 'c++-mode-hook #'my-flycheck-rtags-setup)
-  (add-hook 'objc-mode-hook #'my-flycheck-rtags-setup)
-  )
+(use-package yasnippet-snippets
+  :quelpa t
+  :after yasnippet)
 
 (use-package company
+  :quelpa t
+  :after yasnippet ; yasnippetの読み込み後に設定する
+  :hook (after-init . global-company-mode)
+  :bind (("C-M-i" . company-complete))
   :config
-  (global-company-mode 1)
-  (global-set-key (kbd "C-M-i") 'company-complete)
   (define-key company-active-map (kbd "C-n") 'company-select-next)
   (define-key company-active-map (kbd "C-p") 'company-select-previous)
-  (define-key company-search-map (kbd "C-n") 'company-select-next)
-  (define-key company-search-map (kbd "C-p") 'company-select-previous)
-  (define-key company-active-map (kbd "<tab>") 'company-complete-selection))
+  (define-key company-active-map (kbd "<tab>") 'company-complete-selection)
+  ;; companyの設定ブロックに移動
+  (add-to-list 'company-backends 'company-yasnippet))
 
-(defun my-irony-mode-on ()
-  (when (member major-mode irony-supported-major-modes)
-    (irony-mode 1)))
+;; 静的解析 (Flycheck) ----------------------------------------------------
+(use-package flycheck
+  :quelpa t
+  :hook (after-init . global-flycheck-mode))
 
+
+;; C / C++ 開発環境 -------------------------------------------------------
 (use-package irony
+  :quelpa t
+  :hook ((c-mode . irony-mode)
+         (c++-mode . irony-mode))
   :config
-  (unless (irony--find-server-executable) (call-interactively #'irony-install-server))
-  (custom-set-variables '(irony-additional-clang-options '("-std=c++11")))
-  (add-to-list 'company-backends 'company-irony)
-  (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options)
-  (add-hook 'c-mode-common-hook 'my-irony-mode-on)
-  (add-hook 'c-mode-hook 'my-irony-mode-on)
-  (add-hook 'c++-mode-hook 'my-irony-mode-on))
+  (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options))
 
-;; yasnippetとの連携
-(defvar company-mode/enable-yas t
-  "Enable yasnippet for all backends.")
-(defun company-mode/backend-with-yas (backend)
-  (if (or (not company-mode/enable-yas) (and (listp backend) (member 'company-yasnippet backend)))
-      backend
-    (append (if (consp backend) backend (list backend))
-            '(:with company-yasnippet))))
-(setq company-backends (mapcar #'company-mode/backend-with-yas company-backends))
+(use-package company-irony
+  :quelpa t
+  :after (company irony)
+  :config (add-to-list 'company-backends 'company-irony))
 
-; coding
-(use-package yasnippet
-             :commands
-             (yas-insert-snippet yas-new-snippet yas-visit-snippet-file yas-expand)
-             :config
-             (setq yas-snippet-dirs
-                   '("~/.emacs.d/mysnippets"
-                     "~/.emacs.d/snippets"
-                     ))
-             (defvar my-snippet-directories
-               (list (expand-file-name "~/.emacs.d/snippets")  ; CodeRepos
-                     (expand-file-name "~/.emacs.d/mysnippets")))          ; Private
-             ;; yasnippet公式提供のものと、自分用カスタマイズスニペットをロード同名
-             ;; のスニペットが複数ある場合、あとから読みこんだ自分用のものが優先される。
-             ;; また、スニペットを変更、追加した場合、このコマンドを実行することで、変更・追加が反映される。
-             (defun yas/load-all-directories ()
-               (interactive)
-               (yas/reload-all)
-               (mapc 'yas/load-directory my-snippet-directories))
-             (yas/load-all-directories))
+(use-package rtags
+  :quelpa t
+  :hook (c-mode-common-hook .
+          (lambda ()
+            (when (rtags-is-indexed)
+              (local-set-key (kbd "M-.") 'rtags-find-symbol-at-point)
+              (local-set-key (kbd "M-,") 'rtags-location-stack-back)))))
 
-;;; rust-mode
+(use-package flycheck-rtags
+  :quelpa t
+  :after (flycheck rtags)
+  :hook ((c-mode . flycheck-rtags-setup)
+         (c++-mode . flycheck-rtags-setup)))
+
+
+;; Rust 開発環境 ----------------------------------------------------------
 (use-package rust-mode
-  :defer t
+  :quelpa t
   :config
-  (add-to-list 'exec-path(expand-file-name "~/.cargo/bin"))
   (setq rust-format-on-save t))
 
-;;; racer
 (use-package racer
-  :init
-  (add-hook 'rust-mode-hook #'racer-mode)
-  (add-hook 'racer-mode-hook #'eldoc-mode)
-  (add-hook 'racer-mode-hook(lambda()
-                              (company-mode)
-                              (set (make-variable-buffer-local 'company-idle-delay) 0.1)
-                              (set (make-variable-buffer-local 'company-minimum-prefix-length) 0))
-            )
-  )
+  :quelpa t
+  :hook (rust-mode . racer-mode)
+  (rust-mode . eldoc-mode)
+  (rust-mode . (lambda () (company-mode))))
 
-;;; tsx (typescript)
-(add-to-list 'auto-mode-alist '("\\.tsx\\'" . typescript-mode))
-
-;;; flycheck-rust
 (use-package flycheck-rust
-  :init
-  (add-hook 'rust-mode-hook
-            '(lambda ()
-               (flycheck-mode)
-               (flycheck-rust-setup))))
+  :quelpa t
+  :hook (rust-mode . flycheck-rust-setup))
 
+
+;; その他モード設定 -------------------------------------------------------
+(use-package csharp-mode
+  :quelpa t
+  :mode "\\.cs\\'")
+
+(use-package typescript-mode
+  :quelpa t
+  :mode "\\.tsx\\'")
+
+;;; ==========================================================================
+;;; Section 4: Custom Set Variables - カスタマイズUIによる設定
+;;; ==========================================================================
+;; このセクションはcustomize UIによって自動的に編集されます。
+;; 手動で編集せず、設定は各use-packageブロックに移動していくのが理想です。
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -485,16 +229,11 @@
  ;; If there is more than one, they won't work right.
  '(flycheck-display-errors-delay 0.5)
  '(flycheck-display-errors-function
-   (lambda
-     (errors)
-     (let
-         ((messages
-           (mapcar #'flycheck-error-message errors)))
-       (popup-tip
-        (mapconcat 'identity messages "\12")))))
+   (lambda (errors)
+     (let ((messages (mapcar #'flycheck-error-message errors)))
+       (popup-tip (mapconcat 'identity messages "\12")))))
  '(irony-additional-clang-options '("-std=c++11"))
- '(package-selected-packages
-   '(magit-section python-mode blacken typescript-mode flycheck-rust flycheck-rtags flycheck company-rtags company-irony company matlab-mode gnu-elpa-keyring-update magit transient git-commit with-editor dash async popwin rainbow-delimiters quelpa-use-package use-package bind-key quelpa)))
+ '(package-selected-packages nil))
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -503,6 +242,8 @@
  ;; If there is more than one, they won't work right.
  )
 
+;; OPAM (OCaml Package Manager) の設定はそのまま残します
 ;; ## added by OPAM user-setup for emacs / base ## 56ab50dc8996d2bb95e7856a6eddb17b ## you can edit, but keep this line
-(require 'opam-user-setup "~/.emacs.d/opam-user-setup.el")
+(when (file-exists-p "~/.emacs.d/opam-user-setup.el")
+  (require 'opam-user-setup "~/.emacs.d/opam-user-setup.el"))
 ;; ## end of OPAM user-setup addition for emacs / base ## keep this line
