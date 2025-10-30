@@ -275,28 +275,6 @@ function escape_html() {
     perl -MCGI -e "print CGI::escapeHTML('$1'), qq|\n|"
 }
 
-function svn_show_all_diff() {
-    svn st -q $* | grep '^[AMCD]'
-}
-
-function svn_tkdiff_all() {
-    svn_show_all_diff $* | cut -c9- | xargs svn diff --diff-cmd=tkdiff
-}
-
-function svn_revert_all() {
-    svn_show_all_diff $* | cut -c9- | xargs svn revert
-}
-
-function gitMain() {
-    git config --global user.name "hiratch"
-    git config --global user.email "wanpac@gmail.com"
-}
-
-function gitMain() {
-    git config --global user.name "K.Hiramoto"
-    git config --global user.email "hiramoto.kazuhiro@nabla-mobility.com"
-}
-
 # ffmpeg: create comparison video
 function ffmpeg_cmp() {
     if [ $# = 3 ]; then
