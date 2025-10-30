@@ -86,6 +86,23 @@ if [ -f $ZUSRDIR/zshoptions ]; then
 fi
 
 
+### functions
+
+# 複雑な機能を実現する関数 function の設定ファイルを読み込む
+
+# Add the functions directory to fpath to enable autoloading of functions
+# (a function named 'foo' should be in a file named 'foo')
+fpath=($ZUSRDIR/functions $fpath)
+
+# Autoload specific functions from the fpath
+autoload -U pq2csv
+
+# Source the legacy file containing multiple functions
+if [ -f $ZUSRDIR/functions/legacy_functions ]; then
+    source $ZUSRDIR/functions/legacy_functions
+fi
+
+
 ### completions
 
 # 補完の設定を行う compctl の設定ファイルを読み込む
@@ -101,15 +118,6 @@ fi
 
 if [ -f $ZUSRDIR/aliases ]; then
     source $ZUSRDIR/aliases
-fi
-
-
-### functions
-
-# 複雑な機能を実現する関数 function の設定ファイルを読み込む
-
-if [ -f $ZUSRDIR/functions ]; then
-    source $ZUSRDIR/functions
 fi
 
 if [ -f $ZUSRDIR/token ]; then
