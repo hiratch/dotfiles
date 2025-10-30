@@ -1185,14 +1185,9 @@ compctl -K mhfseq -x 's[+][@]' -K mhcomp -S / -q - 's[-]' \
 
 _cache_hosts=(`perl -ne  'if (/^([a-zA-Z0-9.-]+)/) { print "$1\n";}' ~/.ssh/known_hosts`)
 
-autoload -U compinit && compinit -u
+
 
 compctl -g '*.cs' mcs
 compctl -g '*.exe' mono
 
-if type brew &>/dev/null; then
-    FPATH=$(brew --prefix)/share/zsh-completions:$(brew --prefix)/share/zsh/site-functions:$FPATH
 
-    autoload -Uz compinit
-    compinit
-fi

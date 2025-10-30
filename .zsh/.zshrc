@@ -85,30 +85,31 @@ if [ -f $ZUSRDIR/zshoptions ]; then
     source $ZUSRDIR/zshoptions
 fi
 
+### functions & completions setup
 
-### functions
-
-# 複雑な機能を実現する関数 function の設定ファイルを読み込む
-
-# Add the functions directory to fpath to enable autoloading of functions
-# (a function named 'foo' should be in a file named 'foo')
+# Add user's functions directory to fpath
 fpath=($ZUSRDIR/functions $fpath)
 
-# Autoload specific functions from the fpath
-autoload -U pq2csv
-
-# Source the legacy file containing multiple functions
-if [ -f $ZUSRDIR/functions/legacy_functions ]; then
-    source $ZUSRDIR/functions/legacy_functions
+# Add brew's completion paths to fpath
+if type brew &>/dev/null; then
+    fpath=($(brew --prefix)/share/zsh-completions $(brew --prefix)/share/zsh/site-functions $fpath)
 fi
 
+# Initialize the completion system
+# NOTE: This must be done after fpath is fully configured and before any compdef calls
+autoload -U compinit && compinit -u
 
-### completions
-
-# 補完の設定を行う compctl の設定ファイルを読み込む
-
+# Source completion definitions (compctl, compdef)
 if [ -f $ZUSRDIR/completions ]; then
     source $ZUSRDIR/completions
+fi
+
+# Explicitly autoload functions that are not being picked up automatically
+autoload -U pq2csv
+
+# Source legacy functions file
+if [ -f $ZUSRDIR/functions/legacy_functions ]; then
+    source $ZUSRDIR/functions/legacy_functions
 fi
 
 
