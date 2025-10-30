@@ -99,9 +99,9 @@ fi
 # NOTE: This must be done after fpath is fully configured and before any compdef calls
 autoload -U compinit && compinit -u
 
-# Source completion definitions (compctl, compdef)
-if [ -f $ZUSRDIR/completions ]; then
-    source $ZUSRDIR/completions
+# Source custom completion definitions
+if [ -f $ZUSRDIR/custom_completions.zsh ]; then
+    source $ZUSRDIR/custom_completions.zsh
 fi
 
 # Explicitly autoload functions that are not being picked up automatically
