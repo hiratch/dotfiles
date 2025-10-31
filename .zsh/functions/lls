@@ -1,0 +1,4 @@
+# ll
+function lls () {
+    ls -lAFo $1 | ${PAGER}
+}

@@ -1,0 +1,41 @@
+function ffmpeg_extract() {
+    # 引数が2個未満、または3個より多い場合は使い方を表示
+    if [ $# -lt 2 ] || [ $# -gt 3 ]; then
+        echo "usage:"
+        echo "ffmpeg_extract <input file> <output files> [rotation_degrees]"
+        echo "ex) ffmpeg_extract input.mp4 jpg/frame%05d.jpg"
+        echo "ex) ffmpeg_extract input.mp4 jpg/frame%05d.jpg 90"
+        echo "    [rotation_degrees] can be 0, 90, 180, or 270"
+        return 1
+    fi
+
+    local input_file=$1
+    local output_files=$2
+    # 3番目の引数が指定されていなければ、デフォルトで '0' を設定
+    local rotation=${3:-0}
+    # Zshの配列としてオプションを定義（安全のため）
+    local vf_opts=()
+
+    # rotation の値に応じて -vf (video filter) オプションをセット
+    case $rotation in
+        90)
+            # 90度時計回り
+            vf_opts=("-vf" "transpose=2")
+            ;;
+        180)
+            # 180度回転
+            vf_opts=("-vf" "hflip,vflip")
+            ;;
+        270)
+            # 270度時計回り (90度反時計回り)
+            vf_opts=("-vf" "transpose=1")
+            ;;
+        *)
+            # 0 または無効な値の場合はオプションなし
+            ;;
+    esac
+
+    # ${vf_opts[@]} は配列が空なら何も出力せず、
+    # 値があれば "-vf" "filter_name" のように展開される
+    ffmpeg -i $input_file ${vf_opts[@]} -q:v 0 -vsync passthrough -f image2 $output_files
+}

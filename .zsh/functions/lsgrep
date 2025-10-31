@@ -1,0 +1,5 @@
+# ls grep
+# shell> lsgrep conf
+function lsgrep() {
+    ls -1 | grep $* | xargs ls -la
+}
