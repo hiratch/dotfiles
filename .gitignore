@@ -11,6 +11,7 @@
 .zsh/.zsh_sessions
 .emacs.d/bookmarks
 .emacs.d/snippets
+.emacs.d/.cache
 .DS_STORE
 *~
 .gitconfig_local
