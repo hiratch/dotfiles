@@ -52,9 +52,7 @@ alias psg='psgrep'
 alias lg='lsgrep'
 alias d='ls -lFo'
 #alias cctl=compctl
-alias ns='netstat'
 alias em='emacs'
-alias ng=netgrep
 alias bc='bc -l'
 
 ###############################
