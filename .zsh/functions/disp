@@ -1,0 +1,5 @@
+# ネットワーク環境で良く使う X の DISPLAY の設定を「disp ホスト名」一発で
+function disp() {
+    export DISPLAY="$*:0.0"
+}
+

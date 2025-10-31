@@ -1,0 +1,26 @@
+# ps の出力の中から特定の文字列を検索する
+# shell> psgrep mysql
+function psgrep() {
+    case $SYSTEM {
+        sun)
+            echo "USER       PID %CPU %MEM   SZ  RSS TT STAT START  TIME COMMAND"
+            ps auxw | grep $* ;;
+        sol)
+            echo "USER       PID %CPU %MEM   SZ  RSS TT       S    START  TIME COMMAND"
+            \ps -auwx | grep $* ;;
+        sgi)
+            echo "     UID   PID  PPID  C    STIME TTY     TIME CMD"
+            ps -ef | grep $* ;;
+        gnu)
+            echo "USER       PID %CPU %MEM  SIZE   RSS TTY STAT START   TIME COMMAND"
+            ps auxw | grep -v grep | grep $* ;;
+        bsd)
+            echo "USER       PID %CPU %MEM   VSZ  RSS  TT  STAT STARTED       TIME COMMAND"
+            ps -auxww | grep -v grep | grep $* ;;
+        mac)
+            echo "USER     PID %CPU %MEM      VSZ    RSS  TT  STAT STARTED      TIME COMMAND"
+            ps -auxwww | grep -v grep | grep $* ;;
+        *)
+            ps auxw | grep $* ;;
+    }
+}

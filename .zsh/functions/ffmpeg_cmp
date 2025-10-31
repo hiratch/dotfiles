@@ -1,0 +1,14 @@
+# ffmpeg: create comparison video
+function ffmpeg_cmp() {
+    if [ $# = 3 ]; then
+        ffmpeg -i $1 -i $2 -filter_complex "
+                [0:0]pad=2*iw:ih[a];
+                [a][1:0]overlay=w[b];
+                [b]scale=iw/2:ih/2
+                " -vsync passthrough $3
+    else
+        echo "usage:"
+        echo "ffmpeg_cmp <input file1> <input_file2> <output file>"
+        echo "ex) ffmpeg_cmp input1.mp4 input2.mp4 output.mp4"
+    fi
+}

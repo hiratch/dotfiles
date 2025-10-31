@@ -1,0 +1,8 @@
+# csh 系の setenv をエミュレートする
+# shell> setenv
+function setenv() {
+    ev=$1
+    shift
+    export $ev="$*"
+}
+

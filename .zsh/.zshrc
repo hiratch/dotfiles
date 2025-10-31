@@ -105,13 +105,16 @@ if [ -f $ZUSRDIR/custom_completions.zsh ]; then
 fi
 
 # Explicitly autoload functions that are not being picked up automatically
+autoload -U setenv
+autoload -U disp
+autoload -U psgrep
+autoload -U lsgrep
+autoload -U lls
+autoload -U hisgrep
+autoload -U ffmpeg_cmp
+autoload -U ffmpeg_extract
+autoload -U ffmpeg_compose
 autoload -U pq2csv
-
-# Source legacy functions file
-if [ -f $ZUSRDIR/functions/legacy_functions ]; then
-    source $ZUSRDIR/functions/legacy_functions
-fi
-
 
 ### aliases
 

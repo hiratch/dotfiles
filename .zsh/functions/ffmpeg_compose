@@ -1,0 +1,35 @@
+function ffmpeg_compose() {
+    # 引数が3個未満、または4個より多い場合は使い方を表示
+    if [ $# -lt 3 ] || [ $# -gt 4 ]; then
+        echo "usage:"
+        echo "ffmpeg_compose <frame rate> <input files> <output file> [rotation_degrees]"
+        echo "ex) ffmpeg_compose 29.97 input/%05d.jpg out.mp4"
+        echo "ex) ffmpeg_compose 29.97 input/%05d.jpg out.mp4 90"
+        echo "    [rotation_degrees] can be 0, 90, 180, or 270"
+        return 1
+    fi
+
+    local frame_rate=$1
+    local input_files=$2
+    local output_file=$3
+    # 4番目の引数が指定されていなければ、デフォルトで '0' を設定
+    local rotation=${4:-0}
+    local vf_opts=()
+
+    # rotation の値に応じて -vf (video filter) オプションをセット
+    case $rotation in
+        90)
+            vf_opts=("-vf" "transpose=2")
+            ;;
+        180)
+            vf_opts=("-vf" "hflip,vflip")
+            ;;
+        270)
+            vf_opts=("-vf" "transpose=1")
+            ;;
+        *)
+            ;;
+    esac
+
+    ffmpeg -r $frame_rate -i $input_files ${vf_opts[@]} -q:v 0 $output_file
+}
