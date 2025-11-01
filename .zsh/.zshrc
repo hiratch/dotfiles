@@ -104,17 +104,14 @@ if [ -f $ZUSRDIR/custom_completions.zsh ]; then
     source $ZUSRDIR/custom_completions.zsh
 fi
 
-# Explicitly autoload functions that are not being picked up automatically
-autoload -U setenv
-autoload -U disp
-autoload -U psgrep
-autoload -U lsgrep
-autoload -U lls
-autoload -U hisgrep
-autoload -U ffmpeg_cmp
-autoload -U ffmpeg_extract
-autoload -U ffmpeg_compose
-autoload -U pq2csv
+# ディレクトリ内のすべてのファイルをループで autoload 対象にする
+# (ファイル名と関数名が一致していることが前提です)
+# (補足) for...in の後の (N) は、ファイルが1つもなくてもエラーにしないためのZshのオプションです
+for func_file in ~/.zsh/functions/*(N); do
+  # ${func_file:t} は、ファイルのフルパスからファイル名だけを抜き出すZshの機能です
+  # 例: /path/to/pq2csv -> pq2csv
+  autoload -U ${func_file:t}
+done
 
 ### aliases
 
