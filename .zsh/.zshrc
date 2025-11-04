@@ -87,6 +87,8 @@ fi
 
 ### functions & completions setup
 
+setopt completealiases
+
 # Add user's functions directory to fpath
 fpath=($ZUSRDIR/functions $fpath)
 
