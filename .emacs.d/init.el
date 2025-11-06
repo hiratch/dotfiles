@@ -1,41 +1,31 @@
 ;;; init.el --- A Modern Emacs Configuration with Quelpa and use-package
 
 ;;; ==========================================================================
-;;; Section 1: Bootstrap - パッケージ管理システムの準備
+;;; Section 1: Bootstrap - パッケージ管理システムの準備 (修正版)
 ;;; ==========================================================================
 (setq read-process-output-max (* 1024 1024))
-
 (setq package-archives
       '(("gnu"   . "https://elpa.gnu.org/packages/")
         ("melpa" . "https://melpa.org/packages/")
         ("org"   . "https://orgmode.org/elpa/")))
-
 (package-initialize)
-
-(unless (package-installed-p 'quelpa)
-  (with-temp-buffer
-    (url-insert-file-contents "https://raw.githubusercontent.com/quelpa/quelpa/master/quelpa.el")
-    (eval-buffer)
-    (quelpa-self-upgrade)))
+(unless package-archive-contents
+  (package-refresh-contents))
+(dolist (pkg '(quelpa use-package))
+  (unless (package-installed-p pkg)
+    (package-install pkg)))
 (require 'quelpa)
-
-(unless (package-installed-p 'use-package)
-  (package-refresh-contents)
-  (package-install 'use-package))
 (require 'use-package)
-
 (quelpa
  '(quelpa-use-package
    :fetcher git
    :url "https://github.com/quelpa/quelpa-use-package.git"))
 (require 'quelpa-use-package)
-
+(add-to-list 'load-path (expand-file-name "quelpa/packages" user-emacs-directory))
 
 ;;; ==========================================================================
 ;;; Section 2: Core Emacs Settings - Emacsの基本設定
 ;;; ==========================================================================
-
-;; UI設定 --------------------------------------------------------------------
 (setq-default
  inhibit-startup-message t
  line-number-mode t
@@ -46,7 +36,6 @@
  truncate-lines t
  find-file-visit-truename t
  read-file-name-completion-ignore-case t)
-
 (tool-bar-mode -1)
 (menu-bar-mode -1)
 (scroll-bar-mode -1)
@@ -54,7 +43,6 @@
 (setq make-backup-files nil)
 (setq auto-save-default nil)
 (setq auto-save-list-file-prefix nil)
-
 (setq default-frame-alist
       '((foreground-color . "gray85")
         (background-color . "gray2")
@@ -68,19 +56,13 @@
         (cursor-type . box)
         (cursor-color . "red")
         (alpha . (90 70))))
-
 (set-face-background 'region "forest green")
-
-;; キーバインド --------------------------------------------------------------
 (global-set-key (kbd "C-h") 'delete-backward-char)
 (global-set-key (kbd "M-g") 'goto-line)
 (global-set-key (kbd "M-s") 'shell)
 (global-set-key (kbd "C-x k") 'kill-current-buffer)
-
 (windmove-default-keybindings)
 (setq windmove-wrap-around t)
-
-;; 復元機能: [EOF]マークをバッファ末尾に表示 --------------------------------
 (defun set-buffer-end-mark ()
   (let ((overlay (make-overlay (point-max) (point-max))))
     (overlay-put overlay 'before-string #("[EOF]" 0 5 (face highlight)))
@@ -89,8 +71,6 @@
                      (when after
                        (move-overlay overlay (point-max) (point-max))))))))
 (add-hook 'find-file-hooks 'set-buffer-end-mark)
-
-;; for macOS: CommandキーをMetaキーとして扱う
 (when (eq system-type 'darwin)
   (setq ns-command-modifier 'meta))
 
@@ -99,7 +79,7 @@
 ;;; ==========================================================================
 
 ;; 汎用ユーティリティ ----------------------------------------------------
-(use-package bind-key ;; GDB設定で利用
+(use-package bind-key
   :quelpa t)
 
 (use-package popwin
@@ -108,7 +88,13 @@
   (popwin-mode 1)
   (setq popwin:popup-window-position 'bottom))
 
-;; 復元機能: rainbow-delimitersの色を強調
+;;【変更】electric-buffer-list をインストールし、キーバインドを設定
+(use-package ebuff-menu
+  :quelpa t
+  :bind (("C-x C-b" . electric-buffer-list))
+  :config
+  (define-key electric-buffer-menu-mode-map "x" 'Buffer-menu-execute))
+
 (use-package rainbow-delimiters
   :quelpa t
   :hook (prog-mode . rainbow-delimiters-mode)
@@ -122,16 +108,13 @@
      do
      (let ((face (intern (format "rainbow-delimiters-depth-%d-face" index))))
       (cl-callf color-saturate-name (face-foreground face) 30))))
-  ;; 起動時に一度だけ実行
   (add-hook 'emacs-startup-hook 'rainbow-delimiters-using-stronger-colors))
 
-;; 復元機能: cua-modeの連番挿入機能を拡張
 (use-package cua-base
   :quelpa t
   :config
   (cua-mode 1)
-  (setq cua-enable-cua-keys nil) ; C-x, C-cなどを上書きしない
-  ;; 連番挿入の拡張
+  (setq cua-enable-cua-keys nil)
   (defadvice cua-sequence-rectangle (around my-cua-sequence-rectangle activate)
     "連番を挿入するとき、紫のところの文字を上書きしないで左にずらす."
     (interactive
@@ -152,7 +135,6 @@
            (yank)
            (setq first (+ first incr))))))
 
-;; Magit (Gitクライアント)
 (use-package magit
   :quelpa t
   :bind (("C-x g" . magit-status)))
@@ -160,16 +142,13 @@
 (use-package compat
   :quelpa (compat :fetcher github :repo "emacs-compat/compat"))
 
-;; 復元機能: topsy (which-functionの代替)
 (use-package topsy
   :quelpa (topsy :fetcher github :repo "alphapapa/topsy.el")
   :hook ((prog-mode . topsy-mode)
          (magit-section-mode . topsy-mode))
   :config
-  ;; topsyをヘッダーラインに表示するための設定
   (delete (assoc 'which-func-mode mode-line-format) mode-line-format)
   (setq-default header-line-format '(which-func-mode ("" which-func-format))))
-
 
 ;; コード補完 & スニペット -----------------------------------------------
 (use-package yasnippet
@@ -185,31 +164,96 @@
 
 (use-package company
   :quelpa t
-  :after yasnippet
-  :hook (after-init . global-company-mode)
+  :after (eglot yasnippet)
   :bind (("C-M-i" . company-complete))
   :config
+  ;; python-modeが起動した「後」に、強制的にcompany-modeを有効にする
+  (advice-add 'python-mode :after #'company-mode)
+
+  ;; 自動ポップアップ設定
+  (setq company-idle-delay 0.2)
+  (setq company-minimum-prefix-length 2)
+
   (define-key company-active-map (kbd "C-n") 'company-select-next)
   (define-key company-active-map (kbd "C-p") 'company-select-previous)
   (define-key company-active-map (kbd "<tab>") 'company-complete-selection)
   (add-to-list 'company-backends 'company-yasnippet))
 
+
 (use-package yasnippet-snippets
   :quelpa t
   :after yasnippet)
-
 
 ;; 静的解析 (Flycheck) ----------------------------------------------------
 (use-package flycheck
   :quelpa t
   :hook (after-init . global-flycheck-mode))
 
+;; Tree-sitterによる高度なシンタックスハイライトを有効化
+(use-package tree-sitter
+  :ensure t
+  :config
+  (require 'tree-sitter-langs)
+  (global-tree-sitter-mode)
+  (add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode))
+
+(use-package tree-sitter-langs
+  :ensure t
+  :after tree-sitter)
+
+;; python-modeの代わりに、tree-sitterベースのpython-ts-modeをデフォルトにする
+(setq major-mode-remap-alist
+      '((python-mode. python-ts-mode)))
+
+;; Corfuによるモダンな補完UIを有効化
+(use-package corfu
+  :ensure t
+  :custom
+  (corfu-cycle t)                ; 補完候補を循環選択できるようにする
+  (corfu-auto t)                 ; 自動で補完を開始する
+  (corfu-separator?\s)          ; スペースで区切って絞り込み
+  (corfu-quit-at-boundary 'separator)
+  :init
+  (global-corfu-mode)
+  ;; 補完候補の詳細情報をポップアップで表示する機能を有効化
+  (corfu-popupinfo-mode))
+
+;; (オプション) TABキーで補完を確定、またはインデントを行うように設定
+;; Emacsに慣れていない場合は、この設定が直感的でおすすめです
+(setq tab-always-indent 'complete)
+
+;; LSPクライアント(eglot)の設定 ----------------------------------------------
+(use-package eglot
+  :ensure nil ; Emacs 29+ に標準搭載
+  ;; tree-sitterモードか通常のpython-modeで自動起動
+  :hook ((python-ts-mode. eglot-ensure)
+         (python-mode. eglot-ensure))
+  :config
+  ;; サーバーからの応答を待つタイムアウトを120秒（2分）に延長
+  (setq eglot-connect-timeout 120)
+
+  ;; python-modeとpython-ts-modeの両方で "pylsp" を使うように指定
+  ;; :configブロック内にあるため、eglotの読み込み後に安全に実行される
+  (add-to-list 'eglot-server-programs '(python-mode. ("pylsp")))
+  (add-to-list 'eglot-server-programs '(python-ts-mode. ("pylsp"))))
+
+;; TRAMP経由でDockerコンテナ内のファイルを開いた際に、
+;; eglotにコンテナ内の正しいプロジェクトルートを動的に教えるためのヘルパー関数
+(defun my-eglot-dynamic-docker-project-root-connect (server)
+  "When in a TRAMP docker buffer, dynamically find the container-local
+project root and pass it to eglot."
+  ;; `project-root`はTRAMPのフルパスを返すので、
+  ;; `tramp-file-name-localname`でコンテナ内のパス部分だけを抽出する
+  (let* ((project-tramp-root (project-root (project-current)))
+         (container-project-root (tramp-file-name-localname
+                                  (tramp-dissect-file-name project-tramp-root))))
+    ;; デバッグ用に、どのパスをプロジェクトルートとして使うかを表示
+    (message "Eglot: Forcing project root to '%s' inside container" container-project-root)
+    (eglot-connect server :project-root container-project-root)))
 
 ;; 言語別設定 -------------------------------------------------------------
-
-;; 復元機能: C言語モードで末尾の空白を表示
 (use-package cc-mode
-  :ensure nil ; ビルトインパッケージ
+  :ensure nil
   :hook (c-mode-common-hook . (lambda () (setq show-trailing-whitespace t))))
 
 (use-package irony
@@ -261,21 +305,28 @@
   :quelpa t
   :mode "\\.tsx\\'")
 
-;; 復元機能: GDB関連の詳細な設定
 (use-package gud
-  :ensure nil ; ビルトインパッケージ
+  :ensure nil
   :init
   (bind-keys :map mode-specific-map
              ("C-c C-SPC" . gud-break))
   (add-hook 'gdb-mode-hook '(lambda () (gud-tooltip-mode t)))
   :config
-  (setq gdb-many-windows t)
+  (setq g-many-windows t)
   (setq gdb-use-serapate-io-buffer t)
   (setq gud-tooltip-echo-area nil))
 
+;;; ==========================================================================
+;;; Section 4: Remote Development - Docker連携 (修正版)
+;;; ==========================================================================
+;; TRAMPのキャッシュを有効にし、コンテナへの再接続を高速化する設定のみ残す
+(use-package tramp
+  :ensure nil ; ビルトインパッケージ
+  :config
+  (setq tramp-persistency-file-name "~/.emacs.d/tramp"))
 
 ;;; ==========================================================================
-;;; Section 4: Custom Set Variables - カスタマイズUIによる設定
+;;; Section 5: Custom Set Variables - カスタマイズUIによる設定
 ;;; ==========================================================================
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -284,13 +335,12 @@
  ;; If there is more than one, they won't work right.
  '(flycheck-display-errors-delay 0.5)
  '(flycheck-display-errors-function
-   (lambda
-     (errors)
-     (let
-         ((messages
-           (mapcar #'flycheck-error-message errors)))
-       (popup-tip
-        (mapconcat 'identity messages "\12")))))
+   (lambda (errors)
+     (let ((messages (mapcar #'flycheck-error-message errors)))
+       (popup-tip (mapconcat 'identity messages "\12")))))
+ '(ignored-local-variable-values
+   '((eglot-project-connect-function
+      . my-eglot-dynamic-docker-project-root-connect)))
  '(irony-additional-clang-options '("-std=c++11")))
 
 (custom-set-faces
@@ -300,6 +350,5 @@
  ;; If there is more than one, they won't work right.
  )
 
-;; OPAM (OCaml Package Manager) の設定はそのまま残します
 (when (file-exists-p "~/.emacs.d/opam-user-setup.el")
   (require 'opam-user-setup "~/.emacs.d/opam-user-setup.el"))
