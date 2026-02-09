@@ -213,9 +213,23 @@
   (global-tree-sitter-mode)
   (add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode))
 
+(use-package treesit-auto
+  :ensure t
+  :custom
+  (treesit-auto-install 'prompt) ;; 未インストールの言語を開いた時にインストールするか尋ねる
+  :config
+  (treesit-auto-add-to-auto-mode-alist 'all) ;; すべての言語でTree-sitterモードを有効にする
+  (global-treesit-auto-mode))
+
+
 (use-package tree-sitter-langs
   :ensure t
   :after tree-sitter)
+
+(use-package envrc
+  :ensure t
+  :config
+  (envrc-global-mode))
 
 ;; デフォルトモードのリマップ (標準モード -> Tree-sitter版)
 (setq major-mode-remap-alist
@@ -309,17 +323,20 @@ project root and pass it to eglot."
 ;;; Section 7: Custom Variables - 自動生成された設定
 ;;; ==========================================================================
 (custom-set-variables
- ;; 必要最低限のものだけ残しています
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
  '(ignored-local-variable-values
-   '((eglot-project-connect-function
-      . my-eglot-dynamic-docker-project-root-connect)))
+   '((eglot-project-connect-function . my-eglot-dynamic-docker-project-root-connect)))
  '(package-selected-packages
-   '(corfu csharp-mode magit matlab-mode popwin
-           quelpa-use-package rainbow-delimiters topsy
-           tree-sitter-langs typescript-mode
-           yasnippet-snippets)))
+   '(corfu csharp-mode magit matlab-mode popwin quelpa-use-package rainbow-delimiters topsy tree-sitter-langs typescript-mode yasnippet-snippets)))
 
 (custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
  )
 
 (when (file-exists-p "~/.emacs.d/opam-user-setup.el")
