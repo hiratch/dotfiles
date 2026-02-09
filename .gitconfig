@@ -36,3 +36,5 @@
         ff = only
 [core]
 	symlinks = true
+[safe]
+	directory = /app
