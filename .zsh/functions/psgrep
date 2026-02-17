@@ -1,6 +1,11 @@
 # ps の出力の中から特定の文字列を検索する
 # shell> psgrep mysql
 function psgrep() {
+    if [ -z "$1" ]; then
+        echo "Usage: psgrep [search_term]"
+        return 1
+    fi
+
     case $SYSTEM {
         sun)
             echo "USER       PID %CPU %MEM   SZ  RSS TT STAT START  TIME COMMAND"
