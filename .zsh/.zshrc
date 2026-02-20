@@ -188,22 +188,6 @@ elif [ -d /usr/local/Cellar/halide/2017.10.30 ]; then
     export HALIDE_SDK_ROOT=/usr/local/Cellar/halide/2017.10.30
 fi  
 
-case $SYSTEM in
-    mac)
-        if [ -d /opt/homebrew/opt/llvm ]; then
-            export PATH=/opt/homebrew/opt/llvm/bin:$PATH
-            export DYLD_LIBRARY_PATH=/opt/homebrew/opt/llvm/lib:$DYLD_LIBRARY_PATH
-            export LDFLAGS="-L/opt/homebrew/opt/llvm/lib"
-            export CPPFLAGS="-I/opt/homebrew/opt/llvm/include"
-        elif [ -d /usr/local/opt/llvm/ ]; then
-            export PATH=/usr/local/opt/llvm/bin:$PATH
-            export DYLD_LIBRARY_PATH=/usr/local/opt/llvm/lib:$DYLD_LIBRARY_PATH
-            export LDFLAGS="-L/usr/local/opt/llvm/lib"
-            export CPPFLAGS="-I/usr/local/opt/llvm/include"
-        fi
-        ;;
-esac
-
 # for Mac
 if [ -d /opt/local/bin ]; then
     export PATH=/opt/local/bin:$PATH

@@ -29,7 +29,7 @@ brew "btop"
 brew "gh"
 brew "duckdb"
 brew "direnv"
-cask "emacs-mac"
+brew "emacs-mac", args: ["with-modules", "with-native-comp", "with-mac-metal", "with-starter"]
 cask "factor"
 cask "meld"
 cask "notion"
