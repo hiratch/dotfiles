@@ -81,6 +81,10 @@
 (when (eq system-type 'darwin)
   (setq ns-command-modifier 'meta))
 
+;; ネイティブコンパイルの非同期警告をポップアップさせない
+(when (boundp 'native-comp-async-report-warnings-errors)
+  (setq native-comp-async-report-warnings-errors 'silent))
+
 ;; ファイル末尾のマーク設定
 (defun set-buffer-end-mark ()
   (let ((overlay (make-overlay (point-max) (point-max))))
