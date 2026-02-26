@@ -1,39 +1,55 @@
+# ==========================================
+# Mac / Linux 共通のパッケージ (CLI・開発ツール)
+# ==========================================
 tap "genkiroid/cert"
-tap "railwaycat/emacsmacport"
-brew "bat"
-brew "ripgrep"
+
 brew "ast-grep"
-brew "fd"
+brew "bat"
+brew "btop"
 brew "byobu"
 brew "cmake"
+brew "cmigemo"
 brew "curl"
+brew "direnv"
+brew "duckdb"
+brew "fd"
 brew "ffmpeg"
+brew "gcc"
+brew "gh"
 brew "git"
-brew "git-gui"
+brew "git-delta"
 brew "git-lfs"
 brew "imagemagick"
-brew "iproute2mac"
+brew "libgccjit"
 brew "llvm"
 brew "lv"
 brew "pipenv"
 brew "pwgen"
 brew "pyenv"
 brew "pyenv-virtualenv"
+brew "ripgrep"
 brew "uv"
-brew "tkdiff"
 brew "vim"
 brew "zsh-completions"
 brew "genkiroid/cert/cert"
-brew "cmigemo"
-brew "btop"
-brew "gh"
-brew "duckdb"
-brew "direnv"
-brew "gcc"
-brew "libgccjit"
-brew "git-delta"
-brew "emacs-mac", args: ["with-modules", "with-native-comp", "with-mac-metal", "with-starter"]
-cask "factor"
-cask "meld"
-cask "notion"
-cask "docker-desktop"
+
+# ==========================================
+# macOS 専用のパッケージ (GUI・Mac特有ツール)
+# ==========================================
+if OS.mac?
+  tap "railwaycat/emacsmacport"
+  
+  # Mac特有のコマンドラインツール
+  brew "iproute2mac" # Linuxは標準のipコマンドがあるため不要
+  brew "git-gui"     # GUIを含むためMac限定に配置
+  brew "tkdiff"      # GUI(Tcl/Tk)を含むためMac限定に配置
+  
+  # Emacs (Mac port)
+  brew "emacs-mac", args: ["with-modules", "with-native-comp", "with-mac-metal", "with-starter"]
+  
+  # GUIアプリケーション (Cask)
+  cask "docker-desktop"
+  cask "factor"
+  cask "meld"
+  cask "notion"
+end
