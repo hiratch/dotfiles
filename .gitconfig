@@ -15,6 +15,33 @@
 [diff]
 	tool = meld
 
+[pager]
+        diff = delta
+        log = delta
+        reflog = delta
+        show = delta
+
+[interactive]
+        diffFilter = delta --color-only
+
+[delta]
+        features = side-by-side line-numbers decorations
+        whitespace-error-style = 22 reverse
+        syntax-theme = GitHub
+
+[delta "unobtrusive-line-numbers"]
+    line-numbers = true
+    line-numbers-left-format = "{nm:>4}┊"
+    line-numbers-right-format = "{np:>4}│"
+    line-numbers-left-style = blue
+    line-numbers-right-style = blue
+
+[delta "decorations"]
+    commit-decoration-style =  box ul
+    file-style = bold yellow ul
+    file-decoration-style = none
+    hunk-header-decoration-style = cyan box ul
+
 [credential]
 	helper = osxkeychain
 
