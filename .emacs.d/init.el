@@ -220,11 +220,15 @@
 (use-package treesit-auto
   :ensure t
   :custom
-  (treesit-auto-install 'prompt) ;; 未インストールの言語を開いた時にインストールするか尋ねる
+  (treesit-auto-install 'prompt) 
   :config
-  (treesit-auto-add-to-auto-mode-alist 'all) ;; すべての言語でTree-sitterモードを有効にする
-  (global-treesit-auto-mode))
+  ;; treesit-autoが動くタイミングで、確実に標準のtreesitをロードさせて変数を定義する
+  (require 'treesit)
+  (add-to-list 'treesit-language-source-alist
+               '(yaml "https://github.com/ikatyang/tree-sitter-yaml"))
 
+  (treesit-auto-add-to-auto-mode-alist 'all)
+  (global-treesit-auto-mode))
 
 (use-package tree-sitter-langs
   :ensure t
