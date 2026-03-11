@@ -8,8 +8,12 @@ define deg(x) {
   return x * 180 / pi
 }
 
-define t(x) {
+define tan(x) {
   return s(x) / c(x)
+}
+
+define t(x) {
+  return tan(x)
 }
 
 define sin(x) { return s(x) }
@@ -89,4 +93,30 @@ define dec2dms(dec) {
     return (deg * 100 + min);
 }
 
+define void help() {
+    print "--- My Functions ---\n"
+    print "  pi              \n"
+    print "  rad(x)          : convert x[deg] to radian\n"
+    print "  deg(x)          : convert x[rad] to degree\n"
+    print "  s(x) = sin(x)   : x [rad]\n"
+    print "  c(x) = cos(x)   : x [rad]\n"
+    print "  t(x) = tan(x)   : x [rad]\n"
+    print "  t(x) = tan(x)   : x [rad]\n"
+    print "  hypot(x, y)     : hypot()\n"
+    print "  feet2meter(x)   : cconvert the numbern\n"
+    print "  meter2feet(x)   : cconvert the numbern\n"
+    print "  nm2meter(x)     : cconvert the numbern\n"
+    print "  meter2nm(x)     : cconvert the numbern\n"
+    print "  ft_nm2deg(y, x) : y[ft], x[nm]\n"
+    print "  mach_from_celsius(t) : t[K]\n"
+    print "  meter_per_sec2kt(v)  : v[m/s]\n"
+    print "  kt2meter_per_sec(v)  : v[kt]\n"
+    print "  dms2dec(dms)    : dgree minute second -> decimal\n"
+    print "  dec2dms(dms)    : deciman -> dgree minute second\n"
+    print "--------------------\n"
+}
 
+/* ついでに短い名前でも呼べるようにしておくと便利 */
+define void h() {
+    help()
+}
