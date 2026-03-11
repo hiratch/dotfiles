@@ -21,7 +21,7 @@ if [ "$OS" = "Linux" ]; then
         
         # sudo is not required here because the script is already running as root
         apt-get update
-        apt-get install -y build-essential git curl zsh tmux byobu emacs vim
+        apt-get install -y build-essential curl zsh tmux byobu emacs vim
         
         echo "System requirements installation successfully completed."
     else
