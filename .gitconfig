@@ -26,21 +26,33 @@
 
 [delta]
         features = side-by-side line-numbers decorations
+        # ダークターミナルに最適なテーマに変更
+        syntax-theme = Monokai Extended
+        # 背景の透過感を活かすため、色の強度を抑えめに設定
+        minus-style = syntax "#3f0001"
+        plus-style  = syntax "#003800"
+        # 変更箇所の強調色
+        minus-emph-style = syntax "#80002a"
+        plus-emph-style	 = syntax "#006100"
         whitespace-error-style = 22 reverse
-        syntax-theme = GitHub
 
 [delta "unobtrusive-line-numbers"]
-    line-numbers = true
-    line-numbers-left-format = "{nm:>4}┊"
-    line-numbers-right-format = "{np:>4}│"
-    line-numbers-left-style = blue
-    line-numbers-right-style = blue
+        line-numbers = true
+        # 行番号の色を「青」から「グレー」系に変更して背景に馴染ませる
+        line-numbers-left-format = "{nm:>4}┊"
+        line-numbers-right-format = "{np:>4}│"
+        line-numbers-left-style = "#444444"
+        line-numbers-right-style = "#444444"
+        # 現在の行（変更行）の番号を強調
+        line-numbers-minus-style = red
+        line-numbers-plus-style = green
 
 [delta "decorations"]
-    commit-decoration-style =  box ul
-    file-style = bold yellow ul
-    file-decoration-style = none
-    hunk-header-decoration-style = cyan box ul
+        commit-decoration-style = bold yellow box ul
+	file-style = bold yellow ul
+	file-decoration-style = none
+	# セクション見出しを少し見やすく
+	hunk-header-decoration-style = blue box
 
 [credential]
 	helper = osxkeychain
@@ -63,5 +75,3 @@
         ff = only
 [core]
 	symlinks = true
-[safe]
-	directory = /app
