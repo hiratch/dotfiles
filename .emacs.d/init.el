@@ -20,6 +20,11 @@
 (require 'quelpa)
 (require 'use-package)
 
+;; macOSのBSD tarはPaxHeaderを生成しquelpaのtarパーサーと非互換のためGNU tarを使用
+(when (and (eq system-type 'darwin)
+           (executable-find "gtar"))
+  (setq quelpa-build-tar-executable "gtar"))
+
 ;; quelpa-use-package のセットアップ
 (quelpa
  '(quelpa-use-package
