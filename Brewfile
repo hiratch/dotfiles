@@ -45,7 +45,7 @@ if OS.mac?
   brew "tkdiff"      # GUI(Tcl/Tk)を含むためMac限定に配置
   
   # GUIアプリケーション (Cask)
-  cask "emacs-mac"
+  cask "railwaycat/emacsmacport/emacs-mac"
   cask "docker-desktop"
   cask "factor"
   cask "meld"
