@@ -51,7 +51,7 @@ if OS.mac?
   cask "meld"
   cask "notion"
   cask "slack"
-  cask "claude-caude"
+  cask "claude-code"
   cask "iterm2"
   cask "google-chrome"
   cask "google-japanese-ime"
