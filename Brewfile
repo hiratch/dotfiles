@@ -44,12 +44,15 @@ if OS.mac?
   brew "git-gui"     # GUIを含むためMac限定に配置
   brew "tkdiff"      # GUI(Tcl/Tk)を含むためMac限定に配置
   
-  # Emacs (Mac port)
-  brew "emacs-mac", args: ["with-modules", "with-native-comp", "with-mac-metal", "with-starter"]
-  
   # GUIアプリケーション (Cask)
+  cask "emacs-mac"
   cask "docker-desktop"
   cask "factor"
   cask "meld"
   cask "notion"
+  cask "slack"
+  cask "claude-caude"
+  cask "iterm2"
+  cask "google-chrome"
+  cask "google-japanese-ime"
 end
