@@ -308,6 +308,11 @@ if [ -d /opt/homebrew/lib/ruby/gems/3.4.0/bin ]; then
     export PATH=/opt/homebrew/lib/ruby/gems/3.4.0/bin:$PATH
 fi
 
+# Claude Code
+if [ -d $HOME/.local/bin ]; then
+    export PATH="$HOME/.local/bin:$PATH"
+fi
+
 
 export SCREENDIR=$HOME/.screen
 
