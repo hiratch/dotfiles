@@ -27,6 +27,7 @@ fi
 echo "Homebrewによるパッケージのインストールを実行します..."
 if [ -f "$HOME/dotfiles/Brewfile" ]; then
     # fzf, ripgrep, bat などの個人用ツールは Brewfile に記載しておきます
+    brew tap railwaycat/emacsmacport
     brew bundle --file="$HOME/dotfiles/Brewfile"
 else
     echo "警告: $HOME/dotfiles/Brewfile が見つかりません。スキップします。"
