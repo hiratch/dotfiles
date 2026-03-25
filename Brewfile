@@ -30,8 +30,11 @@ brew "pyenv-virtualenv"
 brew "ripgrep"
 brew "uv"
 brew "vim"
+brew "zsh"
 brew "zsh-completions"
 brew "genkiroid/cert/cert"
+
+brew "awscli"
 
 # ==========================================
 # macOS 専用のパッケージ (GUI・Mac特有ツール)
@@ -43,6 +46,8 @@ if OS.mac?
   brew "iproute2mac" # Linuxは標準のipコマンドがあるため不要
   brew "git-gui"     # GUIを含むためMac限定に配置
   brew "tkdiff"      # GUI(Tcl/Tk)を含むためMac限定に配置
+  brew "coreutils"
+  brew "gnu-tar"
   
   # GUIアプリケーション (Cask)
   cask "railwaycat/emacsmacport/emacs-mac"

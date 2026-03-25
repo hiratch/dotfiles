@@ -49,6 +49,7 @@ ln -sfn "$HOME/dotfiles/.bc" "$HOME/.bc"
 ln -sfn "$HOME/dotfiles/.gitconfig" "$HOME/.gitconfig"
 ln -sfn "$HOME/dotfiles/.gitignore" "$HOME/.gitignore"
 ln -sfn "$HOME/dotfiles/.screenrc" "$HOME/.screenrc"
+ln -sfn "$HOME/dotfiles/Brewfile" "$HOME/Brewfile"
 
 
 echo "ユーザー環境のセットアップが完了しました！"
