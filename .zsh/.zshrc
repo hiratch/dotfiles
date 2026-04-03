@@ -262,42 +262,7 @@ if [ -f $ZUSRDIR/zshrc.user ]; then
     source $ZUSRDIR/zshrc.user
 fi
 
-# PYENV
-if [ -d $HOME/Tool/pyenv ]; then
-    export PYENV_ROOT="$HOME/Tool/pyenv"
-    export PATH="$PYENV_ROOT/bin:$PATH"
-elif [ -d $HOME/Tool/.pyenv ]; then
-    export PYENV_ROOT="$HOME/.pyenv"
-    export PATH="$PYENV_ROOT/bin:$PATH"
-elif [ -d $HOME/.pyenv ]; then
-    export PYENV_ROOT="$HOME/.pyenv"
-    export PATH="$PYENV_ROOT/bin:$PATH"
-fi
-
-type pyenv > /dev/null 2>&1
-if [ $? -eq 0 ]; then
-    eval "$(pyenv init -)"
-    eval "$(pyenv init --path)"
-    eval "$(pyenv virtualenv-init -)"
-fi
-
-
-
-type pipenv > /dev/null 2>&1
-if [ $? -eq 0 ]; then
-    eval "$(_PIPENV_COMPLETE=zsh_source pipenv)"
-#    eval "$(pipenv --completion)"
-fi
-
-type pip > /dev/null 2>&1
-if [ $? -eq 0 ]; then
-    eval "`pip completion --zsh`"
-fi
-
-# poetry
-if [ -d $HOME/.poetry ]; then
-    export PATH=$HOME/.poetry/bin:$PATH
-fi
+# Python: uv で統一管理（pyenv, pipenv, poetry は不要）
 
 # ruby
 if [ -d /opt/homebrew/opt/ruby/bin ]; then

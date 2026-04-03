@@ -51,5 +51,8 @@ ln -sfn "$HOME/dotfiles/.gitignore" "$HOME/.gitignore"
 ln -sfn "$HOME/dotfiles/.screenrc" "$HOME/.screenrc"
 ln -sfn "$HOME/dotfiles/Brewfile" "$HOME/Brewfile"
 
+# .claudeディレクトリとkeybindings.jsonのシンボリックリンク展開
+mkdir -p "$HOME/.claude"
+ln -sf "$HOME/dotfiles/.claude/keybindings.json" "$HOME/.claude/keybindings.json"
 
 echo "ユーザー環境のセットアップが完了しました！"
