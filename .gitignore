@@ -7,6 +7,7 @@
 .emacs.d/transient
 .emacs.d/tramp
 .emacs.d/kkcrc
+.emacs.d/tree-sitter
 .zsh/token
 .zsh/.zsh_sessions
 .emacs.d/bookmarks
