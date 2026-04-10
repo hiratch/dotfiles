@@ -75,3 +75,5 @@
         ff = only
 [core]
 	symlinks = true
+[init]
+	defaultBranch = main
