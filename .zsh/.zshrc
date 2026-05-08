@@ -2,24 +2,28 @@
 #
 echo "Loading $ZDOTDIR/.zshrc"
 
-if [ -f ~/.ssh-agent ]; then
-    . ~/.ssh-agent >/dev/null
-fi
+# ssh-agent 管理は macOS 以外で実施
+# macOS は launchd の system ssh-agent + Keychain (~/.ssh/config の UseKeychain/AddKeysToAgent) で透過処理
+if [ "$SYSTEM" != "mac" ]; then
+    if [ -f ~/.ssh-agent ]; then
+        . ~/.ssh-agent >/dev/null
+    fi
 
-# ssh-agentが起動しているかを確認する
-# - $SSH_AGENT_PIDが設定されていない (ファイルがなかった)
-# - または、そのPIDのプロセスが存在しない (再起動などで古くなった)
-# 上記のいずれかの場合は、新しいエージェントを起動する
-if [ -z "$SSH_AGENT_PID" ] || ! kill -0 "$SSH_AGENT_PID" 2>/dev/null; then
-    # 新しいエージェントを起動し、その設定情報をファイルに上書き保存
-    ssh-agent > ~/.ssh-agent
-    # 新しく作成した設定ファイルを読み込む
-    . ~/.ssh-agent >/dev/null
-fi
+    # ssh-agentが起動しているかを確認する
+    # - $SSH_AGENT_PIDが設定されていない (ファイルがなかった)
+    # - または、そのPIDのプロセスが存在しない (再起動などで古くなった)
+    # 上記のいずれかの場合は、新しいエージェントを起動する
+    if [ -z "$SSH_AGENT_PID" ] || ! kill -0 "$SSH_AGENT_PID" 2>/dev/null; then
+        # 新しいエージェントを起動し、その設定情報をファイルに上書き保存
+        ssh-agent > ~/.ssh-agent
+        # 新しく作成した設定ファイルを読み込む
+        . ~/.ssh-agent >/dev/null
+    fi
 
-# この時点で、環境変数は必ず有効なssh-agentのものを指している
-# 最後に、エージェントに鍵が登録されていなければ登録する
-ssh-add -l >& /dev/null || ssh-add
+    # この時点で、環境変数は必ず有効なssh-agentのものを指している
+    # 最後に、エージェントに鍵が登録されていなければ登録する
+    ssh-add -l >& /dev/null || ssh-add
+fi
 
 ### shell variables
 
