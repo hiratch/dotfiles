@@ -253,15 +253,6 @@ route () {
 
 # ユーザ独自の設定ファイルがあれば読み込む
 
-# pager
-type lv > /dev/null 2>&1
-if [ $? -eq 0 ]; then
-    export PAGER=lv
-else
-    export PAGER=less
-fi
-export BAT_PAGER=less
-
 if [ -f $ZUSRDIR/zshrc.user ]; then
     source $ZUSRDIR/zshrc.user
 fi
