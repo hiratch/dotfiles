@@ -85,15 +85,8 @@ export LC_ALL=$LANG
 export EDITOR=vim
 #export EDITOR='vim'
 #export LANG=ja_JP.ujis
-export PAGER="less"
-#export LESSCHARSET=japanese-sjis
-#export LESSCHARSET=japanese
-# #export LESS='-irqMM'
-# export LESS='-iqMM'
-# unset  LESSOPEN
-#export LV='-z -Ia -Oe'
-#export RUBYLIB=.:/usr/lib/ruby/1.6
-#export PAGER=lv
+export PAGER=less
+export LESS='-R -i -M -F -X'
 export GZIP='-v9N'
 #export XMODIFIERS=@im=kinput2
 export XMODIFIERS="@im=skkinput"
