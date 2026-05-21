@@ -54,6 +54,7 @@ ln -sfn "$HOME/dotfiles/Brewfile" "$HOME/Brewfile"
 # .claudeディレクトリとkeybindings.jsonのシンボリックリンク展開
 mkdir -p "$HOME/.claude"
 #ln -sf "$HOME/dotfiles/.claude/keybindings.json" "$HOME/.claude/keybindings.json"
+ln -sfn "$HOME/dotfiles/.claude/CLAUDE.md" "$HOME/.claude/CLAUDE.md"
 ln -sfn "$HOME/dotfiles/.claude/commands" "$HOME/.claude/commands"
 ln -sfn "$HOME/dotfiles/.claude/settings.json" "$HOME/.claude/settings.json"
 
