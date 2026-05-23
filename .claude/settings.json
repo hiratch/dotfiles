@@ -1,5 +1,4 @@
 {
-  "effortLevel": "high",
   "permissions": {
     "deny": [
       "Read(.env*)",
@@ -13,5 +12,9 @@
       "Bash(source .env*)",
       "Bash(. .env*)"
     ]
+  },
+  "effortLevel": "high",
+  "enabledPlugins": {
+    "slack@claude-plugins-official": true
   }
 }
