@@ -29,6 +29,7 @@ brew "vim"
 brew "typst"
 brew "typstyle"
 brew "glow"
+brew "cmark-gfm"   # markdown-mode のプレビュー(eww)用 GFM→HTML 変換
 brew "zsh"
 brew "zsh-completions"
 brew "genkiroid/cert/cert"
