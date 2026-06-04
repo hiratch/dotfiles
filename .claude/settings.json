@@ -13,8 +13,8 @@
       "Bash(. .env*)"
     ]
   },
-  "effortLevel": "high",
   "enabledPlugins": {
     "slack@claude-plugins-official": true
-  }
+  },
+  "effortLevel": "xhigh"
 }
