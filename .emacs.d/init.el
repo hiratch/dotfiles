@@ -311,6 +311,20 @@ project root and pass it to eglot."
   :quelpa t
   :mode "\\.tsx\\'")
 
+;; Markdown設定（編集 + cmark-gfm/eww プレビュー）
+(use-package markdown-mode
+  :quelpa t
+  :mode (("\\.md\\'" . gfm-mode)
+         ("\\.markdown\\'" . markdown-mode))
+  :config
+  ;; コードブロックを各言語のモードでネイティブにフォントロック
+  (setq markdown-fontify-code-blocks-natively t)
+  ;; プレビューは cmark-gfm(GitHub Flavored) で HTML 化し、eww で表示する
+  ;;   C-c C-c l : markdown-live-preview-mode（横並びライブプレビュー）
+  ;;   C-c C-c p : markdown-preview（システムブラウザで開く）
+  (setq markdown-command
+        "cmark-gfm -e table -e strikethrough -e autolink -e tasklist -e tagfilter"))
+
 ;;; ==========================================================================
 ;;; Section 6: Debugger & Remote - デバッガ・TRAMP
 ;;; ==========================================================================
