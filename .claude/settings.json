@@ -13,6 +13,7 @@
       "Bash(. .env*)"
     ]
   },
+  "model": "claude-fable-5[1m]",
   "enabledPlugins": {
     "slack@claude-plugins-official": true
   },
