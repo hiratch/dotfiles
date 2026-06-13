@@ -1,8 +1,6 @@
 # ==========================================
 # Mac / Linux 共通のパッケージ (CLI・開発ツール)
 # ==========================================
-tap "genkiroid/cert"
-
 brew "ast-grep"
 brew "bat"
 brew "btop"
@@ -32,7 +30,7 @@ brew "glow"
 brew "cmark-gfm"   # markdown-mode のプレビュー(eww)用 GFM→HTML 変換
 brew "zsh"
 brew "zsh-completions"
-brew "genkiroid/cert/cert"
+# brew "genkiroid/cert/cert"
 
 brew "awscli"
 
