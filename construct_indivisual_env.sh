@@ -59,3 +59,27 @@ ln -sfn "$HOME/dotfiles/.claude/commands" "$HOME/.claude/commands"
 ln -sfn "$HOME/dotfiles/.claude/settings.json" "$HOME/.claude/settings.json"
 
 echo "ユーザー環境のセットアップが完了しました！"
+
+# macOS: ssh 鍵の Keychain 透過化の案内
+# .zsh/.zshrc は macOS では ssh-add を行わず launchd の ssh-agent + Keychain に任せる前提。
+# その前提を満たすための初回のみの手動設定 (config 追記 + Keychain 登録) は自動化できないため、
+# ~/.ssh/config に UseKeychain が無ければ未設定とみなして手順を表示する。
+if [ "$(uname -s)" = "Darwin" ]; then
+    if grep -qs 'UseKeychain' "$HOME/.ssh/config"; then
+        echo "✓ macOS の ssh Keychain 設定は済んでいます。"
+    else
+        echo ""
+        echo "▲ macOS: ssh 鍵の Keychain 透過化が未設定です。初回のみ以下を実施してください。"
+        echo ""
+        echo "  1) ~/.ssh/config に追記:"
+        echo "       Host *"
+        echo "         AddKeysToAgent yes"
+        echo "         UseKeychain yes"
+        echo "         IdentityFile ~/.ssh/id_ed25519"
+        echo ""
+        echo "  2) パスフレーズを Keychain に登録 (一度だけパスフレーズ入力):"
+        echo "       ssh-add --apple-use-keychain ~/.ssh/id_ed25519"
+        echo ""
+        echo "  ※ 鍵ファイル名が異なる場合は ~/.ssh/ を確認して読み替えてください。"
+    fi
+fi
