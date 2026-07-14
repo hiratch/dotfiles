@@ -13,9 +13,12 @@
       "Bash(. .env*)"
     ]
   },
-  "model": "claude-fable-5[1m]",
   "enabledPlugins": {
     "slack@claude-plugins-official": true
   },
-  "effortLevel": "xhigh"
+  "effortLevel": "xhigh",
+  "tui": "fullscreen",
+  "remoteControlAtStartup": true,
+  "agentPushNotifEnabled": true,
+  "model": "opus[1m]"
 }
