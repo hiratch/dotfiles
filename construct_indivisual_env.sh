@@ -60,6 +60,23 @@ ln -sfn "$HOME/dotfiles/.claude/settings.json" "$HOME/.claude/settings.json"
 
 echo "ユーザー環境のセットアップが完了しました！"
 
+# マシン固有設定の生成 (Git 管理外のため新しいマシンでは存在しない)
+LOCAL_ZSH="$HOME/dotfiles/.zsh/local.zsh"
+if [ ! -f "$LOCAL_ZSH" ]; then
+    printf "この端末の用途は？ [work/personal]: "
+    read -r role
+    case "$role" in
+        work|personal) ;;
+        "") role="work" ;;
+        *)  echo "入力を認識できませんでした: $role" ; role="work" ;;
+    esac
+    cat > "$LOCAL_ZSH" <<EOF
+# Git 管理外。マシン固有の設定を置く。
+export MACHINE_ROLE=$role
+EOF
+    echo "MACHINE_ROLE=$role として $LOCAL_ZSH を生成しました。変更する場合は $LOCAL_ZSH を編集してください。"
+fi
+
 # macOS: ssh 鍵の Keychain 透過化の案内
 # .zsh/.zshrc は macOS では ssh-add を行わず launchd の ssh-agent + Keychain に任せる前提。
 # その前提を満たすための初回のみの手動設定 (config 追記 + Keychain 登録) は自動化できないため、

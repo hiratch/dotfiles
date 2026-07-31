@@ -137,3 +137,12 @@ WORDCHARS='*?_-[]~=&;!#$%^(){}<>'
 # grep の色付け
 export GREP_COLOR="04:32"
 
+# マシン固有設定（Git 管理外）。construct_indivisual_env.sh が生成する
+[ -f "$HOME/dotfiles/.zsh/local.zsh" ] && source "$HOME/dotfiles/.zsh/local.zsh"
+
+# MACHINE_ROLE は local.zsh で定義される。
+# Git 管理外のため移行時に持ち越し漏れが起きやすいものを検出する
+if [ "$MACHINE_ROLE" = "work" ] && [ ! -d "$HOME/.claude/reference" ]; then
+    echo "注意: 業務用端末として設定されていますが ~/.claude/reference がありません。Git 管理外のため、旧マシンからの移行漏れの可能性があります。持ち込むものが無ければ mkdir -p ~/.claude/reference で解消します。"
+fi
+
