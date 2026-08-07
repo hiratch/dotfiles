@@ -1,4 +1,9 @@
-PR の Description を作成してください。レビュアーが `review.md` の Step 1 で問題ないと判定できる**最小限**の内容を目指します。極力シンプルに、ソースコード/コメント側に残すべき詳細は重複させないでください。
+---
+name: prepare-pr
+description: PR の Description を最小限の内容でドラフトする。リポジトリの pull_request_template.md があれば構造を踏襲し、目的・手段・検証の3要素を日本語で起こしてユーザー校正後に最終言語へ訳す。PR を作る直前や Description を書き直すときに使う。
+---
+
+PR の Description を作成してください。レビュアーが `review-pr` skill の Step 1（`review-pr/references/pr-review-steps.md`）で問題ないと判定できる**最小限**の内容を目指します。極力シンプルに、ソースコード/コメント側に残すべき詳細は重複させないでください。
 
 ## テンプレート確認（最優先）
 リポジトリに `pull_request_template.md`（`.github/pull_request_template.md`、ルート、または `docs/` 配下など）が存在する場合、**そのテンプレート構造を必ず踏襲**してください。テンプレートのセクション見出しを維持したうえで、以下のガイドラインに沿って中身を埋めます。テンプレートが無い場合のみ、以下のデフォルト構造（Purpose / Means / Verification / Out of scope）を使ってください。
@@ -32,16 +37,15 @@ PR の Description を作成してください。レビュアーが `review.md` 
 - 不確かなときは「英語にしますか、日本語にしますか」と短く尋ねる
 
 ## ステップ
-1. `git log <base>..HEAD --oneline` と `git diff <base>...HEAD --stat` で commit と差分を確認
-2. `pull_request_template.md` の有無を確認し、あれば構造を踏襲
-3. 関連 Issue・前提 PR の有無をユーザーに確認
-4. **日本語**でドラフトを書く（ユーザーとの校正のため）
-5. 以下のチェックリストで自己評価を提示（review.md Step 1 と整合させる）:
+1. 引数として PR 番号が渡された場合は `gh pr view <番号>` で既存の Description を確認する（書き直しの場合）。渡されなかった場合は新規作成として進める
+2. `git log <base>..HEAD --oneline` と `git diff <base>...HEAD --stat` で commit と差分を確認
+3. `pull_request_template.md` の有無を確認し、あれば構造を踏襲
+4. 関連 Issue・前提 PR の有無をユーザーに確認
+5. **日本語**でドラフトを書く（ユーザーとの校正のため）
+6. 以下のチェックリストで自己評価を提示（`review-pr` skill の Step 1 と整合させる）:
    - 目的・手段・検証が明記されているか
    - 論理的に明快・一貫性があるか
    - **不要な詳細でレビュアーの時間を奪っていないか**
    - **コード側に委ねるべき内容を Description に書いていないか**
-6. ユーザーフィードバックで仕上げる
-7. 最終出力時、**言語を確認**してから（必要に応じて英語に翻訳して）出力する
-
-$ARGUMENTS
+7. ユーザーフィードバックで仕上げる
+8. 最終出力時、**言語を確認**してから（必要に応じて英語に翻訳して）出力する
