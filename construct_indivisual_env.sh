@@ -77,6 +77,23 @@ EOF
     echo "MACHINE_ROLE=$role として $LOCAL_ZSH を生成しました。変更する場合は $LOCAL_ZSH を編集してください。"
 fi
 
+# git の user 設定の生成 (Git 管理外)。.gitconfig からは [include] で読み込まれる。
+# 端末ごとに使い分けるため .gitconfig には持たせない。未設定のまま commit すると git がエラーで止まる。
+GITCONFIG_LOCAL="$HOME/.gitconfig_local"
+if [ ! -f "$GITCONFIG_LOCAL" ]; then
+    printf "git の user.name: "
+    read -r git_name
+    printf "git の user.email: "
+    read -r git_email
+    cat > "$GITCONFIG_LOCAL" <<EOF
+# Git 管理外。この端末で使う git の身元を置く。
+[user]
+	name = $git_name
+	email = $git_email
+EOF
+    echo "$GITCONFIG_LOCAL を生成しました。変更する場合は $GITCONFIG_LOCAL を編集してください。"
+fi
+
 # macOS: ssh 鍵の Keychain 透過化の案内
 # .zsh/.zshrc は macOS では ssh-add を行わず launchd の ssh-agent + Keychain に任せる前提。
 # その前提を満たすための初回のみの手動設定 (config 追記 + Keychain 登録) は自動化できないため、

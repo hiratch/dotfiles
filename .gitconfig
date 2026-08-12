@@ -5,10 +5,7 @@
 	co = checkout
 	push-f = push --force-with-lease
         graph = log --graph --all
-[user]
-	email = wanpac@gmail.com
-	name = K.Hiramoto
-
+# user.name / user.email は端末ごとに異なるため、Git 管理外の ~/.gitconfig_local で定義する
 [include]
         path = ~/.gitconfig_local
 
