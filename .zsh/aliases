@@ -6,13 +6,13 @@ echo "Loading $ZUSRDIR/aliases"
 alias cgrep='grep --color=always'
 alias cegrep='egrep --color=always'
 alias cfgrep='fgrep --color=always'
-# ²¼¤Ç¸ú¤«¤¹
+# ä¸‹ã§åŠ¹ã‹ã™
 alias grep='grep --color'
 alias egrep='egrep --color'
 alias fgrep='fgrep --color'
 
 ###############################
-# ¾ÊÎ¬·Á¤Ç»È¤¤¤ä¤¹¤¯
+# çœç•¥å½¢ã§ä½¿ã„ã‚„ã™ã
 
 case $OSTYPE {
     sunos*)	export SYSTEM=sun ;;
@@ -56,7 +56,7 @@ alias em='emacs'
 alias bc='bc -l'
 
 ###############################
-# É¬»¦¡ª¡¡Ã±Ê¸»ú¾ÊÎ¬
+# å¿…æ®ºï¼ã€€å˜æ–‡å­—çœç•¥
 
 alias c=cat
 #alias d='diff -bi'
@@ -71,7 +71,7 @@ alias t='tail'
 alias m=$PAGER
 
 ###############################
-# ¿·¤·¤¤¥³¥Ş¥ó¥ÉÄêµÁ¤·¤Á¤ã¤ª¤¦
+# æ–°ã—ã„ã‚³ãƒãƒ³ãƒ‰å®šç¾©ã—ã¡ã‚ƒãŠã†
 
 alias dir='/bin/ls'
 alias root='su -l'
@@ -84,7 +84,7 @@ alias moon="perl -MAstro::MoonPhase -e 'printf qq/phase is %.1f\nillu  is %.1f %
 alias gd='dirs -v; echo -n "select number: " ; read newdir; cd -"$newdir"'
 
 ###############################
-# ¥ª¥×¥·¥ç¥ó¤òÉÕ¤±¤Æ¤ª¤³¤¦
+# ã‚ªãƒ—ã‚·ãƒ§ãƒ³ã‚’ä»˜ã‘ã¦ãŠã“ã†
 
 alias gg='grep -an -B 5 -A 5' 
 alias tt='tail -36'
@@ -126,7 +126,7 @@ alias ...='cd ../../'
 alias /entropy='cd /etc'
 
 ###############################
-# ¥Í¥Ã¥È¥ï¡¼¥¯´ØÏ¢
+# ãƒãƒƒãƒˆãƒ¯ãƒ¼ã‚¯é–¢é€£
 
 alias ping_max='ping -c 5 -s 1452'
 
@@ -137,7 +137,7 @@ alias tcpdump_local_host='tcpdump -q not tcp port 22'
 alias tcpdump_local_ip='tcpdump -qn not tcp port 22'
 
 ###############################
-# ¸ÄÊÌ¤Ë
+# å€‹åˆ¥ã«
 
 case $SYSTEM {
   gnu)  alias tf='tail -n 0 -f'  ;;
@@ -152,19 +152,19 @@ alias perl_at_inc="perl -e 'for(@@INC){print \"$_ \n\";}'"
 
 
 ###############################
-# ¤½¤ÎÂ¾
+# ãã®ä»–
 
 #alias myadmin='mysqladmin -u root -p'
 #alias get='fetch -aq'
 
 ###############################
-# ¥À¥¤¥¢¥ë¥¢¥Ã¥×
+# ãƒ€ã‚¤ã‚¢ãƒ«ã‚¢ãƒƒãƒ—
 
 # alias ip_hostname="netstat -nr|grep tun0|grep -v default|awk '{print \$2}'|nslookup|grep Name|awk '{print \$2}'"
 # alias ip_now="netstat -nr|grep tun0|grep -v default|awk '{print \$2}'"
 
 ###############################
-# ¤ª¤»¤Ã¤«¤¤¤Ë¤â -i ¤¬ÉÕ¤±¤é¤ì¤Æ¤¤¤¿¤ê¤¹¤ë¤Î¤Ç alias ¤ò³°¤¹¡Ê¤Á¤ç¤¤´í¸±¡Ë
+# ãŠã›ã£ã‹ã„ã«ã‚‚ -i ãŒä»˜ã‘ã‚‰ã‚Œã¦ã„ãŸã‚Šã™ã‚‹ã®ã§ alias ã‚’å¤–ã™ï¼ˆã¡ã‚‡ã„å±é™ºï¼‰
 
 #unalias rm >& /dev/null
 #unalias cp >& /dev/null
@@ -174,7 +174,7 @@ alias mv="mv -i"
 alias cp="cp -i"
 
 ###############################
-# ¥Ç¥£¥ì¥¯¥È¥ê¥¹¥¿¥Ã¥¯¤âÎÉ¤¯»È¤¦¤Î¤ÇÃ»¤¯
+# ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªã‚¹ã‚¿ãƒƒã‚¯ã‚‚è‰¯ãä½¿ã†ã®ã§çŸ­ã
 
 #alias pu=pushd
 #alias po=popd
@@ -191,10 +191,10 @@ alias ipfw_ls='ipfw -at list'
 
 
 ###############################
-# X ¼ş¤ê
+# X å‘¨ã‚Š
 
-# ¿§¿ô¤È .xinitrc ¤òÀÚ¤êÂØ¤¨¤Æ X ¤òµ¯Æ°¤¹¤ëÎã¡Ê¾Ü¤·¤¯¤Ï man Xserver¡Ë
-# 8bpp(256¿§) ¤Î»ş¤Ï fvwm¡¢16bpp ¤Î»ş¤Ï afterstep ¤Î¤è¤¦¤Ë»È¤¤Ê¬¤±¤¿¤ê¤¹¤ë
+# è‰²æ•°ã¨ .xinitrc ã‚’åˆ‡ã‚Šæ›¿ãˆã¦ X ã‚’èµ·å‹•ã™ã‚‹ä¾‹ï¼ˆè©³ã—ãã¯ man Xserverï¼‰
+# 8bpp(256è‰²) ã®æ™‚ã¯ fvwmã€16bpp ã®æ™‚ã¯ afterstep ã®ã‚ˆã†ã«ä½¿ã„åˆ†ã‘ãŸã‚Šã™ã‚‹
 
 #alias x8="XINITRC=$HOME/.xinitrc.8bpp xinit -- -bpp 8 -deferglyphs all"
 #alias x16="XINITRC=$HOME/.xinitrc.16bpp xinit -- -bpp 16 -deferglyphs all"
@@ -209,7 +209,7 @@ alias ipfw_ls='ipfw -at list'
 
 #alias eterm='Eterm -O -x --scrollbar=false --menubar=false -geometry 100x32'
 
-# xv ¤¬ Window Manager ¤ÎÀßÄê¤ËµÕ¤é¤Ã¤Æ¾¡¼ê¤Ë¤¢¤Á¤³¤Á¤ËÁë¤ò¹­¤²¤ë¤Î¤òËÉ¤°
+# xv ãŒ Window Manager ã®è¨­å®šã«é€†ã‚‰ã£ã¦å‹æ‰‹ã«ã‚ã¡ã“ã¡ã«çª“ã‚’åºƒã’ã‚‹ã®ã‚’é˜²ã
 #alias xv='xv -nopos'
 
 
