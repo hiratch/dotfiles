@@ -121,3 +121,22 @@ if [ "$(uname -s)" = "Darwin" ]; then
         echo "  ※ 鍵ファイル名が異なる場合は ~/.ssh/ を確認して読み替えてください。"
     fi
 fi
+
+# macOS: iTerm2 のベル設定の案内
+# Claude Code は処理の完了時に BEL を出し、tmux がそれをウィンドウの旗に変えて byobu の
+# ステータスバーへ反転表示する。BEL を音にするかは端末側の設定で、iTerm2 のプロファイルは
+# plist のネストが深く自動化に向かないため手動で行う。
+# 設定済みかの判定は行わない。iTerm2 は設定を終了時にディスクへ書き出すため、
+# 直後の plist は実際の状態と一致せず、誤って設定済みと表示する恐れがある。
+if [ "$(uname -s)" = "Darwin" ] && { [ -d "/Applications/iTerm.app" ] || [ -d "$HOME/Applications/iTerm.app" ]; }; then
+    echo ""
+    echo "▲ iTerm2: ベルの設定を手動で行ってください。"
+    echo ""
+    echo "  Settings → Profiles → Default → Terminal"
+    echo ""
+    echo "    Silence bell           : ON   ベルで音を鳴らさない"
+    echo "    Show bell icon in tabs : ON   音の代わりにタブへ表示する"
+    echo ""
+    echo "  Claude Code の完了通知は BEL を byobu のウィンドウ反転表示に変える方式のため、"
+    echo "  Silence bell が OFF だと処理のたびに音が鳴ります。"
+fi
