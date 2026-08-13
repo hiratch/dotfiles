@@ -57,6 +57,8 @@ mkdir -p "$HOME/.claude"
 ln -sfn "$HOME/dotfiles/.claude/CLAUDE.md" "$HOME/.claude/CLAUDE.md"
 ln -sfn "$HOME/dotfiles/.claude/skills" "$HOME/.claude/skills"
 ln -sfn "$HOME/dotfiles/.claude/settings.json" "$HOME/.claude/settings.json"
+# themes はディレクトリごと張る。/theme の編集機能で色を変えた結果が dotfiles 側に残る。
+ln -sfn "$HOME/dotfiles/.claude/themes" "$HOME/.claude/themes"
 
 echo "ユーザー環境のセットアップが完了しました！"
 

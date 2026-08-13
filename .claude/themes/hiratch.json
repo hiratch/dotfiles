@@ -1,0 +1,12 @@
+{
+  "name": "Hiratch",
+  "base": "light",
+  "overrides": {
+    "userMessageBackground": "#e3e0fa",
+    "userMessageBackgroundHover": "#d3cef5",
+    "bashMessageBackgroundColor": "#dff0df",
+    "memoryBackgroundColor": "#fbeecb",
+    "briefLabelYou": "#2744c7",
+    "briefLabelClaude": "#7c3aed"
+  }
+}

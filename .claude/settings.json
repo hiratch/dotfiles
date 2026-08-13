@@ -19,6 +19,7 @@
   },
   "effortLevel": "xhigh",
   "tui": "fullscreen",
+  "theme": "custom:hiratch",
   "preferredNotifChannel": "terminal_bell",
   "remoteControlAtStartup": true,
   "agentPushNotifEnabled": true
