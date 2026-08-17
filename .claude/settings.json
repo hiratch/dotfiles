@@ -13,6 +13,18 @@
     ]
   },
   "model": "opus[1m]",
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cat ~/.claude/hooks/collab-reminder.json"
+          }
+        ]
+      }
+    ]
+  },
   "enabledPlugins": {
     "slack@claude-plugins-official": true,
     "skill-creator@claude-plugins-official": true

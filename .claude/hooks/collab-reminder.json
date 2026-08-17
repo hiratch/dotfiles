@@ -1,0 +1,7 @@
+{
+  "suppressOutput": true,
+  "hookSpecificOutput": {
+    "hookEventName": "UserPromptSubmit",
+    "additionalContext": "協働リマインダ（settings.json の UserPromptSubmit hook が毎プロンプト自動注入）:\n①ユーザーの質問・指摘には全て文章で明答し、回答はターンの最終メッセージに置く。実行系ツール（編集・git・PR 等）は明示承認済みの範囲のみ。質問への回答より先に実行しない。\n②各ツール呼び出しの直上に「何を・何故」の宣言を書く（事前列挙した単一の並列バッチのみ例外）。\n③テスト・検証の結果は summary（passed/failed 数）を明示する。事前に合意済みの次タスクがある場合のみ「〜だったので予定どおり X します」と宣言して続行する。合意された次の一手が無い場合、または結果が想定と異なる場合は、報告して指示を待つ。exit code 0 だけで green を主張しない。"
+  }
+}
