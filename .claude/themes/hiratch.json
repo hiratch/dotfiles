@@ -2,6 +2,9 @@
   "name": "Hiratch",
   "base": "light",
   "overrides": {
+    "text": "#1f2937",
+    "inactive": "#4b5563",
+    "subtle": "#6b7280",
     "userMessageBackground": "#e2e9fb",
     "bashMessageBackgroundColor": "#c6d5f3",
     "memoryBackgroundColor": "#b4c7ee",

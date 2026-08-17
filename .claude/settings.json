@@ -13,6 +13,18 @@
     ]
   },
   "model": "opus[1m]",
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cat ~/.claude/hooks/collab-reminder.json"
+          }
+        ]
+      }
+    ]
+  },
   "enabledPlugins": {
     "slack@claude-plugins-official": true,
     "skill-creator@claude-plugins-official": true
@@ -22,5 +34,33 @@
   "theme": "custom:hiratch",
   "preferredNotifChannel": "terminal_bell",
   "remoteControlAtStartup": true,
-  "agentPushNotifEnabled": true
+  "agentPushNotifEnabled": true,
+  "autoMode": {
+    "environment": [
+      "### Org-wide",
+      "**Organization**: nabla-mobility (GitHub org; scoped to this repo and its remote)",
+      "**Cloud provider(s)**: AWS (per .env.sample AWS_PROFILE/QAR_AWS_PROFILE/BC_QAR_AWS_PROFILE/MM_QAR_AWS_PROFILE vars and aws CLI usage) — no specific account/region confirmed",
+      "**Repository visibility**: private (github.com:nabla-mobility/nabla-mobility-qar-processing, confirmed via gh)",
+      "**Internal sharing / snippet hosting**: None configured — treat public paste/gist services as outside the trust boundary",
+      "**Secrets management**: None configured",
+      "**Default / protected branches**: develop (default), develop and main protected (confirmed via gh); no rulesets listed",
+      "**CI/CD deploy targets**: None configured",
+      "**Network posture**: None configured",
+      "**Source control**: The trusted repo (github.com:nabla-mobility/nabla-mobility-qar-processing) and its remote only",
+      "**Trusted internal domains**: None configured",
+      "**Trusted cloud buckets**: nm-qar-delivery-mm (config-derived — not a confirmed upload destination; uploads of local data still require confirmation)",
+      "**Key internal services**: None configured",
+      "**Internal package registry**: None configured",
+      "**Sensitive data locations & audiences**: .env and .env.sample (contain GIT_ACCESS_TOKEN and AWS profile variables) — share only with audiences cleared at the [named+specifics] bar",
+      "**Data retention / declassification**: None configured",
+      "**Sensitive remote targets**: any namespace, host, or container whose name carries `prod` or `production` as a whole word or name segment",
+      "**Protected deployment namespaces / environments**: None configured — fall back to the Sensitive remote targets heuristic",
+      "**Protected IaC scopes**: IAM, RBAC, networking, quota, and node-pool resources; anything whose name or tag carries `prod` or `production` as a whole word or name segment",
+      "### User-specific",
+      "**Primary use of Claude Code**: software development",
+      "**Trusted repo**: /Users/k-hiramoto/NMWork/QAR-Processing (github.com:nabla-mobility/nabla-mobility-qar-processing), private — confidential material (e.g. .env contents) is fine to reference locally but do not clear secrets into the repo based on visibility alone",
+      "**Org-specific CLIs**: None configured",
+      "**routine under nm-qar-delivery-mm/ prefix**: none confirmed beyond the bucket entry above"
+    ]
+  }
 }
