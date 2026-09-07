@@ -11,7 +11,7 @@ PR の Description を作成してください。レビュアーが `review-pr` 
 ## 必ず含める3要素
 1. **Purpose（目的・なぜ）**: なぜこの変更が必要か。1〜3文。
 2. **Means（手段・何をしたか）**: 設計判断の核心のみ。実装の核となるアイデアと、複数選択肢から選ぶ際の判断基準があれば短く。
-3. **Verification（検証）**: 動作確認の方法・テスト計画。
+3. **Verification（検証）**: 動作確認の方法・テスト計画。テスト結果は passed/failed 数を明示し、期待値 fixture を再生成した場合はその件数と差分の説明を添える。
 
 ## 原則
 
@@ -48,3 +48,14 @@ PR の Description を作成してください。レビュアーが `review-pr` 
    - **コード側に委ねるべき内容を Description に書いていないか**
 7. ユーザーフィードバックで仕上げる
 8. 最終出力時、**言語を確認**してから（必要に応じて英語に翻訳して）出力する
+
+## 後工程（Description 確定後の標準フロー）
+
+Description の校正が確定したら、以下の順で PR を仕立てる。**draft 作成と self-review は省略しない**:
+
+1. branch を push し、確定した Description で **draft PR** を作成する
+2. `/self-review-pr` を実行し、指摘に対応してから次へ進む
+3. reviewer を指定する（既定 reviewer はプロジェクトの慣行・メモリに従う）
+4. ready for review にする（reviewer 指定を ready より先に行う: 通知の順序のため）
+
+base が未マージの stacked PR は draft のまま保ち、base のマージ後に ready にする。
