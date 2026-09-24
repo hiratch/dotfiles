@@ -17,3 +17,9 @@
 .DS_STORE
 *~
 .gitconfig_local
+.claude/skills/aws-*/
+.claude/skills/amazon-*/
+.claude/skills/launch-with-aws/
+.claude/skills/setting-up-cloudwatch-observability/
+.claude/skills/signing-in-to-aws/
+.claude/skills/synced/
