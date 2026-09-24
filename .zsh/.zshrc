@@ -257,6 +257,12 @@ if [ -f $ZUSRDIR/zshrc.user ]; then
     source $ZUSRDIR/zshrc.user
 fi
 
+# 公開しないマシン固有の設定ファイルがあれば読み込む（Git 管理外）
+
+if [ -f $ZUSRDIR/local.zsh ]; then
+    source $ZUSRDIR/local.zsh
+fi
+
 # Python: uv で統一管理（pyenv, pipenv, poetry は不要）
 
 # ruby
