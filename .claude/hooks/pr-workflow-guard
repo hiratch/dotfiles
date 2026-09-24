@@ -1,0 +1,378 @@
+#!/usr/bin/env python3
+"""PR ワークフローのガード。Claude Code の PreToolUse hook として gh の PR 操作を検査し、self-review の記録を書く。
+
+判定:
+- draft でない PR の作成と、作成時の reviewer 指定は拒否する
+- reviewer 指定・ready 化は、self-review の記録が無ければ拒否し、あればユーザーに確認を求める
+- self-review の後に変更内容が変わっていれば、確認の文面でそれを知らせる
+
+使い方:
+  pr-workflow-guard hook
+      PreToolUse の入力 JSON を stdin から読み、判定を JSON で stdout に書く
+  pr-workflow-guard record --branch <ブランチ> [--base <ブランチ>]
+      <ブランチ> の変更内容を self-review 済みとして記録する
+"""
+
+from __future__ import annotations
+
+import argparse
+import functools
+import hashlib
+import json
+import re
+import shlex
+import subprocess
+import sys
+from dataclasses import dataclass, field
+from datetime import datetime, timezone
+from pathlib import Path
+
+# gh pr edit / ready で値を取るオプション。PR の指定（位置引数）とオプションの値を取り違えないために使う
+PR_VALUE_OPTIONS = frozenset({
+    "--add-assignee", "--add-label", "--add-project", "--add-reviewer", "--attach",
+    "-B", "--base", "-b", "--body", "-F", "--body-file", "-m", "--milestone",
+    "--remove-assignee", "--remove-label", "--remove-project", "--remove-reviewer",
+    "-t", "--title", "-R", "--repo",
+})
+HEREDOC_START = re.compile(r"(?<!<)<<-?\s*(['\"]?)([A-Za-z_][A-Za-z0-9_]*)\1")
+# git の共通ディレクトリからの相対パス。worktree 間で共有されるので、別の worktree で self-review しても元の作業ツリーから照合できる
+RECORD_FILE = Path("claude") / "self-review.json"
+COMMAND_TIMEOUT_SECONDS = 30
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    subcommands = parser.add_subparsers(dest="subcommand", required=True)
+    subcommands.add_parser("hook")
+    record = subcommands.add_parser("record")
+    record.add_argument("--branch", required=True)
+    record.add_argument("--base")
+    args = parser.parse_args()
+
+    if args.subcommand == "hook":
+        run_hook()
+        return
+    try:
+        run_record(args.branch, args.base)
+    except (LookupError, RuntimeError) as error:
+        sys.exit(f"self-review の記録を書けなかった: {error}")
+
+
+def run_hook() -> None:
+    payload = json.load(sys.stdin)
+    if payload.get("tool_name") != "Bash":
+        return
+    command = payload.get("tool_input", {}).get("command", "")
+    verdict = judge_command(command, Path(payload.get("cwd", ".")))
+    if verdict is not None:
+        print(json.dumps(verdict.hook_output(), ensure_ascii=False))
+
+
+@dataclass
+class Verdict:
+    decision: str  # "deny" または "ask"
+    reasons: list[str]  # deny なら Claude に、ask ならユーザーに見える
+    context_for_claude: list[str] = field(default_factory=list)
+
+    def hook_output(self) -> dict:
+        output = {
+            "hookEventName": "PreToolUse",
+            "permissionDecision": self.decision,
+            "permissionDecisionReason": "\n".join(self.reasons),
+        }
+        if self.context_for_claude:
+            output["additionalContext"] = "\n".join(self.context_for_claude)
+        return {"hookSpecificOutput": output}
+
+
+def deny(*reasons: str) -> Verdict:
+    return Verdict("deny", list(reasons))
+
+
+def ask(reason: str, context_for_claude: str | None = None) -> Verdict:
+    return Verdict("ask", [reason], [context_for_claude] if context_for_claude else [])
+
+
+def merge_verdicts(verdicts: list[Verdict]) -> Verdict | None:
+    """1 つのコマンドに含まれる複数の gh 呼び出しの判定をまとめる。deny が 1 つでもあれば deny にする。"""
+    if not verdicts:
+        return None
+    decision = "deny" if any(v.decision == "deny" for v in verdicts) else "ask"
+    chosen = [v for v in verdicts if v.decision == decision]
+    return Verdict(
+        decision,
+        unique(reason for v in chosen for reason in v.reasons),
+        unique(context for v in chosen for context in v.context_for_claude),
+    )
+
+
+def judge_command(command: str, cwd: Path) -> Verdict | None:
+    """Bash のコマンド文字列に含まれる gh の PR 操作を判定する。対象が無ければ None。"""
+    try:
+        verdicts = [judge_gh(args, cwd) for args in extract_gh_invocations(command)]
+    except Exception as error:  # 判定できないまま通すと、ガードの対象になるはずの操作が素通りする
+        if re.search(r"\bgh\b", command):
+            return ask(f"PR ワークフローのガードが判定できなかった（{error}）。PR の操作なら、draft と self-review の状態を確かめてから承認する")
+        return None
+    return merge_verdicts([v for v in verdicts if v is not None])
+
+
+def extract_gh_invocations(command: str) -> list[list[str]]:
+    """コマンド文字列を単純コマンドに分け、gh の呼び出しごとに gh より後ろの引数を返す。"""
+    text = strip_heredoc_bodies(command).replace("\\\n", " ").replace("\n", " ; ")
+    if not re.search(r"\bgh\b", text):
+        return []
+    lexer = shlex.shlex(text, posix=True, punctuation_chars=True)
+    lexer.whitespace_split = True
+    invocations = []
+    for words in split_simple_commands(list(lexer)):
+        words = drop_env_assignments(words)
+        if words and Path(words[0]).name == "gh":
+            invocations.append(words[1:])
+    return invocations
+
+
+def strip_heredoc_bodies(command: str) -> str:
+    """ヒアドキュメントの本文を取り除く。本文中の gh のコマンド例（文書やコミットメッセージ）を判定対象にしないため。"""
+    kept_lines: list[str] = []
+    pending_delimiters: list[str] = []
+    for line in command.split("\n"):
+        if pending_delimiters:
+            if line.lstrip("\t") == pending_delimiters[0]:
+                pending_delimiters.pop(0)
+            continue
+        kept_lines.append(line)
+        pending_delimiters = [match.group(2) for match in HEREDOC_START.finditer(line)]
+    return "\n".join(kept_lines)
+
+
+def split_simple_commands(tokens: list[str]) -> list[list[str]]:
+    """制御演算子（&& ; | など）で区切り、リダイレクトとその対象を除いた単純コマンドの列を返す。"""
+    commands: list[list[str]] = [[]]
+    skip_redirect_target = False
+    for token in tokens:
+        if skip_redirect_target:
+            skip_redirect_target = False
+        elif is_redirection(token):
+            if commands[-1] and commands[-1][-1].isdigit():
+                commands[-1].pop()  # 2>&1 の 2 のようなファイル記述子
+            skip_redirect_target = True
+        elif is_control_operator(token):
+            commands.append([])
+        else:
+            commands[-1].append(token)
+    return [words for words in commands if words]
+
+
+def is_redirection(token: str) -> bool:
+    return bool(token) and set(token) <= set("<>&|") and ("<" in token or ">" in token)
+
+
+def is_control_operator(token: str) -> bool:
+    return bool(token) and set(token) <= set("();|&")
+
+
+def drop_env_assignments(words: list[str]) -> list[str]:
+    """先頭の VAR=value を除く（GH_TOKEN=... gh pr ready のような呼び出しのため）。"""
+    index = 0
+    while index < len(words) and re.fullmatch(r"[A-Za-z_][A-Za-z0-9_]*=.*", words[index]):
+        index += 1
+    return words[index:]
+
+
+def judge_gh(args: list[str], cwd: Path) -> Verdict | None:
+    """gh の 1 回の呼び出しを判定する。PR ワークフローに関係しなければ None。"""
+    if "--help" in args:
+        return None
+    if args[:2] == ["pr", "create"]:
+        return judge_pr_create(args[2:])
+    if args[:2] == ["pr", "ready"] and "--undo" not in args:
+        return judge_review_request(args[2:], cwd)
+    if args[:2] == ["pr", "edit"] and has_option(args, "--add-reviewer"):
+        return judge_review_request(args[2:], cwd)
+    if args[:1] == ["api"]:
+        return judge_api(args[1:], cwd)
+    return None
+
+
+def judge_pr_create(args: list[str]) -> Verdict | None:
+    if has_option(args, "--web", "-w"):
+        return None  # ブラウザで PR を作成するのはユーザー自身
+    reasons = []
+    if not has_option(args, "--draft", "-d"):
+        reasons.append("PR は draft で作成する。--draft を付けて実行し直す")
+    if has_option(args, "--reviewer", "-r"):
+        reasons.append("reviewer は作成時に指定しない。self-review の後に gh pr edit --add-reviewer で指定する")
+    return deny(*reasons) if reasons else None
+
+
+def judge_review_request(args: list[str], cwd: Path) -> Verdict:
+    """gh pr ready / gh pr edit --add-reviewer を判定する。"""
+    if has_option(args, "-R", "--repo"):
+        return ask("別のリポジトリを指定しているため self-review の記録を照合できない。self-review 済みかを確かめてから承認する")
+    selectors = positional_args(args, PR_VALUE_OPTIONS)
+    return judge_against_record(selectors[0] if selectors else None, cwd)
+
+
+def judge_api(args: list[str], cwd: Path) -> Verdict | None:
+    """gh api による reviewer 指定・ready 化を判定する。"""
+    text = " ".join(args)
+    if "graphql" in args:
+        if re.search(r"\b(markPullRequestReadyForReview|requestReviews)\b", text):
+            return ask("GraphQL による reviewer 指定・ready 化は self-review の記録を照合できない。self-review 済みかを確かめてから承認する")
+        return None
+    match = re.search(r"pulls/(\d+)/requested_reviewers", text)
+    if match and api_method(args) == "POST":
+        return judge_against_record(match.group(1), cwd)
+    return None
+
+
+def api_method(args: list[str]) -> str:
+    """gh api の HTTP メソッド。指定が無ければ gh の既定に従い、パラメータがあれば POST、無ければ GET。"""
+    for index, arg in enumerate(args):
+        if arg in ("-X", "--method") and index + 1 < len(args):
+            return args[index + 1].upper()
+        if arg.startswith("--method="):
+            return arg.split("=", 1)[1].upper()
+    return "POST" if has_option(args, "-f", "-F", "--field", "--raw-field", "--input") else "GET"
+
+
+@functools.lru_cache(maxsize=None)  # reviewer 指定と ready 化を 1 コマンドで行うとき、同じ PR の照合を繰り返さない
+def judge_against_record(selector: str | None, cwd: Path) -> Verdict:
+    """PR の現在の変更内容を self-review の記録と照合する。"""
+    try:
+        head, base = resolve_pr_branches(selector, cwd)
+    except LookupError as error:
+        return ask(f"PR を特定できず self-review の記録を照合できない（{error}）。self-review 済みかを確かめてから承認する")
+    record = load_record(cwd, head)
+    if record is None:
+        return deny(f"{head} には self-review の記録が無い。/self-review-pr を実施し、最後に記録を書いてから実行し直す")
+    changed = changed_files(record["files"], file_patch_ids(cwd, base, head))
+    if not changed:
+        return ask(f"{head}: self-review 済み（その後の変更なし）")
+    listed = "、".join(changed)
+    return ask(
+        f"{head}: self-review の後に変更あり（{listed}）。self-review をやり直さずに進めるなら承認、やり直すなら拒否",
+        context_for_claude=f"{head} は self-review の後に変更がある（{listed}）。この操作が拒否された場合は、self-review をやり直すかをユーザーに確かめる",
+    )
+
+
+def resolve_pr_branches(selector: str | None, cwd: Path) -> tuple[str, str]:
+    """PR の head と base のブランチ名を返す。selector が None なら、cwd で checkout しているブランチの PR。"""
+    command = ["gh", "pr", "view", *([selector] if selector else []), "--json", "headRefName,baseRefName"]
+    result = subprocess.run(command, cwd=cwd, capture_output=True, text=True, timeout=COMMAND_TIMEOUT_SECONDS)
+    if result.returncode != 0:
+        raise LookupError(result.stderr.strip() or "gh pr view が失敗した")
+    pr = json.loads(result.stdout)
+    return pr["headRefName"], pr["baseRefName"]
+
+
+def file_patch_ids(cwd: Path, base: str, head: str) -> dict[str, str]:
+    """base から head への変更内容を、ファイルごとの patch-id で表す。
+
+    patch-id は行番号を無視するので、中身の変わらない rebase の前後では同じ値になる。
+    base は手元のブランチが古いことが多いのでリモートを優先し、head は作業中の手元のブランチを優先する。
+    """
+    base_ref = existing_ref(cwd, f"origin/{base}", base)
+    head_ref = existing_ref(cwd, head, f"origin/{head}")
+    names = run_git(cwd, "diff", "--no-renames", "--name-only", "-z", f"{base_ref}...{head_ref}").split("\0")
+    return {name: patch_id(cwd, base_ref, head_ref, name) for name in names if name}
+
+
+def existing_ref(cwd: Path, *candidates: str) -> str:
+    for ref in candidates:
+        probe = subprocess.run(
+            ["git", "rev-parse", "--verify", "--quiet", f"{ref}^{{commit}}"],
+            cwd=cwd, capture_output=True, timeout=COMMAND_TIMEOUT_SECONDS,
+        )
+        if probe.returncode == 0:
+            return ref
+    raise LookupError(f"{' も '.join(candidates)} も見つからない")
+
+
+def patch_id(cwd: Path, base_ref: str, head_ref: str, path: str) -> str:
+    diff = run_git(cwd, "diff", "--no-renames", "--binary", f"{base_ref}...{head_ref}", "--", path)
+    output = run_git(cwd, "patch-id", "--stable", stdin=diff).split()
+    # hunk の無い差分（モード変更だけ等）には patch-id が出ないので、差分の文面そのものの hash で代える
+    return output[0] if output else "sha256:" + hashlib.sha256(diff.encode()).hexdigest()
+
+
+def changed_files(recorded: dict[str, str], current: dict[str, str]) -> list[str]:
+    return sorted(path for path in recorded.keys() | current.keys() if recorded.get(path) != current.get(path))
+
+
+def run_record(branch: str, base: str | None) -> None:
+    cwd = Path.cwd()
+    base = base or base_branch_for(branch, cwd)
+    files = file_patch_ids(cwd, base, branch)
+    save_record(cwd, branch, {
+        "base": base,
+        "recorded_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+        "files": files,
+    })
+    print(f"self-review の記録を書いた: {branch}（base: {base}、{len(files)} ファイル）")
+
+
+def base_branch_for(branch: str, cwd: Path) -> str:
+    """branch の PR があればその base、無ければリポジトリの既定ブランチ。"""
+    try:
+        return resolve_pr_branches(branch, cwd)[1]
+    except LookupError:
+        default_branch = run_git(cwd, "symbolic-ref", "--short", "refs/remotes/origin/HEAD").strip()
+        return default_branch.removeprefix("origin/")
+
+
+def load_record(cwd: Path, branch: str) -> dict | None:
+    return read_records(record_path(cwd)).get(branch)
+
+
+def save_record(cwd: Path, branch: str, record: dict) -> None:
+    path = record_path(cwd)
+    records = read_records(path)
+    records[branch] = record
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(records, ensure_ascii=False, indent=2) + "\n")
+
+
+def read_records(path: Path) -> dict:
+    return json.loads(path.read_text()) if path.exists() else {}
+
+
+def record_path(cwd: Path) -> Path:
+    common_dir = Path(run_git(cwd, "rev-parse", "--git-common-dir").strip())
+    return (cwd / common_dir).resolve() / RECORD_FILE
+
+
+def run_git(cwd: Path, *args: str, stdin: str | None = None) -> str:
+    result = subprocess.run(
+        ["git", *args], cwd=cwd, input=stdin, capture_output=True, text=True, timeout=COMMAND_TIMEOUT_SECONDS,
+    )
+    if result.returncode != 0:
+        raise RuntimeError(f"git {args[0]} が失敗した: {result.stderr.strip()}")
+    return result.stdout
+
+
+def has_option(args: list[str], *names: str) -> bool:
+    return any(arg == name or arg.startswith(f"{name}=") for arg in args for name in names)
+
+
+def positional_args(args: list[str], value_options: frozenset[str]) -> list[str]:
+    """オプションとその値を除いた引数。"""
+    positionals: list[str] = []
+    skip_value = False
+    for arg in args:
+        if skip_value:
+            skip_value = False
+        elif arg in value_options:
+            skip_value = True
+        elif not arg.startswith("-"):
+            positionals.append(arg)
+    return positionals
+
+
+def unique(items) -> list[str]:
+    return list(dict.fromkeys(items))
+
+
+if __name__ == "__main__":
+    main()
