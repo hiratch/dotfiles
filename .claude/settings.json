@@ -12,7 +12,6 @@
       "Bash(. .env*)"
     ]
   },
-  "model": "opus[1m]",
   "hooks": {
     "UserPromptSubmit": [
       {
