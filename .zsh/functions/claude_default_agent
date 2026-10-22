@@ -1,0 +1,61 @@
+# 今いる Git リポジトリで、Claude Code を起動したときの既定の担当（Agent）を設定する
+# shell> claude_default_agent -h  (使い方・定義されている担当・このリポジトリの既定を表示する)
+function claude_default_agent() {
+    local root settings agent names_text
+    local -a agent_files agent_names
+    agent_files=(~/.claude/agents/*.md(N))
+    # /dev/null を足すのは、担当のファイルが無いときに sed が標準入力を待たないようにするため
+    agent_names=(${(f)"$(sed -n 's/^name:[[:space:]]*//p' $agent_files /dev/null)"})
+    names_text=${(j:, :)agent_names}
+    if [[ -z $1 || $1 == -h || $1 == --help ]]; then
+        print -r -- "使い方: claude_default_agent [担当名 | --clear | -h]
+  担当名    今いる Git リポジトリで、Claude Code を起動したときの既定の担当にする
+  --clear   既定の担当を外す
+  -h        この表示を出す（引数なしでも同じ。何も変えない）
+定義されている担当: ${names_text:-(なし)}"
+        root=$(git rev-parse --show-toplevel 2>/dev/null) || return 0
+        print -r -- "このリポジトリ（$root）の既定の担当: $(python3 -I -c 'import json, sys
+from pathlib import Path
+path = Path(sys.argv[1])
+print(json.loads(path.read_text(encoding="utf-8")).get("agent", "(なし)") if path.exists() else "(なし)")' "$root/.claude/settings.local.json")"
+        return 0
+    fi
+    if [[ $1 == -* && $1 != --clear ]]; then
+        echo "claude_default_agent: 知らないオプション $1 です。-h で使い方を表示します" >&2
+        return 1
+    fi
+    root=$(git rev-parse --show-toplevel 2>/dev/null) || {
+        echo "claude_default_agent: Git リポジトリの中で実行してください" >&2
+        return 1
+    }
+    settings="$root/.claude/settings.local.json"
+    # 無視の対象でないと、個人の設定がチームのリポジトリにコミットされうる
+    if ! git -C "$root" check-ignore -q .claude/settings.local.json; then
+        echo "claude_default_agent: $settings が Git の無視の対象ではありません。.git/info/exclude などに加えてから実行してください" >&2
+        return 1
+    fi
+    agent=$1
+    [[ $agent == --clear ]] && agent=
+    # 担当の名前が大文字小文字まで一致しないと、設定は黙って無視されて既定の担当が付かないので、定義があるかを先に確かめる
+    if [[ -n $agent ]] && (( ! ${agent_names[(Ie)$agent]} )); then
+        echo "claude_default_agent: 担当 $agent は定義されていません。定義されている担当: ${names_text:-(なし)}" >&2
+        return 1
+    fi
+    mkdir -p "$root/.claude"
+    python3 -I - "$settings" "$agent" <<'EOF'
+import json, sys
+from pathlib import Path
+
+path, agent = Path(sys.argv[1]), sys.argv[2]
+settings = json.loads(path.read_text(encoding="utf-8")) if path.exists() else {}
+if agent:
+    settings["agent"] = agent
+else:
+    settings.pop("agent", None)
+if settings:
+    path.write_text(json.dumps(settings, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+elif path.exists():
+    path.unlink()
+print(f"{path}: agent = {settings.get('agent', '(なし)')}")
+EOF
+}
