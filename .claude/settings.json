@@ -16,16 +16,6 @@
     ]
   },
   "hooks": {
-    "UserPromptSubmit": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "cat ~/.claude/hooks/collab-reminder.json"
-          }
-        ]
-      }
-    ],
     "PreToolUse": [
       {
         "matcher": "Bash",
@@ -37,6 +27,11 @@
         ]
       }
     ]
+  },
+  "attribution": {
+    "commit": "",
+    "pr": "",
+    "sessionUrl": false
   },
   "enabledPlugins": {
     "slack@claude-plugins-official": true,
