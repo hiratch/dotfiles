@@ -25,6 +25,15 @@
             "command": "~/.claude/hooks/pr-workflow-guard hook"
           }
         ]
+      },
+      {
+        "matcher": "Agent|Task",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/role-agent-gate"
+          }
+        ]
       }
     ]
   },

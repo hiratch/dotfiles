@@ -1,0 +1,57 @@
+#!/usr/bin/env python3
+"""担当への依頼に確認を挟む。Claude Code の PreToolUse hook として Agent ツールの呼び出しを検査する。
+
+依頼先が ~/.claude/agents/ に定義した担当（Agent ファイルの frontmatter の name）か、すべてのツールを持つ組み込みの Agent（general-purpose・claude）なら、確認ダイアログを出す。
+それ以外の組み込みの Agent（Explore など）やプラグインの Agent への依頼は、読み取りだけの調査に使うことが多いので通す。
+
+使い方:
+  role-agent-gate
+      PreToolUse の入力 JSON を stdin から読み、担当への依頼なら判定を JSON で stdout に書く
+"""
+
+from __future__ import annotations
+
+import json
+import re
+import sys
+from pathlib import Path
+
+ROLE_AGENTS_DIR = Path.home() / ".claude" / "agents"
+# Agent ツールは、hook の入力では Agent、-p の拒否の記録では Task という名前で現れる
+AGENT_TOOL_NAMES = frozenset({"Agent", "Task"})
+NAME_LINE = re.compile(r"^name:\s*(\S+)\s*$", re.MULTILINE)
+# ファイルを編集でき、担当の代わりに同じ仕事をこなせる組み込みの Agent。担当を止めても、ここを経由して同じ仕事が行われないようにする
+GATED_BUILTIN_AGENTS = frozenset({"general-purpose", "claude"})
+
+
+def main() -> None:
+    event = json.load(sys.stdin)
+    if event.get("tool_name") not in AGENT_TOOL_NAMES:
+        return
+    requested = (event.get("tool_input") or {}).get("subagent_type")
+    if requested in GATED_BUILTIN_AGENTS or requested in role_agent_names():
+        print(json.dumps({
+            "hookSpecificOutput": {
+                "hookEventName": "PreToolUse",
+                "permissionDecision": "ask",
+                "permissionDecisionReason": f"{requested} への依頼には、ユーザーの承認が要る",
+            }
+        }, ensure_ascii=False))
+
+
+def role_agent_names() -> set[str]:
+    if not ROLE_AGENTS_DIR.is_dir():
+        return set()
+    return {name for path in ROLE_AGENTS_DIR.glob("*.md") if (name := frontmatter_name(path))}
+
+
+def frontmatter_name(path: Path) -> str | None:
+    parts = path.read_text(encoding="utf-8").split("---", 2)
+    if len(parts) < 3:
+        return None
+    match = NAME_LINE.search(parts[1])
+    return match.group(1) if match else None
+
+
+if __name__ == "__main__":
+    main()

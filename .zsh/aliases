@@ -84,6 +84,12 @@ alias moon="perl -MAstro::MoonPhase -e 'printf qq/phase is %.1f\nillu  is %.1f %
 alias gd='dirs -v; echo -n "select number: " ; read newdir; cd -"$newdir"'
 
 ###############################
+# Claude Code の担当で起動する
+
+alias claude_dev='claude --agent Dev'
+alias cldev='claude --agent Dev'
+
+###############################
 # オプションを付けておこう
 
 alias gg='grep -an -B 5 -A 5' 

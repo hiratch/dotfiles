@@ -56,6 +56,9 @@ mkdir -p "$HOME/.claude"
 #ln -sf "$HOME/dotfiles/.claude/keybindings.json" "$HOME/.claude/keybindings.json"
 ln -sfn "$HOME/dotfiles/.claude/CLAUDE.md" "$HOME/.claude/CLAUDE.md"
 ln -sfn "$HOME/dotfiles/.claude/skills" "$HOME/.claude/skills"
+# settings.json の hook は ~/.claude/hooks のスクリプトを呼び、担当（agents）への依頼を検査するので、3 つを揃えて張る
+ln -sfn "$HOME/dotfiles/.claude/hooks" "$HOME/.claude/hooks"
+ln -sfn "$HOME/dotfiles/.claude/agents" "$HOME/.claude/agents"
 ln -sfn "$HOME/dotfiles/.claude/settings.json" "$HOME/.claude/settings.json"
 # themes はディレクトリごと張る。/theme の編集機能で色を変えた結果が dotfiles 側に残る。
 ln -sfn "$HOME/dotfiles/.claude/themes" "$HOME/.claude/themes"
