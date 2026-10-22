@@ -88,6 +88,8 @@ alias gd='dirs -v; echo -n "select number: " ; read newdir; cd -"$newdir"'
 
 alias claude_dev='claude --agent Dev'
 alias cldev='claude --agent Dev'
+alias claude_research='claude --agent Research'
+alias clresearch='claude --agent Research'
 
 ###############################
 # オプションを付けておこう
