@@ -6,7 +6,7 @@ description: PR の Description を最小限の内容でドラフトする。リ
 ## 目的
 reviewer が必要性・方針・実現方法の妥当性を判断できる材料を、最小の読解量で渡す。Purpose は必要性（リポジトリの中での位置づけ）、Means は方針とその選択理由、Verification は実現方法が正しく動くことの根拠にあたる。詳細はコードとコメントに任せ、Description に重複させない。
 
-完了: 校正済みの Description で draft PR を作り、self-review を経て、reviewer 指定と ready 化まで終えた時点（stacked PR は base のマージ後）。
+完了: 校正済みの Description で draft PR を作り、self-review を経て reviewer を指定し、ready 化まで終えた時点（stacked PR の ready 化は base のマージ後）。
 
 ## テンプレート確認（最優先）
 リポジトリに `pull_request_template.md`（`.github/pull_request_template.md`、ルート、または `docs/` 配下など）が存在する場合、**そのテンプレート構造を必ず踏襲**してください。テンプレートのセクション見出しを維持したうえで、以下のガイドラインに沿って中身を埋めます。テンプレートが無い場合のみ、以下のデフォルト構造（Purpose / Means / Verification / Out of scope）を使ってください。
@@ -58,6 +58,7 @@ Description の校正が確定したら、以下の順で PR を仕立てる。*
 
 1. branch を push し、確定した Description で **draft PR** を作成する
 2. `/self-review-pr` を実行し、指摘に対応してから次へ進む
-3. reviewer 指定と ready 化を 1 回のコマンドで行う: `gh pr edit <番号> --add-reviewer <reviewer> && gh pr ready <番号>`（既定 reviewer はプロジェクトの慣行・メモリに従う。reviewer 指定を先に行うのは通知の順序のため）。PR ワークフローのガード（`~/.claude/hooks/pr-workflow-guard`）が確認ダイアログを出すので、チャットで改めて確認を求めない
+3. reviewer を指定する: `gh pr edit <番号> --add-reviewer <reviewer>`（既定 reviewer はプロジェクトの慣行・メモリに従う）。self-review の直後に行い、ready 化を待たない。base が未マージの stacked PR でも同じ（ready を待つ理由は reviewer 指定には当てはまらない）
+4. ready にする: `gh pr ready <番号>`。通知の順序のため reviewer 指定より後に行う。base が未マージの stacked PR は draft のまま保ち、base のマージ後に行う
 
-base が未マージの stacked PR は draft のまま保ち、base のマージ後に ready にする。
+3 と 4 では PR ワークフローのガード（`~/.claude/hooks/pr-workflow-guard`）が確認ダイアログを出すので、チャットで改めて確認を求めない。
