@@ -1,0 +1,43 @@
+#!/usr/bin/env python3
+"""担当専用のスキルを、その担当以外で使わせない。Claude Code の PreToolUse hook として Skill ツールの呼び出しを検査する。
+
+スキルが ROLE_SKILLS で担当に割り当てられていて、呼び出したセッションの担当（入力の agent_type）がそれと違えば拒否する。
+担当なしで起動したセッションには agent_type が無いので、担当専用のスキルは拒否される。
+
+使い方:
+  role-skill-gate
+      PreToolUse の入力 JSON を stdin から読み、拒否するときは判定を JSON で stdout に書く
+"""
+
+from __future__ import annotations
+
+import json
+import sys
+
+# スキル名 → そのスキルを使う担当（~/.claude/agents の name）。レビューの基準は開発担当の作法にしか無いため、レビューのスキルは開発担当に限る
+ROLE_SKILLS = {
+    "review-pr-steps": "Dev",
+    "review-pr-topdown": "Dev",
+    "self-review-pr": "Dev",
+}
+
+
+def main() -> None:
+    event = json.load(sys.stdin)
+    if event.get("tool_name") != "Skill":
+        return
+    skill = (event.get("tool_input") or {}).get("skill")
+    role = ROLE_SKILLS.get(skill)
+    if role is None or event.get("agent_type") == role:
+        return
+    print(json.dumps({
+        "hookSpecificOutput": {
+            "hookEventName": "PreToolUse",
+            "permissionDecision": "deny",
+            "permissionDecisionReason": f"{skill} は担当 {role} で使う。claude --agent {role} で起動するか、{role} に依頼する",
+        }
+    }, ensure_ascii=False))
+
+
+if __name__ == "__main__":
+    main()

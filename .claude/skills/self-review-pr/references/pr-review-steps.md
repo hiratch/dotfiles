@@ -1,1 +1,1 @@
-../../review-pr/references/pr-review-steps.md
+../../review-pr-steps/references/pr-review-steps.md
