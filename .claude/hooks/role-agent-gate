@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
-"""担当への依頼に確認を挟む。Claude Code の PreToolUse hook として Agent ツールの呼び出しを検査する。
+"""担当への依頼に確認を挟む。Claude Code の PreToolUse hook として Agent ツールと SendMessage ツールの呼び出しを検査する。
 
 依頼先が ~/.claude/agents/ に定義した担当（Agent ファイルの frontmatter の name）か、すべてのツールを持つ組み込みの Agent（general-purpose・claude）なら、確認ダイアログを出す。
 それ以外の組み込みの Agent（Explore など）やプラグインの Agent への依頼は、読み取りだけの調査に使うことが多いので通す。
+SendMessage は、宛先によらず確認ダイアログを出す。既存のサブエージェントへの続きの依頼にも、このマシンの他のセッションへの送信にも使え、宛先から依頼先の種類を判別できないため。
 
 使い方:
   role-agent-gate
-      PreToolUse の入力 JSON を stdin から読み、担当への依頼なら判定を JSON で stdout に書く
+      PreToolUse の入力 JSON を stdin から読み、確認が要る呼び出しなら判定を JSON で stdout に書く
 """
 
 from __future__ import annotations
@@ -22,21 +23,29 @@ AGENT_TOOL_NAMES = frozenset({"Agent", "Task"})
 NAME_LINE = re.compile(r"^name:\s*(\S+)\s*$", re.MULTILINE)
 # ファイルを編集でき、担当の代わりに同じ仕事をこなせる組み込みの Agent。担当を止めても、ここを経由して同じ仕事が行われないようにする
 GATED_BUILTIN_AGENTS = frozenset({"general-purpose", "claude"})
+MESSAGE_TOOL_NAME = "SendMessage"
 
 
 def main() -> None:
     event = json.load(sys.stdin)
-    if event.get("tool_name") not in AGENT_TOOL_NAMES:
-        return
-    requested = (event.get("tool_input") or {}).get("subagent_type")
-    if requested in GATED_BUILTIN_AGENTS or requested in role_agent_names():
-        print(json.dumps({
-            "hookSpecificOutput": {
-                "hookEventName": "PreToolUse",
-                "permissionDecision": "ask",
-                "permissionDecisionReason": f"{requested} への依頼には、ユーザーの承認が要る",
-            }
-        }, ensure_ascii=False))
+    tool_name = event.get("tool_name")
+    tool_input = event.get("tool_input") or {}
+    if tool_name == MESSAGE_TOOL_NAME:
+        ask(f"{tool_input.get('to')} へのメッセージには、ユーザーの承認が要る")
+    elif tool_name in AGENT_TOOL_NAMES:
+        requested = tool_input.get("subagent_type")
+        if requested in GATED_BUILTIN_AGENTS or requested in role_agent_names():
+            ask(f"{requested} への依頼には、ユーザーの承認が要る")
+
+
+def ask(reason: str) -> None:
+    print(json.dumps({
+        "hookSpecificOutput": {
+            "hookEventName": "PreToolUse",
+            "permissionDecision": "ask",
+            "permissionDecisionReason": reason,
+        }
+    }, ensure_ascii=False))
 
 
 def role_agent_names() -> set[str]:
