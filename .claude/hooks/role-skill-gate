@@ -20,6 +20,7 @@ ROLE_SKILLS = {
     "review-pr-topdown": "Dev",
     "self-review-pr-steps": "Dev",
     "self-review-pr-topdown": "Dev",
+    "self-review-pr-compare": "Dev",
 }
 
 
