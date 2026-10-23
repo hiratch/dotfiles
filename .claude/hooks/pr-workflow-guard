@@ -246,7 +246,7 @@ def judge_against_record(selector: str | None, cwd: Path) -> Verdict:
         return ask(f"PR を特定できず self-review の記録を照合できない（{error}）。self-review 済みかを確かめてから承認する")
     record = load_record(cwd, head)
     if record is None:
-        return deny(f"{head} には self-review の記録が無い。/self-review-pr を実施し、最後に記録を書いてから実行し直す")
+        return deny(f"{head} には self-review の記録が無い。self-review（/self-review-pr-steps か /self-review-pr-topdown）を実施し、最後に記録を書いてから実行し直す")
     changed = changed_files(record["files"], file_patch_ids(cwd, base, head))
     if not changed:
         return ask(f"{head}: self-review 済み（その後の変更なし）")

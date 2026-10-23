@@ -1,6 +1,6 @@
 ---
 name: respond-to-pr-review
-description: 自分が作成した PR にレビューコメントや返信が付いたときの対応手順。コメントの原文と日本語訳、指摘内容の解説、方針の選択肢の提示を経てユーザーの判断を得てから修正し、返信の投稿までを行う。「レビューコメントが付いた」「レビューに返信が来た」と言われたときに使う（他者の PR をレビューする review-pr-steps・review-pr-topdown、ready 前の self-review-pr とは別）。
+description: 自分が作成した PR にレビューコメントや返信が付いたときの対応手順。コメントの原文と日本語訳、指摘内容の解説、方針の選択肢の提示を経てユーザーの判断を得てから修正し、返信の投稿までを行う。「レビューコメントが付いた」「レビューに返信が来た」と言われたときに使う（他者の PR をレビューする review-pr-steps・review-pr-topdown、ready 前の self-review-pr-steps・self-review-pr-topdown とは別）。
 ---
 
 ## 目的

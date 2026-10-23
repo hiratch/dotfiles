@@ -57,7 +57,7 @@ reviewer が必要性・方針・実現方法の妥当性を判断できる材�
 Description の校正が確定したら、以下の順で PR を仕立てる。**draft 作成と self-review は省略しない**:
 
 1. branch を push し、確定した Description で **draft PR** を作成する
-2. `/self-review-pr` を実行し、指摘に対応してから次へ進む
+2. self-review（`/self-review-pr-steps`、またはユーザーが呼ぶ `/self-review-pr-topdown`）を行い、指摘に対応してから次へ進む
 3. reviewer を指定する: `gh pr edit <番号> --add-reviewer <reviewer>`（既定 reviewer はプロジェクトの慣行・メモリに従う）。self-review の直後に行い、ready 化を待たない。base が未マージの stacked PR でも同じ（ready を待つ理由は reviewer 指定には当てはまらない）
 4. ready にする: `gh pr ready <番号>`。通知の順序のため reviewer 指定より後に行う。base が未マージの stacked PR は draft のまま保ち、base のマージ後に行う
 
