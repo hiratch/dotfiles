@@ -10,7 +10,7 @@ disable-model-invocation: true
 
 self-review-pr-topdown（以下 topdown）を主にしてセルフレビューを行い、self-review-pr-steps（以下 steps）の結果と突き合わせて漏れを補う。あわせて、2 つの方式がそれぞれ何を拾い何を落としたかを記録し、切り替えの判断の材料を PR をまたいで貯める。
 
-終わったと言えるのは、topdown の終わりの状態（合意した対応、テストの全体、self-review の記録）に達し、比較の記録を書いたとき。reviewer の指定と ready 化はこのスキルでは行わず、prepare-pr の後工程に任せる。
+終わったと言えるのは、topdown の終わりの状態（合意した対応、テストの全体、self-review の記録）に達し、比較の記録を書いたとき。reviewer の指定と ready 化はこのスキルでは行わず、PR を仕立てるスキル（prepare-pr-topdown か prepare-pr-steps）の後工程に任せる。
 
 ## 進め方
 
