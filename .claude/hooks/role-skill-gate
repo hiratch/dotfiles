@@ -23,6 +23,7 @@ ROLE_SKILLS = {
     "self-review-pr-compare": "Dev",
     "prepare-pr-topdown": "Dev",
     "respond-to-pr-review-topdown": "Dev",
+    "release": "Dev",
 }
 
 
