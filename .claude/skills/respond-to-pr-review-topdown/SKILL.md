@@ -1,7 +1,6 @@
 ---
 name: respond-to-pr-review-topdown
 description: 開発担当が使う。自分が作成した PR にレビューのコメントや返信が付いたとき、ユーザーが指摘を理解してから対応を選べるように示し、合意した対応を行い、reviewer が少ない手間で懸念の解消を確かめられる返信と、再レビューの依頼までを受け持つ。他者の PR のレビューと、reviewer に渡す前のセルフレビューには使わない。
-disable-model-invocation: true
 ---
 
 # respond-to-pr-review-topdown

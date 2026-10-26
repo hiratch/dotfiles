@@ -1,7 +1,6 @@
 ---
 name: review-pr-topdown
 description: 開発担当が使う。他者が作成した PR を、課題・必要性・方針・根拠を子課題まで問い、実現方法まで判断したうえで、ユーザーが少ない負荷で腹落ちできる順と量で示し、ユーザー名義で出すレビュー（コメントの配置先・文面・Comment か Approve か）を合意してから投稿する。他者の PR のレビューと、投稿済みのレビューへの返信・追加のコミット・PR の作り直しへの対応に使う。自分が作成した PR には使わない。
-disable-model-invocation: true
 ---
 
 # review-pr-topdown

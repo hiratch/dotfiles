@@ -17,7 +17,7 @@
 
 ## prepare-pr-topdown への受け渡し
 
-作り直す PR と分けて出す PR は、prepare-pr-topdown の流れ（draft PR、self-review、Description の確定、reviewer の指定）で出す。前のレビューで分かったことが新しい PR の self-review と Description に入るよう、次を控えのファイルに書き、その場所をユーザーに示す。prepare-pr-topdown はモデルから呼べないので、ユーザーが呼ぶ。
+作り直す PR と分けて出す PR は、prepare-pr-topdown の流れ（draft PR、self-review、Description の確定、reviewer の指定）で出す。前のレビューで分かったことが新しい PR の self-review と Description に入るよう、次を控えのファイルに書き、その場所をユーザーに示す。
 
 - 前の PR の番号と、作り直す理由になった観察（現物で確かめた課題）
 - 前のレビューの指摘のうち、新しい PR にも当てはまるもの。self-review で、新しい PR がそれに応えているかを確かめるため

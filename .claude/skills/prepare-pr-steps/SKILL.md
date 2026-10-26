@@ -1,6 +1,7 @@
 ---
 name: prepare-pr-steps
 description: PR の Description を最小限の内容でドラフトする。リポジトリの pull_request_template.md があれば構造を踏襲し、目的・手段・検証の3要素を日本語で起こしてユーザー校正後に最終言語へ訳す。PR を作る直前や Description を書き直すときに使う。
+disable-model-invocation: true
 ---
 
 ## 目的

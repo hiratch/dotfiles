@@ -1,6 +1,7 @@
 ---
 name: self-review-pr-steps
 description: 自分が作成した PR をセルフレビューし、懸念点と判断に迷う点を洗い出したうえで、合意した対応（コード修正または Issue 化）まで実施する。自分の PR を出す前後に品質を点検するときに使う。
+disable-model-invocation: true
 ---
 
 ## 目的

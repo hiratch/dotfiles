@@ -1,7 +1,6 @@
 ---
 name: self-review-pr-topdown
 description: 開発担当が使う。自分が作成した PR を reviewer に渡す前に、課題・必要性・方針・根拠を子課題まで問い、実現方法まで判断し、答えられない点や妥当でない点を、ユーザーと合意したうえで修正・Description での説明・Issue 化によって解消する。他者が作成した PR には使わない。
-disable-model-invocation: true
 ---
 
 # self-review-pr-topdown

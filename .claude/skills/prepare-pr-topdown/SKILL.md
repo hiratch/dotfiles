@@ -1,7 +1,6 @@
 ---
 name: prepare-pr-topdown
 description: 開発担当が使う。自分の変更を PR にして reviewer に渡すまでを受け持つ。branch の push と draft PR の作成、self-review への引き渡し、reviewer が判断に使う問いにコードから意図を組み立て直さずに答えられる Description の作成（日本語で起こし、校正の後に訳す）、reviewer の指定、ready 化（stacked PR は base のマージの後）を行う。PR を作るとき、作った PR を reviewer に渡すとき、PR の内容が変わって Description を書き直すときに使う。
-disable-model-invocation: true
 ---
 
 # prepare-pr-topdown
@@ -43,7 +42,7 @@ self-review の前に作る。self-review の中で CI の結果を扱えるた�
 
 ### 2. self-review
 
-self-review は self-review のスキルが受け持ち、どれを使うかはユーザーが決める（モデルから呼べない設定なので、ユーザーが呼ぶか、ユーザーの指示でそのファイルを読んで従う）。
+self-review は self-review のスキルが受け持ち、どれを使うかはユーザーが決める。
 
 self-review で「Description で説明する」と合意した点は、その場で文面にせず、Description を書くときにまとめて入れる。校正を 1 回にするため。self-review が控えた結果のうち、確かめた課題の木、Description で説明する点、reviewer に判断を委ねると決めた点、確かめられなかった範囲、Issue にしたものが、Description の材料になる。
 
