@@ -1,6 +1,6 @@
 ---
 name: self-review-pr-compare
-description: 開発担当が使う。自分が作成した PR を self-review-pr-topdown でセルフレビューし、self-review-pr-steps の事前確認を背景で並走させて突き合わせ、漏れを補ったうえで、2 つの方式の比較を記録する。self-review-pr-topdown への切り替えを判断するための試行の期間に使う。
+description: 開発担当が使う。自分が作成した PR を self-review-pr-topdown でセルフレビューし、self-review-pr-steps の事前確認を背景で並走させて突き合わせ、漏れを補ったうえで、2 つの方式の比較を記録する。self-review-pr-topdown の精度を上げて self-review-pr-steps を退かせるための試行の期間に使う。
 disable-model-invocation: true
 ---
 
@@ -8,7 +8,7 @@ disable-model-invocation: true
 
 ## 目的と終わりの状態
 
-self-review-pr-topdown（以下 topdown）を主にしてセルフレビューを行い、self-review-pr-steps（以下 steps）の結果と突き合わせて漏れを補う。あわせて、2 つの方式がそれぞれ何を拾い何を落としたかを記録し、切り替えの判断の材料を PR をまたいで貯める。
+self-review-pr-topdown（以下 topdown）を主にしてセルフレビューを行い、self-review-pr-steps（以下 steps）の結果と突き合わせて漏れを補う。あわせて、steps だけが拾ったものを記録し、topdown を直す材料と、steps を退かせる判断の材料を PR をまたいで貯める。目的は topdown の精度を上げて steps を退かせることで、比較の数を貯めること自体ではない。
 
 終わったと言えるのは、topdown の終わりの状態（合意した対応、テストの全体、self-review の記録）に達し、比較の記録を書いたとき。reviewer の指定と ready 化はこのスキルでは行わず、PR を仕立てるスキル（prepare-pr-topdown か prepare-pr-steps）の後工程に任せる。
 
@@ -17,17 +17,21 @@ self-review-pr-topdown（以下 topdown）を主にしてセルフレビュー�
 1. 始めるときに、このスキルが頼むサブエージェント（steps を走らせる開発担当、比較を判定する開発担当）と、topdown が頼むサブエージェントを示し、承認を求める。
 2. steps の事前確認を、背景の開発担当のサブエージェントに走らせる。渡すのは、PR（またはブランチ）、判断する head の SHA、steps の SKILL.md と手順書の場所、書き出し先だけで、topdown の判断は渡さない。1 周目（事前確認）だけを行い、修正・コミット・記録はせず、指摘の一覧を書き出させる（指摘ごとに、要旨・箇所・害・根拠・確かさ・推奨する対応。解消した候補と確かめられなかった範囲も）。コードは固定した SHA の git のオブジェクトで読ませる。topdown の修正で作業ツリーが途中で変わるため。
 3. topdown の SKILL.md（`~/.claude/skills/self-review-pr-topdown/SKILL.md`）を読み、それに従ってセルフレビューを進める。steps の一覧は、topdown の指摘をすべて示し終えるまで読まない。先に読むと、topdown が何を拾うかを測れなくなるため。topdown の総括（テストの全体と記録）は、4 と 5 の後に行う。
-4. topdown の指摘をすべて示し終えたら、topdown の指摘も steps と同じ形で書き出し、比較の判定を、会話の文脈を持たない開発担当のサブエージェントに頼む。2 つの一覧はどちらの方式かを伏せて X・Y とし、判断した head の SHA を渡す。判定させるのは、同じ問題を指す指摘の対応、片方だけの指摘が現物で成り立つか、逆の判断の 3 つ。メインの側で判定しないのは、自分が拾えなかった指摘を割り引いて見るおそれがあるため。
+4. topdown の指摘をすべて示し終えたら、topdown の指摘と、ユーザーとの議論で出た指摘を、steps と同じ形で書き出し、比較の判定を、会話の文脈を持たない開発担当のサブエージェントに頼む。指摘ごとの出どころ（topdown か、ユーザーの問いか）は判定役に渡さず、対応の控えに書く。2 つの一覧はどちらの方式かを伏せて X・Y とし、判断した head の SHA を渡す。判定させるのは、同じ問題を指す指摘の対応、片方だけの指摘が現物で成り立つか、逆の判断の 3 つ。メインの側で判定しないのは、自分が拾えなかった指摘を割り引いて見るおそれがあるため。
 5. steps だけが挙げて成り立つと判定された指摘を、topdown の指摘と同じ形（害・根拠・対応の案と推奨）でユーザーに示し、合意した対応を行う。その後、topdown の総括に進む。
 6. 比較の記録を書く。判定の結果に、ユーザーに尋ねた示し方の印象（分かりやすさ・負荷）を添え、まとめの記録に 1 行足す。漏れを観測した観点は所見として書き、スキルを直すかはユーザーが決める。
+
+## 数え方
+
+steps を退かせる判断に使うのは、steps だけが拾って成り立ち、ユーザーが対応する（修正・Description での説明・Issue 化）と合意した指摘の数。成り立っても、ユーザーが対応しないとした指摘（害が小さいなど）は数えない。ユーザーとの議論で出た指摘は topdown の側に数える。退かせる判断は topdown とユーザーの協働で洗い出せているかで行うため。topdown だけが落とした指摘（steps だけのものと、ユーザーの問いから出たもの）は、topdown を直す材料として所見に書く。
 
 ## 記録の場所
 
 組織のリポジトリの中身を含むので、公開の dotfiles には置かない。
 
-- PR ごと: `~/tmp/selfreview-compare/<リポジトリのディレクトリ名>-pr-<番号>/`（PR が無ければ番号の代わりにブランチ名）。steps.md・topdown.md・対応（mapping.txt）・判定（comparison.md）を置く
+- PR ごと: `~/tmp/selfreview-compare/<リポジトリのディレクトリ名>-pr-<番号>/`（PR が無ければ番号の代わりにブランチ名）。steps.md・topdown.md・対応と出どころ（mapping.txt）・判定（comparison.md）を置く
 - 伏せた写し: `~/tmp/selfreview-blind/<同じ名前>/` に X.md・Y.md を置き、判定役にはここと PR の現物だけを読ませる。元の一覧の隣に置かないのは、判定役が元の一覧を読めないようにするため
-- まとめ: `~/tmp/selfreview-compare/log.md` に、PR ごとに 1 行（日付、PR、両方・topdown だけ・steps だけの成り立つ指摘の数、示し方の印象、所見）
+- まとめ: `~/tmp/selfreview-compare/log.md` に、PR ごとに 1 行（日付、PR、両方・topdown の側だけ・steps だけの成り立つ指摘の数、steps だけのうち対応すると合意した数、ユーザーの問いから出た指摘の数、示し方の印象、所見）
 
 ## 約束
 
