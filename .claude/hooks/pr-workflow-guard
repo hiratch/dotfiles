@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
-"""PR ワークフローのガード。Claude Code の PreToolUse hook として gh の PR 操作を検査し、self-review の記録を書く。
+"""PR と release のガード。Claude Code の PreToolUse hook として gh の PR 操作と release の公開を検査し、self-review の記録を書く。
 
 判定:
 - draft でない PR の作成と、作成時の reviewer 指定は拒否する
 - reviewer 指定・ready 化は、self-review の記録が無ければ拒否し、あればユーザーに確認を求める
 - self-review の後に変更内容が変わっていれば、確認の文面でそれを知らせる
+- draft を経ない release の作成は拒否し、draft の公開はユーザーに確認を求める。公開は取り消せず通知が飛ぶので、draft で中身を確かめてから公開するため
 
 使い方:
   pr-workflow-guard hook
@@ -34,6 +35,13 @@ PR_VALUE_OPTIONS = frozenset({
     "--remove-assignee", "--remove-label", "--remove-project", "--remove-reviewer",
     "-t", "--title", "-R", "--repo",
 })
+# gh release create / edit で値を取るオプション。tag 名とオプションの値を取り違えないために使う
+RELEASE_VALUE_OPTIONS = frozenset({
+    "--discussion-category", "-n", "--notes", "-F", "--notes-file", "--notes-start-tag",
+    "--target", "-t", "--title", "--tag", "-R", "--repo",
+})
+# REST の release の作成（id なし）と更新（id あり）の endpoint
+RELEASE_ENDPOINT = re.compile(r"/?repos/[^/]+/[^/]+/releases(/\d+)?/?$")
 HEREDOC_START = re.compile(r"(?<!<)<<-?\s*(['\"]?)([A-Za-z_][A-Za-z0-9_]*)\1")
 # git の共通ディレクトリからの相対パス。worktree 間で共有されるので、別の worktree で self-review しても元の作業ツリーから照合できる
 RECORD_FILE = Path("claude") / "self-review.json"
@@ -107,12 +115,12 @@ def merge_verdicts(verdicts: list[Verdict]) -> Verdict | None:
 
 
 def judge_command(command: str, cwd: Path) -> Verdict | None:
-    """Bash のコマンド文字列に含まれる gh の PR 操作を判定する。対象が無ければ None。"""
+    """Bash のコマンド文字列に含まれる gh の PR 操作と release の公開を判定する。対象が無ければ None。"""
     try:
         verdicts = [judge_gh(args, cwd) for args in extract_gh_invocations(command)]
     except Exception as error:  # 判定できないまま通すと、ガードの対象になるはずの操作が素通りする
         if re.search(r"\bgh\b", command):
-            return ask(f"PR ワークフローのガードが判定できなかった（{error}）。PR の操作なら、draft と self-review の状態を確かめてから承認する")
+            return ask(f"PR と release のガードが判定できなかった（{error}）。PR の操作なら draft と self-review の状態を、release の公開なら承認した内容かを確かめてから承認する")
         return None
     return merge_verdicts([v for v in verdicts if v is not None])
 
@@ -181,7 +189,7 @@ def drop_env_assignments(words: list[str]) -> list[str]:
 
 
 def judge_gh(args: list[str], cwd: Path) -> Verdict | None:
-    """gh の 1 回の呼び出しを判定する。PR ワークフローに関係しなければ None。"""
+    """gh の 1 回の呼び出しを判定する。PR の操作にも release の公開にも関係しなければ None。"""
     if "--help" in args:
         return None
     if args[:2] == ["pr", "create"]:
@@ -190,6 +198,10 @@ def judge_gh(args: list[str], cwd: Path) -> Verdict | None:
         return judge_review_request(args[2:], cwd)
     if args[:2] == ["pr", "edit"] and has_option(args, "--add-reviewer"):
         return judge_review_request(args[2:], cwd)
+    if args[:2] == ["release", "create"]:
+        return judge_release_create(args[2:])
+    if args[:2] == ["release", "edit"]:
+        return judge_release_edit(args[2:])
     if args[:1] == ["api"]:
         return judge_api(args[1:], cwd)
     return None
@@ -214,13 +226,49 @@ def judge_review_request(args: list[str], cwd: Path) -> Verdict:
     return judge_against_record(selectors[0] if selectors else None, cwd)
 
 
+def judge_release_create(args: list[str]) -> Verdict | None:
+    """gh release create を判定する。draft でなければ作成と同時に公開されるので、拒否する。"""
+    if draft_flag(args) is True:
+        return None
+    return deny(f"release {release_tag(args)} は draft で作成する。--draft を付けて実行し直し、公開は draft の中身を確かめた後に gh release edit --draft=false で行う")
+
+
+def judge_release_edit(args: list[str]) -> Verdict | None:
+    """gh release edit を判定する。--draft=false は draft の公開。"""
+    if draft_flag(args) is not False:
+        return None
+    return ask(f"draft の release {release_tag(args)} を公開する。承認した本文・tag・対象の SHA か確かめてから承認する")
+
+
+def draft_flag(args: list[str]) -> bool | None:
+    """--draft の値。--draft と -d は True、--draft=false は False、指定が無ければ None。
+
+    gh は真偽値を Go の strconv.ParseBool で読み、0 と f も false として受け付けるので、それらも False にする。
+    """
+    value = None
+    for arg in args:
+        if arg in ("--draft", "-d"):
+            value = True
+        elif arg.startswith(("--draft=", "-d=")):
+            value = arg.split("=", 1)[1].lower() not in ("0", "f", "false")
+    return value
+
+
+def release_tag(args: list[str]) -> str:
+    tags = positional_args(args, RELEASE_VALUE_OPTIONS)
+    return tags[0] if tags else "（tag の指定なし）"
+
+
 def judge_api(args: list[str], cwd: Path) -> Verdict | None:
-    """gh api による reviewer 指定・ready 化を判定する。"""
+    """gh api による reviewer 指定・ready 化と、release の公開を判定する。"""
     text = " ".join(args)
     if "graphql" in args:
         if re.search(r"\b(markPullRequestReadyForReview|requestReviews)\b", text):
             return ask("GraphQL による reviewer 指定・ready 化は self-review の記録を照合できない。self-review 済みかを確かめてから承認する")
         return None
+    endpoint = release_endpoint(args)
+    if endpoint is not None:
+        return judge_release_api(args, endpoint)
     match = re.search(r"pulls/(\d+)/requested_reviewers", text)
     if match and api_method(args) == "POST":
         return judge_against_record(match.group(1), cwd)
@@ -235,6 +283,52 @@ def api_method(args: list[str]) -> str:
         if arg.startswith("--method="):
             return arg.split("=", 1)[1].upper()
     return "POST" if has_option(args, "-f", "-F", "--field", "--raw-field", "--input") else "GET"
+
+
+def release_endpoint(args: list[str]) -> re.Match | None:
+    """引数の中の release の作成・更新の endpoint（repos/{owner}/{repo}/releases[/<id>]）。無ければ None。"""
+    for arg in args:
+        match = RELEASE_ENDPOINT.search(arg)
+        if match:
+            return match
+    return None
+
+
+def judge_release_api(args: list[str], endpoint: re.Match) -> Verdict | None:
+    """REST による release の作成・更新を判定する。
+
+    作成は draft=true が無ければ公開になるので、拒否する。更新は draft=false で公開になるので、確認を求める。
+    """
+    method = api_method(args)
+    draft = api_fields(args).get("draft", "").lower()
+    hidden = has_option(args, "--input")  # 送る中身が見えないので、公開になりうるものとして扱う
+    has_id = endpoint.group(1) is not None
+    if method == "POST" and not has_id:
+        if hidden:
+            # --input があると、gh は -f・-F を本文でなく URL のパラメータとして送る
+            return deny("REST で作成する release の中身が --input で見えず、draft か見分けられない。--input を使わずに -f・-F でフィールドを渡し、-F draft=true を付けて実行し直す")
+        if draft != "true":
+            return deny("release は draft で作成する。-F draft=true を付けて実行し直し、公開は draft の中身を確かめた後に行う")
+        return None
+    # draft=true 以外の値（-F draft=0 は整数を送る）を GitHub が false と受け取るかは確かめていないので、公開になりうるものとして扱う
+    if method == "PATCH" and has_id and (hidden or draft not in ("", "true")):
+        return ask("REST で release を更新する。draft=false なら公開になるので、承認した本文・tag・対象の SHA か確かめてから承認する")
+    return None
+
+
+def api_fields(args: list[str]) -> dict[str, str]:
+    """gh api に -f・-F・--field・--raw-field で渡したフィールド。"""
+    fields: dict[str, str] = {}
+    for index, arg in enumerate(args):
+        if arg in ("-f", "-F", "--field", "--raw-field") and index + 1 < len(args):
+            pair = args[index + 1]
+        elif arg.startswith(("--field=", "--raw-field=")):
+            pair = arg.split("=", 1)[1]
+        else:
+            continue
+        name, _, value = pair.partition("=")
+        fields[name] = value
+    return fields
 
 
 @functools.lru_cache(maxsize=None)  # reviewer 指定と ready 化を 1 コマンドで行うとき、同じ PR の照合を繰り返さない
