@@ -44,7 +44,7 @@ self-review の前に作る。self-review の中で CI の結果を扱えるた�
 
 self-review は self-review のスキルが受け持ち、どれを使うかはユーザーが決める。
 
-self-review で「Description で説明する」と合意した点は、その場で文面にせず、Description を書くときにまとめて入れる。校正を 1 回にするため。self-review が控えた結果のうち、確かめた課題の木、Description で説明する点、reviewer に判断を委ねると決めた点、確かめられなかった範囲、Issue にしたものが、Description の材料になる。
+self-review で「Description で説明する」と合意した点は、その場で文面にせず、Description を書くときにまとめて入れる。校正を 1 回にするため。self-review が控えた結果のうち、確かめた課題の木、Description で説明する点、reviewer に判断を委ねると決めた点、確かめられなかった範囲、Issue にしたものが、Description の材料になる。開発担当が実装の入口で作った契約の一覧（何が変わり何が変わらないか、止まる条件に当たった観測）があれば、それも材料になる。Description の主張を、コードから組み立て直さずに書けるため。
 
 ### 3. Description の確定（self-review の記録の後）
 
