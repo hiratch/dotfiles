@@ -36,7 +36,7 @@ description: 開発担当が使う。自分の変更を PR にして reviewer �
 
 self-review の前に作る。self-review の中で CI の結果を扱えるため（self-review の後に CI の失敗で直すと、記録の後の変更になり、self-review をやり直すかを問われる）。また、stacked PR の base が GitHub 上で決まり、self-review の記録がその base に対して取られるため（PR が無いと記録は既定ブランチに対して取られて親の PR の変更まで含み、base がマージされた後の照合が食い違う）。
 
-- タイトルと本文には、Description の日本語の原文を仮に置く。書き方は [references/description.md](references/description.md) にあり、書き始める前に読む。校正は 3 で行う
+- タイトルと本文には、Description の日本語の原文を仮に置く。書き方は [references/description.md](references/description.md) にあり、書き始める前に読む。開発担当が実装の入口で合わせた課題の木（根、方針と前提、契約、止まる条件に当たった観測）があれば、それを下書きにする。Description の主張を、コードから組み立て直さずに書けるため。根拠は確かめる予定のまま置き、3 で確かめた結果に置き換える。校正は 3 で行う
 - base は、stacked PR なら親の PR のブランチにする
 - PR の作成で起動するワークフローに CI 以外の副作用（PR ごとの環境のデプロイなど）があれば、作る時期をユーザーに諮る
 
@@ -44,7 +44,7 @@ self-review の前に作る。self-review の中で CI の結果を扱えるた�
 
 self-review は self-review のスキルが受け持ち、どれを使うかはユーザーが決める。
 
-self-review で「Description で説明する」と合意した点は、その場で文面にせず、Description を書くときにまとめて入れる。校正を 1 回にするため。self-review が控えた結果のうち、確かめた課題の木、Description で説明する点、reviewer に判断を委ねると決めた点、確かめられなかった範囲、Issue にしたものが、Description の材料になる。開発担当が実装の入口で作った契約の一覧（何が変わり何が変わらないか、止まる条件に当たった観測）があれば、それも材料になる。Description の主張を、コードから組み立て直さずに書けるため。
+self-review で「Description で説明する」と合意した点は、その場で文面にせず、Description を書くときにまとめて入れる。校正を 1 回にするため。self-review が控えた結果のうち、確かめた課題の木、Description で説明する点、reviewer に判断を委ねると決めた点、確かめられなかった範囲、Issue にしたものが、Description の材料になる。
 
 ### 3. Description の確定（self-review の記録の後）
 
