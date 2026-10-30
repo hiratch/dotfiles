@@ -14,7 +14,8 @@ from __future__ import annotations
 import json
 import sys
 
-# スキル名 → そのスキルを使う担当（~/.claude/agents の name）。レビューの基準は開発担当の作法にしか無いため、レビューのスキルは開発担当に限る
+# スキル名 → そのスキルを使う担当（~/.claude/agents の name）。レビューの基準は開発担当の作法にしか無いため、レビューのスキルは開発担当に限る。
+# 研究の段階のスキルは研究担当の作法（出典と読んだ深さ、製品のコードに触れない）を前提にし、メインが自分で進めるとモデルを並べて比べる仕組み（research-flow）を迂回するため、研究担当に限る
 ROLE_SKILLS = {
     "review-pr-steps": "Dev",
     "review-pr-topdown": "Dev",
@@ -25,6 +26,17 @@ ROLE_SKILLS = {
     "prepare-pr-topdown": "Dev",
     "respond-to-pr-review-topdown": "Dev",
     "release": "Dev",
+    "research-problem": "Research",
+    "research-requirements": "Research",
+    "research-verification": "Research",
+    "research-approaches": "Research",
+    "research-user-ideas": "Research",
+    "research-decision": "Research",
+}
+
+# 拒否したときの案内。担当を名指しして直接依頼させると、その担当の使い方を定めたスキルを迂回する場合に使う
+ROLE_HINTS = {
+    "Research": "メインのセッションからは research-flow で研究担当に依頼する。研究担当を主にしたセッション（claude --agent Research）では直接使える",
 }
 
 
@@ -40,7 +52,7 @@ def main() -> None:
         "hookSpecificOutput": {
             "hookEventName": "PreToolUse",
             "permissionDecision": "deny",
-            "permissionDecisionReason": f"{skill} は担当 {role} で使う。claude --agent {role} で起動するか、{role} に依頼する",
+            "permissionDecisionReason": f"{skill} は担当 {role} で使う。" + ROLE_HINTS.get(role, f"claude --agent {role} で起動するか、{role} に依頼する"),
         }
     }, ensure_ascii=False))
 

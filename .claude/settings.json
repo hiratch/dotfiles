@@ -55,6 +55,14 @@
     "slack@claude-plugins-official": true,
     "skill-creator@claude-plugins-official": true
   },
+  "skillOverrides": {
+    "research-problem": "name-only",
+    "research-requirements": "name-only",
+    "research-verification": "name-only",
+    "research-approaches": "name-only",
+    "research-user-ideas": "name-only",
+    "research-decision": "name-only"
+  },
   "effortLevel": "xhigh",
   "tui": "fullscreen",
   "theme": "custom:hiratch",
