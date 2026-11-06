@@ -16,6 +16,7 @@ import sys
 
 # スキル名 → そのスキルを使う担当（~/.claude/agents の name）。レビューの基準は開発担当の作法にしか無いため、レビューのスキルは開発担当に限る。
 # 研究の段階のスキルは研究担当の作法（出典と読んだ深さ、製品のコードに触れない）を前提にし、メインが自分で進めるとモデルを並べて比べる仕組み（research-flow）を迂回するため、研究担当に限る
+# 採用のスキルは人事担当の作法（候補者の情報を候補者の記録の外に書かない、外に出す記録の読み手、決めるのはユーザー）を前提にし、担当なしで使うとそれを迂回するため、人事担当に限る
 ROLE_SKILLS = {
     "review-pr-steps": "Dev",
     "review-pr-topdown": "Dev",
@@ -32,6 +33,10 @@ ROLE_SKILLS = {
     "research-approaches": "Research",
     "research-user-ideas": "Research",
     "research-decision": "Research",
+    "hr-screening": "HR",
+    "hr-interview-prep": "HR",
+    "hr-interview-evaluation": "HR",
+    "hr-position-design": "HR",
 }
 
 # 拒否したときの案内。担当を名指しして直接依頼させると、その担当の使い方を定めたスキルを迂回する場合に使う
