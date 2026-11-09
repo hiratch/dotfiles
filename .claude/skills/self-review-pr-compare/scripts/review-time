@@ -1,0 +1,218 @@
+#!/usr/bin/env python3
+"""比べるスキル（self-review-pr-compare・review-pr-compare）の 1 回分に掛かった時間の内訳を、会話の記録から集計し、比べた記録の欄に写す 1 行を書く。
+
+経過時間を、隣り合う記録の間の空きごとに、その空きで何を待っていたかで分ける。
+- 思考: 空きの間にユーザーの入力が届いたもの。60 分を超えるものは不在として分ける（閾値は推定。夜をまたぐ・席を外すなどを、読む・考える時間と混ぜないため）
+- 承認の待ち: 担当の起動か SendMessage の、呼び出しから結果までの空き（確認ダイアログでユーザーの承認を待つ時間）
+- 背景の待ち: 空きの間に背景のエージェントの報告が届いたもの
+- 道具: それ以外の道具の結果で終わる空き
+- 生成: 残り（Claude が応答を組む時間）
+あわせて、ユーザーの返信から Claude の応答が終わるまでの待ちごとに、その後の思考の時間を、示した 1,000 字あたりで出し、1 分未満の待ちの後と 1 分以上の待ちの後に分ける。待つ間に文脈が抜けて読み直しが増えているかを見るため。
+
+使い方:
+  review-time <比べるスキルの名前>
+      環境変数 CLAUDE_CODE_SESSION_ID で今のセッションの会話の記録を特定し、そのスキルが最後に呼ばれた時点から今までを集計する
+  review-time --transcript <会話の記録の .jsonl> --start <ISO 8601 の時刻> --end <ISO 8601 の時刻>
+      過去の回を、範囲を指定して集計する
+"""
+
+from __future__ import annotations
+
+import argparse
+import json
+import os
+import re
+import sys
+import time
+from datetime import datetime
+from pathlib import Path
+
+PROJECTS_DIR = Path.home() / ".claude" / "projects"
+ROLE_AGENTS_DIR = Path.home() / ".claude" / "agents"
+# role-agent-gate が確認ダイアログを出す組み込みの Agent
+GATED_BUILTIN_AGENTS = frozenset({"general-purpose", "claude"})
+AWAY_SECONDS = 60 * 60
+SHORT_WAIT_SECONDS = 60
+# 判定役の起動の説明。スキルの約束は Judge で始めることで、それより前の回の言い方も拾う
+JUDGE_WORDS = ("judge", "compare two", "blind comparison")
+BACKGROUND_REPORT_MARKERS = ("<task-notification>", "<agent-message")
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("skill", nargs="?")
+    parser.add_argument("--transcript")
+    parser.add_argument("--start")
+    parser.add_argument("--end")
+    args = parser.parse_args()
+    if args.transcript:
+        entries = load(Path(args.transcript))
+        start, end = parse_time(args.start), parse_time(args.end)
+    else:
+        transcript = current_transcript()
+        if transcript is None:
+            print("不明（CLAUDE_CODE_SESSION_ID から会話の記録を特定できない）")
+            return
+        entries = load(transcript)
+        start = last_invocation(entries, args.skill)
+        if start is None:
+            print(f"不明（{args.skill} の呼び出しが会話の記録に無い）")
+            return
+        end = time.time()
+    print(summarize([e for e in entries if start <= e["_t"] <= end]))
+
+
+def current_transcript() -> Path | None:
+    session = os.environ.get("CLAUDE_CODE_SESSION_ID")
+    if not session or not re.fullmatch(r"[0-9a-fA-F-]+", session):
+        return None
+    found = list(PROJECTS_DIR.glob(f"*/{session}.jsonl"))
+    return found[0] if len(found) == 1 else None
+
+
+def last_invocation(entries: list[dict], skill: str | None) -> float | None:
+    if not skill:
+        return None
+    commands = (f"<command-name>/{skill}</command-name>", f"<command-name>{skill}</command-name>")
+    found = None
+    for e in entries:
+        if e.get("type") == "user" and any(c in text_of(e) for c in commands):
+            found = e["_t"]
+        for c in tool_uses(e):
+            if c.get("name") == "Skill" and (c.get("input") or {}).get("skill") == skill:
+                found = e["_t"]
+    return found
+
+
+def summarize(entries: list[dict]) -> str:
+    gated = role_agent_names() | GATED_BUILTIN_AGENTS
+    calls: dict[str, bool] = {}
+    judge_at = None
+    for e in entries:
+        for c in tool_uses(e):
+            inp = c.get("input") or {}
+            if c.get("name") in ("Agent", "Task"):
+                calls[c["id"]] = inp.get("subagent_type") in gated
+                if judge_at is None and any(w in str(inp.get("description", "")).lower() for w in JUDGE_WORDS):
+                    judge_at = e["_t"]
+            else:
+                calls[c["id"]] = c.get("name") == "SendMessage"
+    wakes = [(e["_t"], kind) for e in entries if (kind := wake_kind(e))]
+    totals = {k: 0.0 for k in ("think", "away", "approval", "background", "tool", "model")}
+    compare_active = 0.0
+    for a, b in zip(entries, entries[1:]):
+        gap = b["_t"] - a["_t"]
+        if gap <= 0:
+            continue
+        kinds = {k for t, k in wakes if a["_t"] < t <= b["_t"] + 2}
+        # 圧縮の要約は、ユーザーの入力を受けて走ったときは長い空きの後に現れる。作業の途中で走ったときは空きが短いので、生成に残す
+        if "human" in kinds or ("compact" in kinds and gap > SHORT_WAIT_SECONDS):
+            kind = "away" if gap > AWAY_SECONDS else "think"
+        elif "background" in kinds:
+            kind = "background"
+        else:
+            results = [c.get("tool_use_id") for c in tool_results(b)]
+            if not results:
+                kind = "model"
+            elif any(calls.get(i) for i in results):
+                kind = "approval"
+            else:
+                kind = "tool"
+        totals[kind] += gap
+        if judge_at is not None and b["_t"] > judge_at and kind != "away":
+            compare_active += gap
+    replies = sum(1 for e in entries if wake_kind(e) == "human")
+    # 内訳の合計を経過とする。最後の記録から集計を走らせた時点までの空きは、何を待っていたか分からないので数えない
+    active = sum(v for k, v in totals.items() if k != "away")
+    m = lambda s: f"{s / 60:.0f}"
+    compare = f"{m(compare_active)} 分" if judge_at is not None else "不明"
+    short, long_ = think_per_chars(entries)
+    return (
+        f"不在を除く経過 {m(active)} 分（不在 {m(totals['away'])} 分）: 思考 {m(totals['think'])}・承認の待ち {m(totals['approval'])}・"
+        f"生成 {m(totals['model'])}・道具 {m(totals['tool'])}・背景の待ち {m(totals['background'])}／往復 {replies}／比べる段 {compare}／"
+        f"待ちの後の思考（1,000 字あたり）: 1 分未満の後 {short}・1 分以上の後 {long_}"
+    )
+
+
+def think_per_chars(entries: list[dict]) -> tuple[str, str]:
+    """ユーザーの返信ごとに、Claude の応答が終わるまでの待ちと、その後の思考の時間・示した字数を対にし、待ちの長さで分けて 1,000 字あたりの分を返す"""
+    humans = [i for i, e in enumerate(entries) if wake_kind(e) == "human"]
+    sums = {True: [0.0, 0], False: [0.0, 0]}
+    for i, j in zip(humans, humans[1:]):
+        answer = [e for e in entries[i:j] if e.get("type") == "assistant"]
+        if not answer:
+            continue
+        done = answer[-1]["_t"]
+        think = entries[j]["_t"] - done
+        chars = sum(len(c.get("text", "")) for e in answer for c in contents(e) if c.get("type") == "text")
+        if think > AWAY_SECONDS or chars == 0:
+            continue
+        bucket = sums[done - entries[i]["_t"] < SHORT_WAIT_SECONDS]
+        bucket[0] += think
+        bucket[1] += chars
+    fmt = lambda s: f"{s[0] / 60 / s[1] * 1000:.1f} 分" if s[1] else "—"
+    return fmt(sums[True]), fmt(sums[False])
+
+
+def wake_kind(e: dict) -> str | None:
+    if e.get("type") != "user" or tool_results(e):
+        return None
+    text = text_of(e)
+    if any(marker in text for marker in BACKGROUND_REPORT_MARKERS):
+        return "background"
+    if e.get("isMeta") or not text.strip() or "<local-command" in text or "<command-name>" in text:
+        return None
+    if text.startswith("This session is being continued"):
+        return "compact"
+    return "human"
+
+
+def load(path: Path) -> list[dict]:
+    entries = []
+    for line in path.open(encoding="utf-8"):
+        try:
+            e = json.loads(line)
+        except json.JSONDecodeError:
+            continue
+        if e.get("timestamp") and not e.get("isSidechain"):
+            e["_t"] = parse_time(e["timestamp"])
+            entries.append(e)
+    entries.sort(key=lambda e: e["_t"])
+    return entries
+
+
+def parse_time(value: str) -> float:
+    return datetime.fromisoformat(value.replace("Z", "+00:00")).timestamp()
+
+
+def contents(e: dict) -> list[dict]:
+    content = (e.get("message") or {}).get("content")
+    return [c for c in content if isinstance(c, dict)] if isinstance(content, list) else []
+
+
+def text_of(e: dict) -> str:
+    content = (e.get("message") or {}).get("content")
+    if isinstance(content, str):
+        return content
+    return " ".join(c.get("text", "") for c in contents(e) if c.get("type") == "text")
+
+
+def tool_uses(e: dict) -> list[dict]:
+    return [c for c in contents(e) if c.get("type") == "tool_use"] if e.get("type") == "assistant" else []
+
+
+def tool_results(e: dict) -> list[dict]:
+    return [c for c in contents(e) if c.get("type") == "tool_result"] if e.get("type") == "user" else []
+
+
+def role_agent_names() -> set[str]:
+    names = set()
+    for path in ROLE_AGENTS_DIR.glob("*.md"):
+        parts = path.read_text(encoding="utf-8").split("---", 2)
+        if len(parts) == 3 and (match := re.search(r"^name:\s*(\S+)\s*$", parts[1], re.MULTILINE)):
+            names.add(match.group(1))
+    return names
+
+
+if __name__ == "__main__":
+    main()
