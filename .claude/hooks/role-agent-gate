@@ -3,7 +3,7 @@
 
 依頼先が ~/.claude/agents/ に定義した担当（Agent ファイルの frontmatter の name）か、すべてのツールを持つ組み込みの Agent（general-purpose・claude）なら、確認ダイアログを出す。
 それ以外の組み込みの Agent（Explore など）やプラグインの Agent への依頼は、読み取りだけの調査に使うことが多いので通す。
-SendMessage は、宛先によらず確認ダイアログを出す。既存のサブエージェントへの続きの依頼にも、このマシンの他のセッションへの送信にも使え、宛先から依頼先の種類を判別できないため。
+SendMessage は、宛先がこのセッションのサブエージェントなら通し、それ以外には確認ダイアログを出す。サブエージェントは起動のときに確認を経ていて、続きの依頼（反証など）のたびに確認を挟むと、ユーザーが応じるまでそこで止まるため。他のセッションへの送信は、依頼先の種類を宛先から判別できないので確認を挟む。このセッションのサブエージェントかは、会話の記録の隣のサブエージェントの記録の有無で判別する。
 
 使い方:
   role-agent-gate
@@ -24,6 +24,8 @@ NAME_LINE = re.compile(r"^name:\s*(\S+)\s*$", re.MULTILINE)
 # ファイルを編集でき、担当の代わりに同じ仕事をこなせる組み込みの Agent。担当を止めても、ここを経由して同じ仕事が行われないようにする
 GATED_BUILTIN_AGENTS = frozenset({"general-purpose", "claude"})
 MESSAGE_TOOL_NAME = "SendMessage"
+# サブエージェントの ID は英数字だけ。他のセッションの宛先（名前や uds: のソケット）と、パスを含む宛先を除く
+SUBAGENT_ID = re.compile(r"^[A-Za-z0-9]+$")
 
 
 def main() -> None:
@@ -31,7 +33,9 @@ def main() -> None:
     tool_name = event.get("tool_name")
     tool_input = event.get("tool_input") or {}
     if tool_name == MESSAGE_TOOL_NAME:
-        ask(f"{tool_input.get('to')} へのメッセージには、ユーザーの承認が要る")
+        to = tool_input.get("to")
+        if not is_own_subagent(event, to):
+            ask(f"{to} へのメッセージには、ユーザーの承認が要る")
     elif tool_name in AGENT_TOOL_NAMES:
         requested = tool_input.get("subagent_type")
         if requested in GATED_BUILTIN_AGENTS or requested in role_agent_names():
@@ -46,6 +50,14 @@ def ask(reason: str) -> None:
             "permissionDecisionReason": reason,
         }
     }, ensure_ascii=False))
+
+
+def is_own_subagent(event: dict, to: object) -> bool:
+    # Claude Code はサブエージェントの記録を、会話の記録（<セッション>.jsonl）の隣の <セッション>/subagents/agent-<ID>.jsonl に置く（文書に記載は無く、2026-11 に記録の置き場で確かめた）
+    transcript = event.get("transcript_path")
+    if not transcript or not isinstance(to, str) or not SUBAGENT_ID.match(to):
+        return False
+    return (Path(transcript).with_suffix("") / "subagents" / f"agent-{to}.jsonl").is_file()
 
 
 def role_agent_names() -> set[str]:
