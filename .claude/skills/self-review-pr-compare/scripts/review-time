@@ -3,7 +3,7 @@
 
 経過時間を、隣り合う記録の間の空きごとに、その空きで何を待っていたかで分ける。
 - 思考: 空きの間にユーザーの入力が届いたもの。60 分を超えるものは不在として分ける（閾値は推定。夜をまたぐ・席を外すなどを、読む・考える時間と混ぜないため）
-- 承認の待ち: 担当の起動か SendMessage の、呼び出しから結果までの空き（確認ダイアログでユーザーの承認を待つ時間）
+- 承認の待ち: 担当の起動か SendMessage の、呼び出しから結果までの空き（確認ダイアログでユーザーの承認を待つ時間）。60 分を超えるものは、思考と同じく不在として分ける（確認が出たまま席を外していた時間を、席にいる間に止まった時間と混ぜないため）
 - 背景の待ち: 空きの間に背景のエージェントの報告が届いたもの
 - 道具: それ以外の道具の結果で終わる空き
 - 生成: 残り（Claude が応答を組む時間）
@@ -115,7 +115,7 @@ def summarize(entries: list[dict]) -> str:
             if not results:
                 kind = "model"
             elif any(calls.get(i) for i in results):
-                kind = "approval"
+                kind = "away" if gap > AWAY_SECONDS else "approval"
             else:
                 kind = "tool"
         totals[kind] += gap
