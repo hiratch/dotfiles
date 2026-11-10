@@ -33,8 +33,6 @@ ROLE_AGENTS_DIR = Path.home() / ".claude" / "agents"
 GATED_BUILTIN_AGENTS = frozenset({"general-purpose", "claude"})
 AWAY_SECONDS = 60 * 60
 SHORT_WAIT_SECONDS = 60
-# 判定役の起動の説明。スキルの約束は Judge で始めることで、それより前の回の言い方も拾う
-JUDGE_WORDS = ("judge", "compare two", "blind comparison")
 BACKGROUND_REPORT_MARKERS = ("<task-notification>", "<agent-message")
 
 
@@ -87,19 +85,15 @@ def last_invocation(entries: list[dict], skill: str | None) -> float | None:
 def summarize(entries: list[dict]) -> str:
     gated = role_agent_names() | GATED_BUILTIN_AGENTS
     calls: dict[str, bool] = {}
-    judge_at = None
     for e in entries:
         for c in tool_uses(e):
             inp = c.get("input") or {}
             if c.get("name") in ("Agent", "Task"):
                 calls[c["id"]] = inp.get("subagent_type") in gated
-                if judge_at is None and any(w in str(inp.get("description", "")).lower() for w in JUDGE_WORDS):
-                    judge_at = e["_t"]
             else:
                 calls[c["id"]] = c.get("name") == "SendMessage"
     wakes = [(e["_t"], kind) for e in entries if (kind := wake_kind(e))]
     totals = {k: 0.0 for k in ("think", "away", "approval", "background", "tool", "model")}
-    compare_active = 0.0
     for a, b in zip(entries, entries[1:]):
         gap = b["_t"] - a["_t"]
         if gap <= 0:
@@ -119,17 +113,14 @@ def summarize(entries: list[dict]) -> str:
             else:
                 kind = "tool"
         totals[kind] += gap
-        if judge_at is not None and b["_t"] > judge_at and kind != "away":
-            compare_active += gap
     replies = sum(1 for e in entries if wake_kind(e) == "human")
     # 内訳の合計を経過とする。最後の記録から集計を走らせた時点までの空きは、何を待っていたか分からないので数えない
     active = sum(v for k, v in totals.items() if k != "away")
     m = lambda s: f"{s / 60:.0f}"
-    compare = f"{m(compare_active)} 分" if judge_at is not None else "不明"
     short, long_ = think_per_chars(entries)
     return (
         f"不在を除く経過 {m(active)} 分（不在 {m(totals['away'])} 分）: 思考 {m(totals['think'])}・承認の待ち {m(totals['approval'])}・"
-        f"生成 {m(totals['model'])}・道具 {m(totals['tool'])}・背景の待ち {m(totals['background'])}／往復 {replies}／比べる段 {compare}／"
+        f"生成 {m(totals['model'])}・道具 {m(totals['tool'])}・背景の待ち {m(totals['background'])}／往復 {replies}／"
         f"待ちの後の思考（1,000 字あたり）: 1 分未満の後 {short}・1 分以上の後 {long_}"
     )
 
