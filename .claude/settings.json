@@ -5,7 +5,13 @@
     ],
     "deny": [
       "Read(.env*)",
+      "Read(!*.sample)",
+      "Read(!*.example)",
+      "Read(!*.template)",
       "Edit(.env*)",
+      "Read(//**/.env)",
+      "Read(//**/.env.bak)",
+      "Read(//**/.env.local)",
       "Bash(cat .env*)",
       "Bash(less .env*)",
       "Bash(more .env*)",
