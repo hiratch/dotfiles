@@ -49,14 +49,6 @@
             "command": "~/.claude/hooks/role-skill-gate"
           }
         ]
-      },
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "~/.claude/hooks/decl-guard pre"
-          }
-        ]
       }
     ],
     "MessageDisplay": [
@@ -65,14 +57,6 @@
           {
             "type": "command",
             "command": "~/.claude/hooks/lang-guard display"
-          }
-        ]
-      },
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "~/.claude/hooks/decl-guard display"
           }
         ]
       }
@@ -85,14 +69,6 @@
             "command": "~/.claude/hooks/lang-guard batch"
           }
         ]
-      },
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "~/.claude/hooks/decl-guard batch"
-          }
-        ]
       }
     ],
     "Stop": [
@@ -101,14 +77,6 @@
           {
             "type": "command",
             "command": "~/.claude/hooks/lang-guard stop"
-          }
-        ]
-      },
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "~/.claude/hooks/decl-guard stop"
           }
         ]
       }
