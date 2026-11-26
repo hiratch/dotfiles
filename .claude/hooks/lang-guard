@@ -1,0 +1,122 @@
+#!/usr/bin/env python3
+"""ユーザーとの対話を日本語で書かせる。Claude Code の hook として、日本語を含まない Claude の文を見つけ、次のモデルの呼び出しの前に Claude に知らせる。
+
+ユーザーの母語は日本語で、英語の文を読むには日本語よりはるかに大きな注意を要し、理解されなければ議論は進まない。規則や約束があっても、英語の入力や資料の後は文脈の言語に流されることがある（とくにツールの前の宣言）ので、文が出た直後に知らせる。
+
+- display: MessageDisplay の hook。画面に出る Claude の文を貯め、文の終わりで日本語を含まなければ控える
+- batch: PostToolBatch の hook。控えた文があれば、次のモデルの呼び出しの前に Claude に知らせる
+- stop: Stop の hook。ターンの控えを空にする（何も知らせない）
+
+英語が要る場面（求められた英訳、他者向けの英文など）かは、語で見分けず、知らせに目的と基準を書いて Claude に判断させる。知らせは次の呼び出しの文脈に足されるだけで何も書かせないので、英語が正しい場面では、Claude が何もしなければ済む。
+ターンの最終の回答は確かめない。最終の回答の後の知らせは Claude にもう 1 回書かせることになり、英語が正しい場面で、同じ英訳を繰り返したり、正しい英訳を日本語に書き換えたりした（試験での観察）。
+コードのブロック、インラインのコード、URL は判定から除く。それを除いて英字の語が無い文（コードやコマンドだけの文）は咎めない。英単語が混じっても、日本語を含む文は咎めない。
+サブエージェントの文は、ユーザーとの対話ではないので見ない。
+
+使い方:
+  lang-guard display|batch|stop
+      hook の入力 JSON を stdin から読み、知らせるときは JSON を stdout に書く
+"""
+
+from __future__ import annotations
+
+import json
+import re
+import sys
+import tempfile
+from pathlib import Path
+
+JAPANESE = re.compile(r"[぀-ヿ㐀-䶿一-鿿ｦ-ﾟ]")
+CODE_BLOCK = re.compile(r"```.*?(?:```|\Z)", re.S)
+INLINE_CODE = re.compile(r"`[^`\n]*`")
+URL = re.compile(r"https?://\S+")
+WORD = re.compile(r"[A-Za-z]{2,}")
+SESSION_ID = re.compile(r"^[A-Za-z0-9_-]+$")
+STATE_DIR = Path(tempfile.gettempdir()) / "claude-lang-guard"
+EXCERPT_CHARS = 80
+
+NOTICE = (
+    "直前に、日本語を含まない文を書いた: {excerpts}。"
+    "ユーザーの母語は日本語で、英語の文を読むには日本語よりはるかに大きな注意を要し、理解されなければ議論は進まない。"
+    "そのため、ユーザーに向けて書く文（回答、ツールの前の宣言など）は日本語で書き、英語は、英語の文そのものが要る箇所"
+    "（求められた英訳、他者向けの英文、コード・コマンド・固有の名前など）にだけ使う。"
+    "ユーザーの入力が英語であることや、英語の資料を読んだ後であることは、英語が要る理由にならない。"
+    "英語が要る箇所でなければ、この後のツールの前の宣言と回答は日本語で書く。この知らせへの返答や謝罪は要らない"
+)
+
+
+def prose(text: str) -> str:
+    return URL.sub("", INLINE_CODE.sub("", CODE_BLOCK.sub("", text)))
+
+
+def lacks_japanese(text: str) -> bool:
+    rest = prose(text)
+    return JAPANESE.search(rest) is None and WORD.search(rest) is not None
+
+
+def excerpt(text: str) -> str:
+    line = " ".join(prose(text).split())
+    return "「" + (line[:EXCERPT_CHARS] + "…" if len(line) > EXCERPT_CHARS else line) + "」"
+
+
+def state_path(event: dict) -> Path | None:
+    session_id = str(event.get("session_id") or "")
+    return STATE_DIR / f"{session_id}.json" if SESSION_ID.match(session_id) else None
+
+
+def load(path: Path) -> dict:
+    try:
+        return json.loads(path.read_text())
+    except (OSError, ValueError):
+        return {}
+
+
+def save(path: Path, state: dict) -> None:
+    STATE_DIR.mkdir(mode=0o700, exist_ok=True)
+    path.write_text(json.dumps(state, ensure_ascii=False))
+
+
+def on_display(event: dict, path: Path) -> None:
+    state = load(path)
+    messages = state.setdefault("messages", {})
+    message_id = str(event.get("message_id"))
+    messages[message_id] = messages.get(message_id, "") + (event.get("delta") or "")
+    if event.get("final"):
+        text = messages.pop(message_id)
+        if lacks_japanese(text):
+            state.setdefault("pending", []).append(excerpt(text))
+    save(path, state)
+
+
+def on_batch(event: dict, path: Path) -> None:
+    state = load(path)
+    pending = state.pop("pending", [])
+    if not pending:
+        return
+    save(path, state)
+    notify("PostToolBatch", NOTICE.format(excerpts="、".join(pending)))
+
+
+def on_stop(event: dict, path: Path) -> None:
+    path.unlink(missing_ok=True)
+
+
+def notify(event_name: str, context: str) -> None:
+    print(json.dumps({"hookSpecificOutput": {"hookEventName": event_name, "additionalContext": context}}, ensure_ascii=False))
+
+
+HANDLERS = {"display": on_display, "batch": on_batch, "stop": on_stop}
+
+
+def main() -> None:
+    handler = HANDLERS.get(sys.argv[1] if len(sys.argv) > 1 else "")
+    if handler is None:
+        sys.exit(f"usage: lang-guard {'|'.join(HANDLERS)}")
+    event = json.load(sys.stdin)
+    path = state_path(event)
+    if event.get("agent_id") or path is None:
+        return
+    handler(event, path)
+
+
+if __name__ == "__main__":
+    main()
