@@ -69,7 +69,7 @@ RELEASING.md の慣行に従う。tag はマージで main にできた commit �
 
 ### 6. 訳と draft release
 
-最終言語（過去の release の言語）に訳し、3 辺の検査（CLAUDE.md の出力スタイル節）を行う。下流の消費者への知らせの文面も、ここで訳す。draft release を、tag 名、対象 commit の SHA、タイトル、本文、prerelease で作る。GitHub の自動生成の節（PR の一覧と compare のリンク）を本文の後ろに付けるかは、過去の release の慣行に従う。target にはブランチ名でなく SHA を渡す。ブランチ名は publish の時点の head に解決され、draft の間に main が進むとずれるため。asset があれば draft に付ける（immutable では公開後に足せない）。
+最終言語（過去の release の言語）に訳し、3 辺の検査（CLAUDE.md の「他者に出る文面が、ユーザーの言葉として通る」の節）を行う。下流の消費者への知らせの文面も、ここで訳す。draft release を、tag 名、対象 commit の SHA、タイトル、本文、prerelease で作る。GitHub の自動生成の節（PR の一覧と compare のリンク）を本文の後ろに付けるかは、過去の release の慣行に従う。target にはブランチ名でなく SHA を渡す。ブランチ名は publish の時点の head に解決され、draft の間に main が進むとずれるため。asset があれば draft に付ける（immutable では公開後に足せない）。
 
 ### 7. Y2、外部の文書、publish
 
