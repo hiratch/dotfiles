@@ -1,0 +1,10 @@
+#!/bin/zsh
+# PreCompact の hook: 標準出力が会話の要約への指示として使われる（Claude Code の hooks の文書）。
+# 要約の約束の一覧で、Claude の判断がユーザーの指示として受け継がれないようにする。
+cat <<'MSG'
+In the summary, wherever you list constraints, rules, promises, or decisions to keep, mark each item with where it came from:
+- (user) an instruction the user gave, with where they said it;
+- (agreed) a proposal from Claude that the user explicitly agreed to as that specific item, with where;
+- (Claude) Claude's own judgment or choice, including anything the user left for Claude to decide.
+Never list Claude's own judgment as if the user had instructed it. If you cannot tell where an item came from, mark it (source unknown) instead of guessing.
+MSG

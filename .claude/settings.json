@@ -80,6 +80,16 @@
           }
         ]
       }
+    ],
+    "PreCompact": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/compact-provenance"
+          }
+        ]
+      }
     ]
   },
   "attribution": {
